@@ -59,8 +59,11 @@ class LinkHeaderListener
          * http://tools.ietf.org/html/rfc2068#section-19.6.2.4
          */
         foreach (explode(',', $event->getRequest()->headers->get('link')) as $header) {
+            $header = trim($header);
             $link = new LinkHeader($header);
-            $link->setUrlParameters($this->urlMatcher->match($link->getValue()));
+            if($urlParameters = $this->urlMatcher->match($link->getValue())) {
+                $link->setUrlParameters($urlParameters);
+            }
             //try {
                 $link->setResource($this->resourceTransformer->getResourceProxy($link->getValue()));
             //} catch(\Exception $e) {}
