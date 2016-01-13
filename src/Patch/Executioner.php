@@ -1,12 +1,12 @@
 <?php
 namespace Ibrows\RestBundle\Patch;
 
+use Exception\NotImplementedException;
 use Ibrows\RestBundle\Patch\Operation as Operation;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Intl\Exception\NotImplementedException;
 
 class Executioner
 {
