@@ -20,6 +20,7 @@
         }
     },
     "require": {
+        "php": ">=5.6",
         "friendsofsymfony/rest-bundle": "^1.7",
         "sensio/framework-extra-bundle": "^3.0",
         "willdurand/hateoas-bundle": "^1.1",
