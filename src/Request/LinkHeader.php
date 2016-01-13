@@ -1,8 +1,6 @@
 <?php
 namespace Ibrows\RestBundle\Request;
 
-use Doctrine\ORM\Proxy\Proxy;
-
 class LinkHeader
 {
     /**
@@ -276,7 +274,9 @@ class LinkHeader
      */
     public function getExtension($extension)
     {
-        return $this->extensions[$extension];
+        return isset($this->extensions[$extension])
+            ? $this->extensions[$extension]
+            : null;
     }
 
     /**
