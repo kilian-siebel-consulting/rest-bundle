@@ -51,7 +51,7 @@ class Configuration implements ConfigurationInterface
                                     ->defaultFalse()
                                 ->end()
                                 ->scalarNode('param_name')
-                                    ->defaultValue('_expolicy')
+                                    ->defaultValue('expolicy')
                                 ->end()
                             ->end()
                         ->end()

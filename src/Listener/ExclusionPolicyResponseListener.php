@@ -41,7 +41,8 @@ class ExclusionPolicyResponseListener
     {
         if (
             !$this->enabled ||
-            !$event->getRequest()->attributes->has('paramFetcher')
+            !$event->getRequest()->attributes->has('paramFetcher') ||
+            !$event->getRequest()->attributes->has('_view')
         ) {
             return;
         }
