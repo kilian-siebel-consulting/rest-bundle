@@ -8,6 +8,7 @@ use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Annotation\View as IbrowsView;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\OffsetRepresentation;
+use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
@@ -110,20 +111,24 @@ class CollectionViewResponseListener
      */
     private function decoratePaginatedView(ParamFetcherInterface $paramFetcher, $route, array $params, & $response)
     {
-        try {
-            $limit = (int) $paramFetcher->get('limit');
-            $page = (int) $paramFetcher->get('page');
+        $limit = $this->fetchParameter($paramFetcher, 'limit');
+        $last = $this->fetchParameter($paramFetcher, 'lastId');
 
-            $response = new PaginatedRepresentation(
-                $response,
-                $route,
-                $params,
-                $page,
-                $limit
-            );
-        } catch(InvalidArgumentException $e) {
-            // There is no way to check if a param exists without catching an exception
+        if(($limit === null || $last === null)){
+            return;
         }
+
+        $response = new PaginationRepresentation(
+            $response,
+            $route,
+            $params,
+            1,
+            $limit,
+            10,
+            'page',
+            'limit',
+            false
+        );
     }
 
     /**
@@ -170,5 +175,19 @@ class CollectionViewResponseListener
             }
         }
         return $params;
+    }
+
+
+    /**
+     * @param ParamFetcherInterface $paramFetcher
+     * @param $key
+     * @return null
+     */
+    protected function fetchParameter(ParamFetcherInterface $paramFetcher, $key){
+        $params = $paramFetcher->all();
+        if(isset($params[$key])){
+            return $params[$key];
+        }
+        return null;
     }
 }

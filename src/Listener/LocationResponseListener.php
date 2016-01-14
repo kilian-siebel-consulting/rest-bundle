@@ -48,20 +48,12 @@ class LocationResponseListener
             return;
         }
 
-        $data = $request->attributes->all();
-        $objects = array();
-
-        $parameterNames = $configuration->getLocation()->getParameterNames();
-        foreach($parameterNames as $name){
-            if(isset($data[$name])) {
-                $objects[$name] = $data[$name];
-            }
-        }
+        $objects = $request->attributes->all();
 
         $params = $this->prepareRouteParameters($configuration->getLocation()->getParams(), $objects);
         $url = $this->router->generate($configuration->getLocation()->getRoute(), $params);
 
-        $response->headers->add(array('Location' => $url));
+        $response->headers->add(array('location' => $url));
         $event->setResponse($response);
     }
 
