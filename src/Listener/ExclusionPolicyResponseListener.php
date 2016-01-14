@@ -30,8 +30,8 @@ class ExclusionPolicyResponseListener
      */
     public function __construct(array $config)
     {
-        $this->enabled = $config['exclusion_policy']['enabled'];
-        $this->paramName = $config['exclusion_policy']['param_name'];
+        $this->enabled = $config['enabled'];
+        $this->paramName = $config['param_name'];
     }
 
     /**
