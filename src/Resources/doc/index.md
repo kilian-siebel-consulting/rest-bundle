@@ -41,6 +41,10 @@ class AppKernel extends Kernel
 }
 ```
 
+## Listeners
+ - [Debug Listener](listener/debug_response_listener.md)
+ - [Exclusion Policy Listener](listener/exclusion_policy_response_listener.md)
+
 ## Reference Configuration
 
 ```yaml
