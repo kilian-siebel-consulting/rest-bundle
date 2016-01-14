@@ -8,6 +8,7 @@
         <parameter key="ibrows_rest.listener.view_debug.class">Ibrows\RestBundle\Listener\DebugViewResponseListener</parameter>
         <parameter key="ibrows_rest.listener.view_collection.class">Ibrows\RestBundle\Listener\CollectionViewResponseListener</parameter>
         <parameter key="ibrows_rest.listener.view.create.class">Ibrows\RestBundle\Listener\LocationResponseListener</parameter>
+        <parameter key="ibrows_rest.listener.exclusion_policy.class">Ibrows\RestBundle\Listener\ExclusionPolicyResponseListener</parameter>
     </parameters>
     <services>
         <service id="ibrows_rest.listener.link_header" class="%ibrows_rest.listener.link_header.class%">
@@ -28,6 +29,11 @@
             <argument type="service" id="router"/>
             <argument type="service" id="ibrows_rest.utils.expression_evaluator"/>
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="199" />
+        </service>
+
+        <service id="ibrows_rest.listener.view_exclusion_policy" class="%ibrows_rest.listener.exclusion_policy.class%">
+            <argument>%ibrows_rest.config.listener%</argument>
+            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
         </service>
     </services>
 </container>
