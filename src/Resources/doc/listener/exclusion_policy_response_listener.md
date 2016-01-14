@@ -15,11 +15,11 @@ The default configuration would look like this:
         listener:
             exclusion_policy:
                 enabled: true
-                param_name: _expolicy
+                param_name: expolicy
 ```                
                 
  - The `enabled` boolean setting allows you to enable or disable the listener globally (default: `false`). 
- - The `param_name` describes which query-parameter is used to get the serializer group name (default: `_expolicy`). 
+ - The `param_name` describes which query-parameter is used to get the serializer group name (default: `expolicy`). 
    Any name is acceptable as long as it doesn't colide with other parameter names.
  
 Usage
@@ -30,7 +30,7 @@ If you want to use the listener in your action you have to first add the `@Query
 ```php
     /**
       * ...
-      * @FOSRest\QueryParam(name="_expolicy", requirements="(car_list|car_detail)", default="car_list", strict=true, description="Serialization group")
+      * @FOSRest\QueryParam(name="expolicy", requirements="(car_list|car_detail)", default="car_list", strict=true, description="Serialization group")
       * ...
       */
 ```

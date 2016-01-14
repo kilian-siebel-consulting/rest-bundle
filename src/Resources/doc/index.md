@@ -55,7 +55,7 @@ ibrows_rest:
             enabled: false
         exclusion_policy:
             enabled: false
-            param_name: _expolicy
+            param_name: expolicy
            
 ```
 
