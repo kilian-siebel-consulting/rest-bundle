@@ -8,7 +8,7 @@
 
 namespace Ibrows\RestBundle\Listener;
 
-
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
@@ -32,6 +32,22 @@ class ExclusionPolicyResponseListener
     {
         $this->enabled = $config['enabled'];
         $this->paramName = $config['param_name'];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param boolean $enabled
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
     }
 
     /**
