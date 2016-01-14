@@ -29,7 +29,8 @@ class IbrowsRestExtension extends Extension
 
         $container->setParameter('ibrows_rest.config.resources', $config['resources']);
         $container->setParameter('ibrows_rest.config.param_converter', $config['param_converter']);
-        $container->setParameter('ibrows_rest.config.listener', $config['listener']);
+        $container->setParameter('ibrows_rest.config.listener.exclusion_policy', $config['listener']['exclusion_policy']);
+        $container->setParameter('ibrows_rest.config.listener.debug', $config['listener']['debug']);
 
         $container->addCompilerPass(new ParamConvertersCompilerPass());
         $container->addCompilerPass(new OverrideRequestConverterCompilerPass());

@@ -93,14 +93,10 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     private function getListener($enabled = true, $paramName = '_expolicy')
     {
-        return new ExclusionPolicyResponseListener(
-            array(
-                'exclusion_policy' => array(
-                    'enabled'    => $enabled,
-                    'param_name' => $paramName
-                )
-            )
-        );
+        return new ExclusionPolicyResponseListener([
+            'enabled'    => $enabled,
+            'param_name' => $paramName
+        ]);
     }
 
     /**

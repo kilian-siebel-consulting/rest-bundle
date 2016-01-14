@@ -18,7 +18,11 @@
         </service>
 
         <service id="ibrows_rest.listener.view_debug" class="%ibrows_rest.listener.view_debug.class%">
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
+            <argument>%ibrows_rest.config.listener.debug%</argument>
+            <call method="setProfilerListener">
+                <argument type="service" id="profiler_listener" on-invalid="ignore" />
+            </call>
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="-500" />
         </service>
 
         <service id="ibrows_rest.listener.view_collection" class="%ibrows_rest.listener.view_collection.class%">
@@ -32,7 +36,7 @@
         </service>
 
         <service id="ibrows_rest.listener.view_exclusion_policy" class="%ibrows_rest.listener.exclusion_policy.class%">
-            <argument>%ibrows_rest.config.listener%</argument>
+            <argument>%ibrows_rest.config.listener.exclusion_policy%</argument>
             <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
         </service>
     </services>
