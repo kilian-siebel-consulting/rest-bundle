@@ -2,6 +2,7 @@
 namespace Ibrows\RestBundle\Transformer;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ibrows\RestBundle\Model\ApiListableInterface;
 
 class ResourceTransformer
 {
@@ -47,6 +48,29 @@ class ResourceTransformer
 
         return $resource;
     }
+    /**
+     * @param ApiListableInterface $object
+     * @return string|null
+     */
+    public function getResourcesName(ApiListableInterface $object)
+    {
+        if($this->getConfigByClass($object)) {
+            return $this->getConfigByClass($object)['plural_name'];
+        }
+        return null;
+    }
+
+    /**
+     * @param ApiListableInterface $object
+     * @return string|null
+     */
+    public function getResourceName(ApiListableInterface $object)
+    {
+        if($this->getConfigByClass($object)) {
+            return $this->getConfigByClass($object)['singular_name'];
+        }
+        return null;
+    }
 
     /**
      * @param string $path
@@ -70,7 +94,21 @@ class ResourceTransformer
     private function getConfigByName($resourceName)
     {
         $matchingConfiguration = array_filter($this->configuration, function($resourceConfiguration) use ($resourceName) {
-            return $resourceConfiguration['name'] === $resourceName;
+            return $resourceConfiguration['plural_name'] === $resourceName;
+        });
+        return array_shift($matchingConfiguration);
+    }
+
+    /**
+     * @param ApiListableInterface $object
+     *
+     * @return array<string, mixed>
+     */
+    private function getConfigByClass(ApiListableInterface $object)
+    {
+        $matchingConfiguration = array_filter($this->configuration, function($resourceConfiguration) use ($object) {
+            return get_class($object) === $resourceConfiguration['class'] ||
+            is_subclass_of($object, $resourceConfiguration['class']);
         });
         return array_shift($matchingConfiguration);
     }
