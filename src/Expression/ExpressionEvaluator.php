@@ -65,26 +65,4 @@ class ExpressionEvaluator
 
         return $newArray;
     }
-
-    /**
-     * Register a new new ExpressionLanguage function.
-     *
-     * @param ExpressionFunctionInterface $function
-     *
-     * @return ExpressionEvaluator
-     */
-    public function registerFunction(ExpressionFunctionInterface $function)
-    {
-        $this->expressionLanguage->register(
-            $function->getName(),
-            $function->getCompiler(),
-            $function->getEvaluator()
-        );
-
-        foreach ($function->getContextVariables() as $name => $value) {
-            $this->setContextVariable($name, $value);
-        }
-
-        return $this;
-    }
 }
