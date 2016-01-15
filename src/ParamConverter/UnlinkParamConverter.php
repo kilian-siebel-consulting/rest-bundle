@@ -3,14 +3,10 @@ namespace Ibrows\RestBundle\ParamConverter;
 
 use Doctrine\Common\Collections\Collection;
 use Ibrows\RestBundle\Request\LinkHeader;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class UnlinkParamConverter extends ManipulationParamConverter
+class UnlinkParamConverter extends AbstractLinkParamConverter
 {
     /**
      * @return string
@@ -21,45 +17,24 @@ class UnlinkParamConverter extends ManipulationParamConverter
     }
 
     /**
-     * Stores the object in the request.
-     *
-     * @param Request        $request       The request
-     * @param ParamConverter $configuration Contains the name, class and options of the object
-     *
-     * @return bool True if the object has been successfully set, else false
+     * {@inheritdoc}
      */
-    public function apply(Request $request, ParamConverter $configuration)
+    protected function applyLink(LinkHeader $link, $object, array $allowedRelations)
     {
-        if(!isset($configuration->getOptions()['relations'])) {
-            throw new InvalidConfigurationException('Option relations has to be specified for ParamConverter "unlink".');
-        }
-        $object = $this->getObject($request, $configuration);
+        $this->checkRelation($link, $allowedRelations);
 
-        $allowedRelations = $configuration->getOptions()['relations'];
+        $entityToLink = $link->getResource();
+        /** @var Collection $collection */
+        $collection = $object->{'get' . ucfirst($link->getRelation())}();
 
-        /** @var LinkHeader $link */
-        foreach($request->attributes->get('links') as $link) {
-            if(!in_array($link->getRelation(), $allowedRelations)) {
-                throw new BadRequestHttpException('Relation type "' . $link->getRelation() . '" is not allowed."');
-            }
-
-            $entityToLink = $link->getResource();
-            /** @var Collection $collection */
-            $collection = $object->{'get' . ucfirst($link->getRelation())}();
-
-            if(!$entityToLink) {
-                throw new NotFoundHttpException;
-            }
-
-            if(!$collection->contains($entityToLink)) {
-                throw new ConflictHttpException('Entity is not linked to ' . $entityToLink->getId());
-            }
-
-            $collection->removeElement($entityToLink);
+        if(!$entityToLink) {
+            throw new NotFoundHttpException;
         }
 
-        $this->validate($object, $configuration, $request);
+        if(!$collection->contains($entityToLink)) {
+            throw new ConflictHttpException('Entity is not linked to ' . $entityToLink->getId());
+        }
 
-        return true;
+        $collection->removeElement($entityToLink);
     }
 }

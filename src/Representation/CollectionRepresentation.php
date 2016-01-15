@@ -7,14 +7,7 @@ use Hateoas\Representation\CollectionRepresentation as BaseCollectionRepresentat
 class CollectionRepresentation extends BaseCollectionRepresentation
 {
     /**
-     * CollectionRepresentation constructor.
-     *
-     * @param                $resources
-     * @param null           $rel
-     * @param null           $xmlElementName
-     * @param Exclusion|null $exclusion
-     * @param Exclusion|null $embedExclusion
-     * @param array          $relations
+     * {@inheritdoc}
      */
     public function __construct(
         $resources,
@@ -24,15 +17,19 @@ class CollectionRepresentation extends BaseCollectionRepresentation
         Exclusion $embedExclusion = null,
         array $relations = []
     ) {
-        if($exclusion === null) {
-            $exclusion = new Exclusion([
-                'hateoas_list',
-            ]);
+        if ($exclusion === null) {
+            $exclusion = new Exclusion(
+                [
+                    'hateoas_list',
+                ]
+            );
         }
-        if($embedExclusion === null) {
-            $embedExclusion = new Exclusion([
-                'hateoas_list',
-            ]);
+        if ($embedExclusion === null) {
+            $embedExclusion = new Exclusion(
+                [
+                    'hateoas_list',
+                ]
+            );
         }
 
         parent::__construct($resources, $rel, $xmlElementName, $exclusion, $embedExclusion, $relations);

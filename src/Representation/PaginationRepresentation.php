@@ -98,13 +98,19 @@ class PaginationRepresentation extends AbstractSegmentedRepresentation
      */
     private $pageParameterName;
 
-    public function __construct( $inline, $route, array $parameters = array(), $page, $limit, $pages, $pageParameterName = null, $limitParameterName = null, $absolute = false, $total = null)
+    /**
+     * {@inheritdoc}
+     * @param int    $page
+     * @param int    $pages
+     * @param string $pageParameterName
+     */
+    public function __construct($inline, $route, array $parameters = array(), $page, $limit, $pages, $pageParameterName = 'page', $limitParameterName = null, $absolute = false, $total = null)
     {
         parent::__construct($inline, $route, $parameters, $limit, $total, $limitParameterName, $absolute);
 
-        $this->page               = $page;
-        $this->pages              = $pages;
-        $this->pageParameterName  = $pageParameterName  ?: 'page';
+        $this->page = $page;
+        $this->pages = $pages;
+        $this->pageParameterName = $pageParameterName;
     }
 
     /**
@@ -116,8 +122,8 @@ class PaginationRepresentation extends AbstractSegmentedRepresentation
     }
 
     /**
-     * @param  null  $page
-     * @param  null  $limit
+     * @param  null $page
+     * @param  null $limit
      * @return array
      */
     public function getParameters($page = null, $limit = null)
