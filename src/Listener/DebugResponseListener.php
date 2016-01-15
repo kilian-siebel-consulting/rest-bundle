@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\EventListener\ProfilerListener;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 
-class DebugViewResponseListener
+class DebugResponseListener
 {
     /**
      * @var boolean
