@@ -10,9 +10,11 @@ namespace Ibrows\RestBundle\Tests\Listener;
 
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Listener\CollectionViewResponseListener;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
+use Ibrows\RestBundle\Representation\OffsetRepresentation;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,6 +51,42 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($event->getControllerResult() instanceof LastIdRepresentation);
     }
+
+    public function testOffsetDecoration(){
+        $listener = $this->getListener();
+
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('limit' => 10, 'offset' => 5));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+
+        $listener->onKernelView($event);
+
+        $this->assertTrue($event->getControllerResult() instanceof OffsetRepresentation);
+    }
+
+    public function testPaginationDecoration(){
+        $listener = $this->getListener();
+
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('limit' => 10, 'page' => 5));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+
+        $listener->onKernelView($event);
+
+        $this->assertTrue($event->getControllerResult() instanceof PaginatedRepresentation);
+    }
+
+
 
     protected function getListener(){
         return new CollectionViewResponseListener();

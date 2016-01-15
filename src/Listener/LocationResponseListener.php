@@ -53,7 +53,7 @@ class LocationResponseListener
         $params = $this->prepareRouteParameters($configuration->getLocation()->getParams(), $objects);
         $url = $this->router->generate($configuration->getLocation()->getRoute(), $params);
 
-        $response->headers->add(array('location' => $url));
+        $response->headers->add(array('Location' => $url));
         $event->setResponse($response);
     }
 
