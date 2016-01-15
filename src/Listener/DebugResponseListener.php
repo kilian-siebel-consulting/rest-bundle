@@ -101,22 +101,29 @@ class DebugResponseListener
     }
 
     /**
-     * @param Profile $profile
      * @param FilterResponseEvent $event
-     * @return array
+     * @return string
      */
-    protected function extractInformation(Profile $profile, FilterResponseEvent $event)
+    protected function getTokenLink(FilterResponseEvent $event)
     {
-        $tokenLink = (
+        return (
             $event->getRequest()->isSecure()
                 ? 'https://'
                 : 'http://'
             ) .
             $event->getRequest()->getHttpHost() .
             $event->getResponse()->headers->get('X-Debug-Token-Link');
+    }
 
+    /**
+     * @param Profile $profile
+     * @param FilterResponseEvent $event
+     * @return array
+     */
+    protected function extractInformation(Profile $profile, FilterResponseEvent $event)
+    {
         $debugInformation = [
-            'tokenUrl' => $tokenLink,
+            'tokenUrl' => $this->getTokenLink($event),
             'ip' => $profile->getIp(),
             'method' => $profile->getMethod(),
             'url' => $profile->getUrl(),
