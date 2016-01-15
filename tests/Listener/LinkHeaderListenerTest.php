@@ -48,7 +48,6 @@ class LinkHeaderListenerTest extends PHPUnit_Framework_TestCase
         $listener->onKernelRequest($event);
 
         $this->assertFalse($event->getRequest()->attributes->has('links'));
-        $this->assertFalse(true);
     }
 
     /**
