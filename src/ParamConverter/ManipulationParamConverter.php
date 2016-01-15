@@ -107,7 +107,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      *
      * @return array
      */
-    protected function getValidatorOptions(array $options)
+    private function getValidatorOptions(array $options)
     {
         $resolver = new OptionsResolver();
         $resolver->setDefaults(array(
@@ -125,7 +125,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      *
      * @return ParamConverterInterface
      */
-    protected function getConverter(ParamConverter $configuration)
+    private function getConverter(ParamConverter $configuration)
     {
         if(!isset($configuration->getOptions()['source'])) {
             throw new InvalidConfigurationException('The option "source" has to be provided for the ParamConverter "' . $this->getName() . '".');

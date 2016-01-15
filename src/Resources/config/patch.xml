@@ -7,7 +7,7 @@
         <parameter key="ibrows_rest.patch.executioner.class">Ibrows\RestBundle\Patch\Executioner</parameter>
     </parameters>
     <services>
-        <service id="ibrows_rest.patch.executioner" class="%ibrows_rest.patch.executioner.class%" public="false">
+        <service id="ibrows_rest.patch.executioner" class="%ibrows_rest.patch.executioner.class%">
             <argument type="service" id="jms_serializer.metadata_driver" />
         </service>
     </services>

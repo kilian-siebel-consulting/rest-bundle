@@ -60,20 +60,20 @@ class CollectionViewResponseListener
      */
     private function decorateOffsetView(ParamFetcherInterface $paramFetcher, $route, array $params, & $response)
     {
-        try {
-            $limit = (int) $paramFetcher->get('limit');
-            $offset = (int) $paramFetcher->get('offset');
-
-            $response = new OffsetRepresentation(
-                $response,
-                $route,
-                $params,
-                $offset,
-                $limit
-            );
-        } catch(InvalidArgumentException $e) {
-            // There is no way to check if a param exists without catching an exception
+        if(!$this->hasParameter($paramFetcher, 'limit') || !$this->hasParameter($paramFetcher, 'offset') ){
+            return;
         }
+
+        $limit = $this->getParameter($paramFetcher, 'limit');
+        $offset = $this->getParameter($paramFetcher, 'offset');
+
+        $response = new OffsetRepresentation(
+            $response,
+            $route,
+            $params,
+            $offset,
+            $limit
+        );
     }
 
     /**
@@ -138,7 +138,8 @@ class CollectionViewResponseListener
             $route,
             $params,
             $page,
-            $limit
+            $limit,
+            null
         );
     }
 
