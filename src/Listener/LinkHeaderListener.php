@@ -3,6 +3,7 @@ namespace Ibrows\RestBundle\Listener;
 
 use Ibrows\RestBundle\Request\LinkHeader;
 use Ibrows\RestBundle\Transformer\ResourceTransformer;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -66,12 +67,10 @@ class LinkHeaderListener
                 if($urlParameters = $this->urlMatcher->match($link->getValue())) {
                     $link->setUrlParameters($urlParameters);
                 }
-            } catch(ResourceNotFoundException $exception) {
-                // Is there a way to ask instead of catching the exception?
-            }
-            //try {
+            } catch(ResourceNotFoundException $exception) {}
+            try {
                 $link->setResource($this->resourceTransformer->getResourceProxy($link->getValue()));
-            //} catch(\Exception $e) {}
+            } catch(InvalidArgumentException $e) {}
 
             $links[] = $link;
         }

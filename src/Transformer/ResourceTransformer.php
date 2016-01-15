@@ -3,6 +3,7 @@ namespace Ibrows\RestBundle\Transformer;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ibrows\RestBundle\Model\ApiListableInterface;
+use InvalidArgumentException;
 
 class ResourceTransformer
 {
@@ -81,7 +82,7 @@ class ResourceTransformer
         $parts = explode('/', $path);
         $parts = array_filter($parts);
         if(count($parts) !== 2) {
-            throw new \InvalidArgumentException('Path has to consist of exactly two parts.');
+            throw new InvalidArgumentException('Path has to consist of exactly two parts.');
         }
         return array_values($parts);
     }
