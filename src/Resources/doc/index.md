@@ -44,6 +44,7 @@ file of your project:
 ## Listeners
  - [Debug Listener](listener/debug_response_listener.md)
  - [Exclusion Policy Listener](listener/exclusion_policy_response_listener.md)
+ - [Location Response Listener](listener/location_response_listener.md)
 
 ## Reference Configuration
 
