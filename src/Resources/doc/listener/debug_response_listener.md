@@ -19,6 +19,7 @@ The default configuration would look like this:
 ```
                 
  - The `enabled` boolean setting allows you to enable or disable the listener globally (default: `false`).
+ - The `key_name` string setting allows you to set the key where the the debug information is placed in the json (default: `_debug`).
  
 ## Data in Debug Object
 
