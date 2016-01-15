@@ -15,6 +15,7 @@ The default configuration would look like this:
         listener:
             debug:
                 enabled: false
+                key_name: _debug
 ```
                 
  - The `enabled` boolean setting allows you to enable or disable the listener globally (default: `false`).

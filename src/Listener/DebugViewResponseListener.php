@@ -18,6 +18,11 @@ class DebugViewResponseListener
     private $enabled;
 
     /**
+     * @var string
+     */
+    private $keyName;
+
+    /**
      * @var ConverterInterface[]
      */
     private $converters;
@@ -35,6 +40,7 @@ class DebugViewResponseListener
         array $configuration
     ) {
         $this->enabled = $configuration['enabled'];
+        $this->keyName = $configuration['key_name'];
         $this->profilerListener = null;
         $this->converters = [];
     }
@@ -67,7 +73,7 @@ class DebugViewResponseListener
         }
 
         $content = json_decode($event->getResponse()->getContent(), true);
-        $content['_debug'] = $this->extractInformation($profile, $event);
+        $content[$this->keyName] = $this->extractInformation($profile, $event);
         $event->getResponse()->setContent(json_encode($content));
     }
 
