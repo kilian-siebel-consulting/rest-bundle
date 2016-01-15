@@ -1,13 +1,11 @@
 <?php
 namespace Ibrows\RestBundle\Listener;
 
-use Doctrine\Bundle\DoctrineBundle\DataCollector\DoctrineDataCollector;
+use Ibrows\RestBundle\Debug\Converter\ConverterInterface;
 use ReflectionProperty;
-use Symfony\Bundle\SecurityBundle\DataCollector\SecurityDataCollector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\DataCollector\MemoryDataCollector;
-use Symfony\Component\HttpKernel\DataCollector\TimeDataCollector;
+use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\EventListener\ProfilerListener;
 use Symfony\Component\HttpKernel\Profiler\Profile;
@@ -20,9 +18,14 @@ class DebugViewResponseListener
     private $enabled;
 
     /**
+     * @var ConverterInterface[]
+     */
+    private $converters;
+
+    /**
      * @var ProfilerListener|null
      */
-    private $profilerListener = null;
+    private $profilerListener;
 
     /**
      * DebugViewResponseListener constructor.
@@ -32,6 +35,8 @@ class DebugViewResponseListener
         array $configuration
     ) {
         $this->enabled = $configuration['enabled'];
+        $this->profilerListener = null;
+        $this->converters = [];
     }
 
     /**
@@ -96,15 +101,6 @@ class DebugViewResponseListener
      */
     protected function extractInformation(Profile $profile, FilterResponseEvent $event)
     {
-        /** @var MemoryDataCollector $memory */
-        $memory = $profile->getCollector('memory');
-        /** @var TimeDataCollector $time */
-        $time = $profile->getCollector('time');
-        /** @var SecurityDataCollector $security */
-        $security = $profile->getCollector('security');
-        /** @var DoctrineDataCollector $db */
-        $db = $profile->getCollector('db');
-
         $tokenLink = (
             $event->getRequest()->isSecure()
                 ? 'https://'
@@ -113,47 +109,43 @@ class DebugViewResponseListener
             $event->getRequest()->getHttpHost() .
             $event->getResponse()->headers->get('X-Debug-Token-Link');
 
-        return [
+        $debugInformation = [
             'tokenUrl' => $tokenLink,
             'ip' => $profile->getIp(),
             'method' => $profile->getMethod(),
             'url' => $profile->getUrl(),
             'time' => date('c', $profile->getTime()),
             'statusCode' => $profile->getStatusCode(),
-            'memory' => $this->formatBytes($memory->getMemory()),
-            'time_elapsed' => round((microtime(true) * 1000) - $time->getStartTime()) . ' ms',
-            'security' => [
-                'enabled' => $security->isEnabled(),
-                'user' => (string) $security->getUser(),
-                'roles' => $security->getRoles(),
-                'authenticated' => $security->isAuthenticated(),
-                'token' => $security->getTokenClass(),
-            ],
-            'db' => [
-                'mapping_errors' => $db->getMappingErrors(),
-                'invalid_entities' => $db->getInvalidEntityCount(),
-                'query_count' => $db->getQueryCount(),
-                'query_time' => round($db->getTime()) . ' ms',
-            ],
         ];
+
+        foreach($profile->getCollectors() as $collector) {
+            $debugInformation = array_merge(
+                $debugInformation,
+                $this->convertCollector($collector)
+            );
+        }
+
+        return $debugInformation;
     }
 
     /**
-     * @param int $bytes
-     * @return string
+     * @param DataCollectorInterface $collector
+     * @return array
      */
-    protected function formatBytes($bytes) {
-        $precision = 2;
+    protected function convertCollector(DataCollectorInterface $collector)
+    {
+        $debugInformation = [];
 
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        foreach($this->converters as $converter) {
+            if(
+                $converter->supports($collector) &&
+                $data = $converter->convert($collector)
+            ) {
+                $debugInformation[$converter->getName()] = $data;
+            }
+        }
 
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-
-        $bytes /= pow(1024, $pow);
-
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return $debugInformation;
     }
 
     /**
@@ -162,5 +154,13 @@ class DebugViewResponseListener
     public function setProfilerListener(ProfilerListener $profilerListener)
     {
         $this->profilerListener = $profilerListener;
+    }
+
+    /**
+     * @param ConverterInterface $converter
+     */
+    public function addConverter(ConverterInterface $converter)
+    {
+        $this->converters[] = $converter;
     }
 }
