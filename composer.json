@@ -27,6 +27,8 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^2.7",
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^4.8",
+        "doctrine/doctrine-bundle": "^1.6",
+        "symfony/security-bundle": "^3.0"
     }
 }
