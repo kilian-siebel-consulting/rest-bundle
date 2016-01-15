@@ -2,6 +2,7 @@
 
 namespace Ibrows\RestBundle;
 
+use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
@@ -15,5 +16,6 @@ class IbrowsRestBundle extends Bundle
         parent::build($container);
         $container->addCompilerPass(new ParamConvertersCompilerPass());
         $container->addCompilerPass(new OverrideRequestConverterCompilerPass());
+        $container->addCompilerPass(new DebugViewResponseListenerCompilerPass());
     }
 }

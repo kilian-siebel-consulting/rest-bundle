@@ -10,7 +10,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require ibrows/rest-bundle
+    $ composer require ibrows/rest-bundle
 ```
 
 This command requires you to have Composer installed globally, as explained
@@ -23,22 +23,22 @@ Then, enable the bundle by adding the following line in the `app/AppKernel.php`
 file of your project:
 
 ```php
-<?php
-// app/AppKernel.php
-
-// ...
-class AppKernel extends Kernel
-{
-    public function registerBundles()
+    <?php
+    // app/AppKernel.php
+    
+    // ...
+    class AppKernel extends Kernel
     {
-        $bundles = array(
+        public function registerBundles()
+        {
+            $bundles = array(
+                // ...
+                new Ibrows\RestBundle\IbrowsRestBundle(),
+            );
+            
             // ...
-            new Ibrows\RestBundle\IbrowsRestBundle(),
-        );
-        
-        // ...
+        }
     }
-}
 ```
 
 ## Listeners
@@ -48,19 +48,20 @@ class AppKernel extends Kernel
 ## Reference Configuration
 
 ```yaml
-# app/config/config*.yml
-
-ibrows_rest:
-    resources:
-        -   name: resourceName
-            class: resourceClass
-    listener:
-        debug:
-            enabled: false
-        exclusion_policy:
-            enabled: false
-            param_name: expolicy
-           
+    # app/config/config*.yml
+    
+    ibrows_rest:
+        resources:
+            -   name: resourceName
+                class: resourceClass
+        listener:
+            debug:
+                enabled: false
+                key_name: _debug
+            exclusion_policy:
+                enabled: false
+                param_name: expolicy
+               
 ```
 
 
@@ -69,8 +70,12 @@ Testing
 
 Setup the test suite using [Composer](http://getcomposer.org/):
 
+```bash
     $ composer install --dev
+```
 
 Run it using PHPUnit:
 
+```bash
     $ phpunit
+```

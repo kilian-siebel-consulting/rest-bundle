@@ -26,7 +26,7 @@ class ExpressionEvaluator
 
     /**
      * @param  string $expression
-     * @param  array  $data
+     * @param  array  $context
      * @return mixed
      */
     public function evaluate($expression, $context)
@@ -64,27 +64,5 @@ class ExpressionEvaluator
         }
 
         return $newArray;
-    }
-
-    /**
-     * Register a new new ExpressionLanguage function.
-     *
-     * @param ExpressionFunctionInterface $function
-     *
-     * @return ExpressionEvaluator
-     */
-    public function registerFunction(ExpressionFunctionInterface $function)
-    {
-        $this->expressionLanguage->register(
-            $function->getName(),
-            $function->getCompiler(),
-            $function->getEvaluator()
-        );
-
-        foreach ($function->getContextVariables() as $name => $value) {
-            $this->setContextVariable($name, $value);
-        }
-
-        return $this;
     }
 }

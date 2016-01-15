@@ -1,8 +1,6 @@
 <?php
-
 namespace Ibrows\RestBundle\DependencyInjection\Compiler;
 
-use Ibrows\RestBundle\ParamConverter\RequestBodyParamConverter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 

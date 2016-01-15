@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
         <parameter key="ibrows_rest.listener.link_header.class">Ibrows\RestBundle\Listener\LinkHeaderListener</parameter>
-        <parameter key="ibrows_rest.listener.view_debug.class">Ibrows\RestBundle\Listener\DebugViewResponseListener</parameter>
+        <parameter key="ibrows_rest.listener.view_debug.class">Ibrows\RestBundle\Listener\DebugResponseListener</parameter>
         <parameter key="ibrows_rest.listener.view_collection.class">Ibrows\RestBundle\Listener\CollectionViewResponseListener</parameter>
         <parameter key="ibrows_rest.listener.view.create.class">Ibrows\RestBundle\Listener\LocationResponseListener</parameter>
         <parameter key="ibrows_rest.listener.exclusion_policy.class">Ibrows\RestBundle\Listener\ExclusionPolicyResponseListener</parameter>
@@ -28,7 +28,7 @@
         <service id="ibrows_rest.listener.view_collection" class="%ibrows_rest.listener.view_collection.class%">
             <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
         </service>
-        
+
         <service id="ibrows_rest.listener.view.create" class="%ibrows_rest.listener.view.create.class%">
             <argument type="service" id="router"/>
             <argument type="service" id="ibrows_rest.utils.expression_evaluator"/>

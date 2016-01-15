@@ -21,7 +21,7 @@ use JMS\Serializer\Annotation\Type;
 class OperationCollection implements Countable, IteratorAggregate, ArrayAccess
 {
     /**
-     * @var Operation[]
+     * @var OperationInterface[]
      * @Type("array<Ibrows\RestBundle\Patch\Operation>")
      * @Expose
      */
@@ -30,7 +30,7 @@ class OperationCollection implements Countable, IteratorAggregate, ArrayAccess
     /**
      * Initializes a new ArrayCollection.
      *
-     * @param Operation[] $operations
+     * @param OperationInterface[] $operations
      */
     public function __construct(array $operations = [])
     {
@@ -143,7 +143,7 @@ class OperationCollection implements Countable, IteratorAggregate, ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        if (!$value instanceof Operation) {
+        if (!$value instanceof OperationInterface) {
             throw new InvalidArgumentException();
         }
 

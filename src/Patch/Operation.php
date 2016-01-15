@@ -5,6 +5,7 @@ use JMS\Serializer\Annotation\Discriminator;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Metadata\PropertyMetadata;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -21,7 +22,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * )
  * @ExclusionPolicy("all")
  */
-abstract class Operation
+abstract class Operation implements OperationInterface
 {
     /**
      * @var string
@@ -32,7 +33,7 @@ abstract class Operation
     private $path;
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPath()
     {
