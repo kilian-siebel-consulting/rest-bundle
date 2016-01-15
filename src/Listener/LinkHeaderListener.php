@@ -6,6 +6,7 @@ use Ibrows\RestBundle\Transformer\ResourceTransformer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 class LinkHeaderListener
@@ -61,8 +62,12 @@ class LinkHeaderListener
         foreach (explode(',', $event->getRequest()->headers->get('link')) as $header) {
             $header = trim($header);
             $link = new LinkHeader($header);
-            if($urlParameters = $this->urlMatcher->match($link->getValue())) {
-                $link->setUrlParameters($urlParameters);
+            try {
+                if($urlParameters = $this->urlMatcher->match($link->getValue())) {
+                    $link->setUrlParameters($urlParameters);
+                }
+            } catch(ResourceNotFoundException $exception) {
+                // Is there a way to ask instead of catching the exception?
             }
             //try {
                 $link->setResource($this->resourceTransformer->getResourceProxy($link->getValue()));
