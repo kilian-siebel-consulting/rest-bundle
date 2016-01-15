@@ -4,9 +4,12 @@ namespace Ibrows\RestBundle\Listener;
 use Doctrine\Common\Collections\Collection;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\AbstractSegmentedRepresentation;
 use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Annotation\View as IbrowsView;
+use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
+use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use Ibrows\RestBundle\Representation\OffsetRepresentation;
 use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use InvalidArgumentException;
@@ -35,21 +38,17 @@ class CollectionViewResponseListener
     {
         $response = $event->getControllerResult();
         $route = $event->getRequest()->attributes->get('_route');
-
         $response = new CollectionRepresentation($response);
-
         /** @var ParamFetcherInterface $paramFetcher */
         $paramFetcher = $event->getRequest()->attributes->get('paramFetcher');
         /** @var View $view */
         $view = $event->getRequest()->attributes->get('_view');
-
         $params = $this->getParams($view, $event->getRequest());
-        $this->addListGroup($view);
 
+        $this->addListGroup($view);
         $this->decorateOffsetView($paramFetcher, $route, $params, $response);
         $this->decorateLastIdView($paramFetcher, $route, $params, $response);
         $this->decoratePaginatedView($paramFetcher, $route, $params, $response);
-
         $event->setControllerResult($response);
     }
 
@@ -83,24 +82,35 @@ class CollectionViewResponseListener
      * @param array                 $params
      * @param mixed                 $response
      */
-    private function decorateLastIdView(ParamFetcherInterface $paramFetcher, $route, array $params, & $response)
+    private function decorateLastIdView(ParamFetcherInterface $paramFetcher, $route, array $params, &$response)
     {
-        try {
-            $limit = (int) $paramFetcher->get('limit');
-            $offset = (int) $paramFetcher->get('lastId');
-
-            $response = new OffsetRepresentation(
-                $response,
-                $route,
-                $params,
-                $offset,
-                $limit,
-                null,
-                'lastId'
-            );
-        } catch(InvalidArgumentException $e) {
-            // There is no way to check if a param exists without catching an exception
+        if(!$this->hasParameter($paramFetcher, 'limit') || !$this->hasParameter($paramFetcher, 'offsetId') ){
+            return;
         }
+
+        $limit = $this->getParameter($paramFetcher, 'limit');
+        $last = $this->getParameter($paramFetcher, 'offsetId');
+        $sortBy = $this->getParameter($paramFetcher, 'sortBy');
+        $sortDir = $this->getParameter($paramFetcher, 'sortDir');
+
+        $resources = $response->getResources();
+        $lastElement = end($resources);
+
+        if(!$lastElement || !$lastElement instanceof ApiListableInterface) {
+            return;
+        }
+
+        $response = new LastIdRepresentation(
+            $response,
+            $route,
+            $params,
+            $lastElement->getId(),
+            'offsetId',
+            $limit,
+            'limit',
+            $sortBy,
+            $sortDir
+        );
     }
 
     /**
@@ -111,23 +121,24 @@ class CollectionViewResponseListener
      */
     private function decoratePaginatedView(ParamFetcherInterface $paramFetcher, $route, array $params, & $response)
     {
-        $limit = $this->fetchParameter($paramFetcher, 'limit');
-        $last = $this->fetchParameter($paramFetcher, 'lastId');
 
-        if(($limit === null || $last === null)){
+        if(!$this->hasParameter($paramFetcher, 'limit') || !$this->hasParameter($paramFetcher, 'page') ){
             return;
         }
 
-        $response = new PaginationRepresentation(
+        $limit = $this->getParameter($paramFetcher, 'limit');
+        $page = $this->getParameter($paramFetcher, 'page');
+
+        if(($limit === null || $page === null)){
+            return;
+        }
+
+        $response = new PaginatedRepresentation(
             $response,
             $route,
             $params,
-            1,
-            $limit,
-            10,
-            'page',
-            'limit',
-            false
+            $page,
+            $limit
         );
     }
 
@@ -183,11 +194,22 @@ class CollectionViewResponseListener
      * @param $key
      * @return null
      */
-    protected function fetchParameter(ParamFetcherInterface $paramFetcher, $key){
+    protected function getParameter(ParamFetcherInterface $paramFetcher, $key){
         $params = $paramFetcher->all();
         if(isset($params[$key])){
             return $params[$key];
         }
         return null;
+    }
+
+    /**
+     * @param ParamFetcherInterface $paramFetcher
+     * @param $key
+     * @return null
+     */
+    protected function hasParameter(ParamFetcherInterface $paramFetcher, $key){
+        $params = $paramFetcher->all();
+
+        return array_key_exists($key, $params);
     }
 }

@@ -11,7 +11,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
+        <testsuite name="restbundle">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
