@@ -7,6 +7,8 @@ namespace Ibrows\RestBundle\Annotation;
  *
  * @Annotation
  * @Target("ANNOTATION")
+ *
+ * @codeCoverageIgnore
  */
 class Route
 {
