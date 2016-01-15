@@ -13,15 +13,15 @@ The service of the Patch Execution class is `ibrows_rest.patch.executioner`.
     use Ibrows\RestBundle\Patch\OperationInterface;
 
     $executioner = $container->get('ibrows_rest.patch.executioner');
-    $operations = new \Ibrows\RestBundle\Patch\OperationCollection([
+    $operations = [
         new SubClassOfOperationInterface(),
-    ]);
+    ];
         
     $executioner->execute($object, $executioner);
 ```
 
 ## JMS Serializer
-To get an OperationCollection, simply decode the PATCH request body using JMS.
+To get an Operation Collection, simply decode the PATCH request body using JMS.
 
 To add new PatchTypes, the discriminator of `Ibrows\RestBundle\Patch\Operation` has to be overridden.
 

@@ -3,7 +3,6 @@ namespace Ibrows\RestBundle\Tests\Patch;
 
 use Ibrows\RestBundle\Patch\Executioner;
 use Ibrows\RestBundle\Patch\Operation;
-use Ibrows\RestBundle\Patch\OperationCollection;
 use Ibrows\RestBundle\Patch\OperationInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
@@ -45,9 +44,9 @@ class ExecutionerListener extends PHPUnit_Framework_TestCase
         ;
 
         $executioner = new Executioner($driver);
-        $executioner->execute($object, new OperationCollection([
+        $executioner->execute($object, [
             $operation,
-        ]));
+        ]);
     }
 
     /**
@@ -79,9 +78,9 @@ class ExecutionerListener extends PHPUnit_Framework_TestCase
         ;
 
         $executioner = new Executioner($driver);
-        $executioner->execute($object, new OperationCollection([
+        $executioner->execute($object, [
             $operation,
-        ]));
+        ]);
     }
 }
 

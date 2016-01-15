@@ -125,7 +125,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      *
      * @return ParamConverterInterface
      */
-    private function getConverter(ParamConverter $configuration)
+    protected function getConverter(ParamConverter $configuration)
     {
         if(!isset($configuration->getOptions()['source'])) {
             throw new InvalidConfigurationException('The option "source" has to be provided for the ParamConverter "' . $this->getName() . '".');
