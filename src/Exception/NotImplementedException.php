@@ -1,5 +1,5 @@
 <?php
-namespace Exception;
+namespace Ibrows\RestBundle\Exception;
 
 use Exception;
 

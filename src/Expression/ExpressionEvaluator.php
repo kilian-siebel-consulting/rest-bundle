@@ -26,7 +26,7 @@ class ExpressionEvaluator
 
     /**
      * @param  string $expression
-     * @param  array  $data
+     * @param  array  $context
      * @return mixed
      */
     public function evaluate($expression, $context)

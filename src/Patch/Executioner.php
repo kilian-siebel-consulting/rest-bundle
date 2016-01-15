@@ -1,11 +1,12 @@
 <?php
 namespace Ibrows\RestBundle\Patch;
 
-use Exception\NotImplementedException;
+use Ibrows\RestBundle\Exception\NotImplementedException;
 use Ibrows\RestBundle\Patch\Operation as Operation;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
+use ReflectionClass;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class Executioner
@@ -25,36 +26,33 @@ class Executioner
         $this->driver = $driver;
     }
 
+    /**
+     * @param object              $object
+     * @param OperationCollection $patch
+     * @throws NotImplementedException
+     */
     public function execute($object, OperationCollection $patch)
     {
-        $metadata = $this->getMetadata($object);
         foreach($patch as $operation) {
-            $property = $this->getProperty($metadata, $operation->getPath());
+            $property = $this->getProperty($object, $operation->getPath());
             if(!$property) {
                 throw new BadRequestHttpException('Property ' . $operation->getPath() . ' does not exist or is not writable.');
             }
 
-            switch(get_class($operation)) {
-                case Operation\Change::class:
-                    $this->setProperty($property, $object, $operation->getValue());
-                    break;
-                case Operation\Clear::class:
-                    $this->setProperty($property, $object, null);
-                    break;
-                default:
-                    throw new NotImplementedException('Operation ' . get_class($operation) . ' is not implemented.');
-            }
+            $operation->apply($object, $property);
         }
     }
 
     /**
-     * @param ClassMetadata $metadata
-     * @param               $propertyPath
+     * @param object $object
+     * @param string $propertyPath
      *
      * @return PropertyMetadata
      */
-    public function getProperty(ClassMetadata $metadata, $propertyPath)
+    private function getProperty($object, $propertyPath)
     {
+        $metadata = $this->getMetadata($object);
+
         $propertyPath = substr($propertyPath, 1);
 
         $properties = array_filter(
@@ -75,18 +73,8 @@ class Executioner
      */
     private function getMetadata($object)
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
 
         return $this->driver->loadMetadataForClass($class);
-    }
-
-    /**
-     * @param PropertyMetadata $property
-     * @param mixed            $object
-     * @param mixed            $value
-     */
-    private function setProperty(PropertyMetadata $property, $object, $value)
-    {
-        $property->setValue($object, $value);
     }
 }

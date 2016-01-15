@@ -5,6 +5,7 @@ use Ibrows\RestBundle\Patch\Operation;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Metadata\PropertyMetadata;
 
 /**
  * Class Change
@@ -22,10 +23,10 @@ class Change extends Operation
     private $value;
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function getValue()
+    public function apply($object, PropertyMetadata $property)
     {
-        return $this->value;
+        $property->setValue($object, $this->value);
     }
 }
