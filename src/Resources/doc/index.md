@@ -44,7 +44,8 @@ file of your project:
 ## Listeners
 - Debug Listener - [Read Documentation](listener/debug_response_listener.md)
 - Exclusion Policy Listener - [Read Documentation](listener/exclusion_policy_response_listener.md)
- 
+- Location Response Listener - [Read Documentation](listener/location_response_listener.md)
+
 ## Param Converters
 - `abstract ManipulateParamConverter` - [Read Documentation](param_converter/manipulate_param_converter.md)
 - `PatchParamConverter` - [Read Documentation](param_converter/patch_param_converter.md)
