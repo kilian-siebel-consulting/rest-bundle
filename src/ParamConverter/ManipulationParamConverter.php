@@ -30,15 +30,13 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      * ManipulationParamConverter constructor.
      *
      * @param array              $configuration
-     * @param ValidatorInterface $validator
      */
     public function __construct(
-        array $configuration,
-        ValidatorInterface $validator = null
+        array $configuration
     ) {
         $this->paramConverters = [];
         $this->configuration = $configuration;
-        $this->validator = $validator;
+        $this->validator = null;
     }
 
     /**
@@ -77,6 +75,10 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      */
     protected function validate($object, ParamConverter $configuration, Request $request)
     {
+        if($this->validator === null) {
+            return;
+        }
+
         $validatorOptions = $this->getValidatorOptions($configuration->getOptions());
         $errors = $this->validator->validate($object, null, $validatorOptions['groups']);
 
@@ -140,6 +142,14 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
         }
 
         return $this->paramConverters[$name];
+    }
+
+    /**
+     * @param ValidatorInterface $validator
+     */
+    public function setValidator(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
     }
 
     /**
