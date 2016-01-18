@@ -71,6 +71,7 @@ The patching system is used to apply patches to an object in the `PatchParamConv
             -   singular_name: resourceName
                 plural_name: resourcesName
                 class: resourceClass
+                converter: converterName
         listener:
             debug:
                 enabled: false

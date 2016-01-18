@@ -6,6 +6,7 @@ use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerComp
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
+use Ibrows\RestBundle\DependencyInjection\Compiler\ResourceTransformerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -20,5 +21,6 @@ class IbrowsRestBundle extends Bundle
         $container->addCompilerPass(new ParamConvertersCompilerPass());
         $container->addCompilerPass(new OverrideRequestConverterCompilerPass());
         $container->addCompilerPass(new DebugViewResponseListenerCompilerPass());
+        $container->addCompilerPass(new ResourceTransformerCompilerPass());
     }
 }
