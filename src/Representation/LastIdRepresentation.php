@@ -127,21 +127,4 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         ];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLastId()
-    {
-        return $this->lastId;
-    }
-
-    /**
-     * @param mixed $lastId
-     */
-    public function setLastId($lastId)
-    {
-        $this->lastId = $lastId;
-    }
-
-
 }

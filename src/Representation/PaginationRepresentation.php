@@ -10,147 +10,115 @@ namespace Ibrows\RestBundle\Representation;
 
 
 use Hateoas\Configuration\Annotation as Hateoas;
+use Hateoas\Configuration\Exclusion;
+use Hateoas\Configuration\Relation;
+use Hateoas\Representation\PaginatedRepresentation;
+use Hateoas\Configuration\Route;
 use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Representation\AbstractSegmentedRepresentation;
+use Symfony\Component\Validator\Mapping\ClassMetadataInterface;
 
 /**
  * Class PaginationRepresentation
  * @package RestBundle\Representation
  *
- * @Serializer\ExclusionPolicy("all")
- * @Serializer\XmlRoot("collection")
- * @Serializer\AccessorOrder("custom", custom = {"page", "limit", "pages", "total"})
- *
- * @Hateoas\Relation(
- *      "lastId",
- *      href = @Hateoas\Route(
- *          "",
- *          parameters = "expr(object.getParameters(1))",
- *          absolute = "expr(object.isAbsolute())"
- *      )
- * )
- *
- * @Hateoas\Relation(
- *      "first",
- *      href = @Hateoas\Route(
- *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(1))",
- *          absolute = "expr(object.isAbsolute())"
- *      )
- * )
- * @Hateoas\Relation(
- *      "last",
- *      href = @Hateoas\Route(
- *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(object.getPages()))",
- *          absolute = "expr(object.isAbsolute())"
- *      ),
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(object.getPages() === null)"
- *      )
- * )
- * @Hateoas\Relation(
- *      "next",
- *      href = @Hateoas\Route(
- *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(object.getPage() + 1))",
- *          absolute = "expr(object.isAbsolute())"
- *      ),
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(object.getPages() !== null && (object.getPage() + 1) > object.getPages())"
- *      )
- * )
- * @Hateoas\Relation(
- *      "previous",
- *      href = @Hateoas\Route(
- *          "expr(object.getRoute())",
- *          parameters = "expr(object.getParameters(object.getPage() - 1))",
- *          absolute = "expr(object.isAbsolute())"
- *      ),
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr((object.getPage() - 1) < 1)"
- *      )
- * )
+ * @Hateoas\RelationProvider("getRelations")
  */
-class PaginationRepresentation extends AbstractSegmentedRepresentation
+class PaginationRepresentation extends PaginatedRepresentation
 {
-
     /**
-     * @var int
-     *
-     * @Serializer\Expose
-     * @Serializer\Type("integer")
-     * @Serializer\XmlAttribute
+     * @var Exclusion
      */
-    private $page;
+    private $exclusion;
 
-    /**
-     * @var int
-     *
-     * @Serializer\Expose
-     * @Serializer\Type("integer")
-     * @Serializer\XmlAttribute
-     */
-    private $pages;
-
-    /**
-     * @var string
-     */
-    private $pageParameterName;
-
-    /**
-     * {@inheritdoc}
-     * @param int    $page
-     * @param int    $pages
-     * @param string $pageParameterName
-     */
-    public function __construct($inline, $route, array $parameters = array(), $page, $limit, $pages, $pageParameterName = 'page', $limitParameterName = null, $absolute = false, $total = null)
+    public function __construct($inline, $route, array $parameters = array(), $page, $limit, $pages, $pageParameterName = null, $limitParameterName = null, $absolute = false,$total = null, Exclusion $exclusion = null)
     {
-        parent::__construct($inline, $route, $parameters, $limit, $total, $limitParameterName, $absolute);
+        if ($exclusion === null) {
+            $exclusion = new Exclusion(
+                [
+                    'hateoas_list'
+                ]
+            );
+        }
 
-        $this->page = $page;
-        $this->pages = $pages;
-        $this->pageParameterName = $pageParameterName;
+        parent::__construct($inline, $route, $parameters, $page, $limit, $pages, $pageParameterName, $limitParameterName, $absolute, $total);
+
+        $this->exclusion = $exclusion;
     }
 
-    /**
-     * @return int
-     */
-    public function getPage()
-    {
-        return $this->page;
-    }
 
     /**
-     * @param  null $page
-     * @param  null $limit
-     * @return array
+     * @param OffsetRepresentation   $object
+     * @param ClassMetadataInterface $classMetadata
+     * @return Relation[]
+     * @codeCoverageIgnore
      */
-    public function getParameters($page = null, $limit = null)
+    public function getRelations($object, ClassMetadataInterface $classMetadata)
     {
-        $parameters = parent::getParameters($limit);
-
-        unset($parameters[$this->pageParameterName]);
-        $parameters[$this->pageParameterName] = null === $page ? $this->getPage() : $page;
-
-        $this->moveParameterToEnd($parameters, $this->getLimitParameterName());
-
-        return $parameters;
+        return [
+            new Relation(
+                'first',
+                new Route(
+                    'expr(object.getRoute())',
+                    'expr(object.getParameters(0))',
+                    'expr(object.isAbsolute())'
+                ),
+                null,
+                [],
+                $this->exclusion
+            ),
+            new Relation(
+                'last',
+                new Route(
+                    'expr(object.getRoute())',
+                    'expr(object.getParameters(object.getPages()))',
+                    'expr(object.isAbsolute())'
+                ),
+                null,
+                [],
+                new Exclusion(
+                    $this->exclusion->getGroups(),
+                    $this->exclusion->getSinceVersion(),
+                    $this->exclusion->getUntilVersion(),
+                    $this->exclusion->getMaxDepth(),
+                    'expr(object.getPages() === null)'
+                )
+            ),
+            new Relation(
+                'next',
+                new Route(
+                    'expr(object.getRoute())',
+                    'xpr(object.getParameters(object.getPage() + 1))',
+                    'expr(object.isAbsolute())'
+                ),
+                null,
+                [],
+                new Exclusion(
+                    $this->exclusion->getGroups(),
+                    $this->exclusion->getSinceVersion(),
+                    $this->exclusion->getUntilVersion(),
+                    $this->exclusion->getMaxDepth(),
+                    'expr(object.getPages() !== null && (object.getPage() + 1) > object.getPages())'
+                )
+            ),
+            new Relation(
+                'previous',
+                new Route(
+                    'expr(object.getRoute())',
+                    'xpr(object.getParameters(object.getPage() - 1))',
+                    'expr(object.isAbsolute())'
+                ),
+                null,
+                [],
+                new Exclusion(
+                    $this->exclusion->getGroups(),
+                    $this->exclusion->getSinceVersion(),
+                    $this->exclusion->getUntilVersion(),
+                    $this->exclusion->getMaxDepth(),
+                    'expr((object.getPage() - 1) < 1)'
+                )
+            ),
+        ];
     }
 
-    /**
-     * @return int
-     */
-    public function getPages()
-    {
-        return $this->pages;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPageParameterName()
-    {
-        return $this->pageParameterName;
-    }
 }

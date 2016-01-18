@@ -1,7 +1,6 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
-use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use InvalidArgumentException;
@@ -25,10 +24,6 @@ class LastIdDecorator implements DecoratorInterface
         try {
             $resources = $collection->getResources();
             $lastElement = end($resources);
-
-            if (!$lastElement || !$lastElement instanceof ApiListableInterface) {
-                return $collection;
-            }
 
             return new LastIdRepresentation(
                 $collection,

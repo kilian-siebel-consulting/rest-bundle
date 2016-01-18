@@ -1,8 +1,8 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
-use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
+use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -29,7 +29,7 @@ class PaginatedDecorator implements DecoratorInterface
                 return $collection;
             }
 
-            return new PaginatedRepresentation(
+            return new PaginationRepresentation(
                 $collection,
                 $params->get('_route'),
                 $params->all(),
