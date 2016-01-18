@@ -131,7 +131,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($response, $event->getResponse());
         $this->assertEquals('/test/show', $response->headers->get('Location'));
     }
-    
+
     private function getEvent(Request $request, Response $response = null)
     {
         if (null === $response) {

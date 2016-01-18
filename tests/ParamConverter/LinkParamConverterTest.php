@@ -222,8 +222,10 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($converter->supports($configuration));
     }
-    
+
     /**
+     * @param      $car
+     * @param bool $failingValidator
      * @return LinkParamConverter
      */
     public function getConverter($car, $failingValidator = false)
@@ -243,7 +245,8 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
             ->willReturn($constraintViolationsListInterface);
         
         
-        $converter =  new LinkParamConverter([], $validator);
+        $converter =  new LinkParamConverter([]);
+        $converter->setValidator($validator);
         
         
         $carConverter = $this->getMockBuilder(ParamConverterInterface::class)
