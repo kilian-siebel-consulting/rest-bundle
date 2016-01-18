@@ -74,6 +74,18 @@ class ResourceTransformer
     }
 
     /**
+     * @param ApiListableInterface $object
+     * @return string|null
+     */
+    public function getResourcePath(ApiListableInterface $object)
+    {
+        if($this->getConfigByClass($object)) {
+            return '/' . $this->getConfigByClass($object)['plural_name'] . '/' . $object->getId();
+        }
+        return null;
+    }
+
+    /**
      * @param string $path
      * @return array
      */
