@@ -5,8 +5,13 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Jonatan Männchen",
-            "email": "jonatan@maennchen.ch"
+            "name": "Jonatan Männchen"
+        },
+        {
+          "name": "Stefan Vetsch"
+        },
+        {
+          "name": "Fabio Gianini"
         }
     ],
     "autoload": {
@@ -24,6 +29,9 @@
         "friendsofsymfony/rest-bundle": "^1.7",
         "sensio/framework-extra-bundle": "^3.0",
         "willdurand/hateoas-bundle": "^1.1"
+    },
+    "suggest":{
+      "nelmio/api-doc-bundle": "^2.11"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^2.7",
