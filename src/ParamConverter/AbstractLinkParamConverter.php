@@ -21,6 +21,7 @@ abstract class AbstractLinkParamConverter extends ManipulationParamConverter
         $allowedRelations = $configuration->getOptions()['relations'];
 
         $links = $request->attributes->get('links');
+
         array_walk($links, function(LinkHeader $link) use($allowedRelations, $object) {
             $this->applyLink($link, $object, $allowedRelations);
         });

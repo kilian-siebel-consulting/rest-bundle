@@ -1,74 +1,88 @@
 <?php
 namespace Ibrows\RestBundle\Transformer;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Ibrows\RestBundle\Model\ApiListableInterface;
+use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use InvalidArgumentException;
 
-class ResourceTransformer
+class ResourceTransformer implements TransformerInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
     /**
      * @var array<array<string, mixed>>
      */
     private $configuration;
 
     /**
+     * @var ConverterInterface[]
+     */
+    private $converters;
+
+    /**
      * ResourceTransformer constructor.
      *
-     * @param EntityManagerInterface $entityManager
      * @param array                  $configuration
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
         array $configuration
     ) {
-        $this->entityManager = $entityManager;
         $this->configuration = $configuration;
+        $this->converters = [];
     }
 
     /**
-     * @param $path
-     *
-     * @return null|object
+     * {@inheritdoc}
      */
     public function getResourceProxy($path)
     {
         list($resourceName, $id) = $this->parse($path);
 
-        $resource = null;
+        $resourceConfig = $this->getConfigByName($resourceName);
+        if($resourceConfig) {
+            return $this->converters[$resourceConfig['converter']]->getResourceProxy(
+                $resourceConfig['class'],
+                $id
+            );
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getResource($path)
+    {
+        list($resourceName, $id) = $this->parse($path);
 
         $resourceConfig = $this->getConfigByName($resourceName);
         if($resourceConfig) {
-            $resource = $this->entityManager->getReference($resourceConfig['class'], $id);
+            return $this->converters[$resourceConfig['converter']]->getResource(
+                $resourceConfig['class'],
+                $id
+            );
         }
 
-        return $resource;
+        return null;
     }
+
     /**
-     * @param ApiListableInterface $object
-     * @return string|null
+     * {@inheritdoc}
      */
-    public function getResourcesName(ApiListableInterface $object)
+    public function getResourceConfig(ApiListableInterface $object)
     {
         if($this->getConfigByClass($object)) {
-            return $this->getConfigByClass($object)['plural_name'];
+            return $this->getConfigByClass($object);
         }
         return null;
     }
 
     /**
-     * @param ApiListableInterface $object
-     * @return string|null
+     * {@inheritdoc}
      */
-    public function getResourceName(ApiListableInterface $object)
+    public function getResourcePath(ApiListableInterface $object)
     {
         if($this->getConfigByClass($object)) {
-            return $this->getConfigByClass($object)['singular_name'];
+            return '/' . $this->getConfigByClass($object)['plural_name'] . '/' . $object->getId();
         }
         return null;
     }
@@ -112,5 +126,14 @@ class ResourceTransformer
             is_subclass_of($object, $resourceConfiguration['class']);
         });
         return array_shift($matchingConfiguration);
+    }
+
+    /**
+     * @param string             $name
+     * @param ConverterInterface $converter
+     */
+    public function addConverter($name, ConverterInterface $converter)
+    {
+        $this->converters[$name] = $converter;
     }
 }

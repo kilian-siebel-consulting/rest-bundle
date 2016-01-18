@@ -3,7 +3,9 @@ namespace Ibrows\RestBundle\Tests\Transformer;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Ibrows\RestBundle\Model\ApiListableInterface;
+use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use Ibrows\RestBundle\Transformer\ResourceTransformer;
+use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
@@ -11,31 +13,80 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 {
     public function testGetResourceProxy()
     {
-        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
-        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
-
-        $entityManager
-            ->expects($this->once())
-            ->method('getReference')
-            ->with(CategoryEntity::class, 1)
-            ->willReturn('foo');
-
         $config = [
             [
                 'singular_name' => 'car',
                 'plural_name' => 'cars',
+                'converter' => 'test',
                 'class' => CarEntity::class
             ],
             [
                 'singular_name' => 'category',
                 'plural_name' => 'categories',
+                'converter' => 'test',
                 'class' => CategoryEntity::class
             ]
         ];
 
-        $transformer = new ResourceTransformer($entityManager, $config);
+        $transformer = new ResourceTransformer($config);
+
+        /** @var ConverterInterface|PHPUnit_Framework_MockObject_MockObject $converter */
+        $converter = $this->getMockForAbstractClass(ConverterInterface::class);
+        $converter
+            ->expects($this->once())
+            ->method('getResourceProxy')
+            ->with(CategoryEntity::class, 1)
+            ->willReturn('foo');
+
+        $transformer->addConverter('test', $converter);
 
         $this->assertEquals('foo', $transformer->getResourceProxy('/categories/1'));
+    }
+
+    public function testInvalidGetResourceProxy()
+    {
+        $transformer = new ResourceTransformer([]);
+
+        $this->assertNull($transformer->getResourceProxy('/categories/1'));
+    }
+
+    public function testInvalidGetResource()
+    {
+        $transformer = new ResourceTransformer([]);
+
+        $this->assertNull($transformer->getResource('/categories/1'));
+    }
+
+    public function testGetResource()
+    {
+        $config = [
+            [
+                'singular_name' => 'car',
+                'plural_name' => 'cars',
+                'converter' => 'test',
+                'class' => CarEntity::class
+            ],
+            [
+                'singular_name' => 'category',
+                'plural_name' => 'categories',
+                'converter' => 'test',
+                'class' => CategoryEntity::class
+            ]
+        ];
+
+        $transformer = new ResourceTransformer($config);
+
+        /** @var ConverterInterface|PHPUnit_Framework_MockObject_MockObject $converter */
+        $converter = $this->getMockForAbstractClass(ConverterInterface::class);
+        $converter
+            ->expects($this->once())
+            ->method('getResource')
+            ->with(CategoryEntity::class, 1)
+            ->willReturn('foo');
+
+        $transformer->addConverter('test', $converter);
+
+        $this->assertEquals('foo', $transformer->getResource('/categories/1'));
     }
 
     /**
@@ -43,29 +94,20 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
      */
     public function testInvalidPath()
     {
-        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
-        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
-
-        $transformer = new ResourceTransformer($entityManager, []);
+        $transformer = new ResourceTransformer([]);
 
         $transformer->getResourceProxy('/some/invalid/path');
     }
 
-    public function testInvalidGetResourcesName()
+    public function testInvalidGetResourceConfig()
     {
-        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
-        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
+        $transformer = new ResourceTransformer([]);
 
-        $transformer = new ResourceTransformer($entityManager, []);
-
-        $this->assertNull($transformer->getResourcesName(new CategoryEntity()));
+        $this->assertNull($transformer->getResourceConfig(new CategoryEntity()));
     }
 
-    public function testGetResourcesName()
+    public function testGetResourceConfig()
     {
-        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
-        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
-
         $config = [
             [
                 'singular_name' => 'car',
@@ -79,26 +121,27 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $transformer = new ResourceTransformer($entityManager, $config);
+        $transformer = new ResourceTransformer($config);
 
-        $this->assertEquals('categories', $transformer->getResourcesName(new CategoryEntity()));
+        $this->assertEquals(
+            [
+                'singular_name' => 'category',
+                'plural_name' => 'categories',
+                'class' => CategoryEntity::class
+            ],
+            $transformer->getResourceConfig(new CategoryEntity())
+        );
     }
 
-    public function testInvalidGetResourceName()
+    public function testInvalidGetResourcePath()
     {
-        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
-        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
+        $transformer = new ResourceTransformer([]);
 
-        $transformer = new ResourceTransformer($entityManager, []);
-
-        $this->assertNull($transformer->getResourceName(new CategoryEntity()));
+        $this->assertNull($transformer->getResourcePath(new CategoryEntity()));
     }
 
-    public function testGetResourceName()
+    public function testGetResourcePath()
     {
-        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
-        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
-
         $config = [
             [
                 'singular_name' => 'car',
@@ -112,9 +155,9 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
             ]
         ];
 
-        $transformer = new ResourceTransformer($entityManager, $config);
+        $transformer = new ResourceTransformer($config);
 
-        $this->assertEquals('category', $transformer->getResourceName(new CategoryEntity()));
+        $this->assertEquals('/categories/42', $transformer->getResourcePath(new CategoryEntity()));
     }
 }
 
