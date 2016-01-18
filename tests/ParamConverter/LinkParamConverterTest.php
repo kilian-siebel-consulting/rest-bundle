@@ -14,10 +14,8 @@ use Ibrows\RestBundle\ParamConverter\LinkParamConverter;
 use Ibrows\RestBundle\Request\LinkHeader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
@@ -167,12 +165,83 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \Ibrows\RestBundle\Exception\BadRequestConstraintException
+     */
+    public function testWithFailingValidator()
+    {
+        $car = new Car(1);
+
+        $request = $this->createLinkRequest([
+            $this->createLinkHeader('<wheel1>; rel="wheels";', new Wheel(1)),
+        ]);
+
+        $configuration = $this->getConfiguration(['wheels', 'doors']);
+
+        $converter = $this->getConverter($car, true);
+        $converter->apply($request, $configuration);
+    }
+    
+    public function testValidSupports()
+    {
+        $converter = $this->getConverter(null);
+
+        $configuration = $this
+            ->getMockBuilder(ParamConverter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $configuration->method('getOptions')->willReturn(['source' => 'car']);
+
+        $this->assertTrue($converter->supports($configuration));
+    }
+    
+    public function testWithMissingSource()
+    {
+        $converter = $this->getConverter(null);
+
+        $configuration = $this
+            ->getMockBuilder(ParamConverter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $configuration->method('getOptions')->willReturn([]);
+        
+        $this->assertFalse($converter->supports($configuration));
+    }
+    
+    public function testWithMissingParamConverter()
+    {
+        $converter = $this->getConverter(null);
+
+        $configuration = $this
+            ->getMockBuilder(ParamConverter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $configuration->method('getOptions')->willReturn(['source' => 'bla']);
+
+        $this->assertFalse($converter->supports($configuration));
+    }
+    
+    /**
      * @return LinkParamConverter
      */
-    public function getConverter($car)
+    public function getConverter($car, $failingValidator = false)
     {
-        $validator = $this->getMockBuilder(ValidatorInterface::class)
-            ->getMock();
+        $validator = $this->getMockForAbstractClass(ValidatorInterface::class);
+        
+        $constraintViolationsListInterface = $this->getMockForAbstractClass(ConstraintViolationListInterface::class);
+
+        $constraintViolationsListInterface
+            ->method('count')
+            ->willReturn((int)$failingValidator);
+
+
+        $validator
+            ->expects($this->any())
+            ->method('validate')
+            ->willReturn($constraintViolationsListInterface);
+        
         
         $converter =  new LinkParamConverter([], $validator);
         
