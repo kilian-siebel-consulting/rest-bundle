@@ -53,7 +53,13 @@ file of your project:
 - `UnlinkParamConverter` - [Read Documentation](param_converter/unlink_param_converter.md)
  
 ## Patch
+
+The patching system is used to apply patches to an object in the `PatchParamConverter`. It can also be used standalone.
+
 [Read Documentation](patch.md)
+ 
+## Transformer
+[Read Documentation](transformer.md)
 
 ## Reference Configuration
 
