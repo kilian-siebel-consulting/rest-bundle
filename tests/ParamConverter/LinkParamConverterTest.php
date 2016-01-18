@@ -8,8 +8,8 @@
 
 namespace Ibrows\RestBundle\Tests\ParamConverter;
 
+require_once __DIR__ . '/LinkParamTestClasses.php';
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Ibrows\RestBundle\ParamConverter\LinkParamConverter;
 use Ibrows\RestBundle\Request\LinkHeader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -266,104 +266,4 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
         
         return $converter;
     }
-}
-class Car
-{
-    /**
-     * @var int
-     */
-    private $id;
-    
-    /**
-     * @var array
-     */
-    private $wheels;
-
-    /**
-     * @var array
-     */
-    private $doors;
-
-    
-    public function __construct($id)
-    {
-        $this->id = $id;
-        $this->wheels = new ArrayCollection();
-        $this->doors = new ArrayCollection();
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-    
-    /**
-     * @return array
-     */
-    public function getWheels()
-    {
-        return $this->wheels;
-    }
-
-    /**
-     * @param array $wheels
-     */
-    public function setWheels(array $wheels = null)
-    {
-        $this->wheels = $wheels;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDoors()
-    {
-        return $this->doors;
-    }
-
-    /**
-     * @param array $doors
-     */
-    public function setDoors(array $doors = null)
-    {
-        $this->doors = $doors;
-    }
-}
-
-class Wheel
-{
-    private $id;
-    
-    public function __construct($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-}
-
-class Door
-{
-    private $id;
-    
-    public function __construct($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-    
-    
 }
