@@ -59,12 +59,13 @@ class LocationResponseListener
 
     /**
      * @param $params
+     * @param $context
      * @return mixed
      */
-    protected function prepareRouteParameters($params, $data){
+    protected function prepareRouteParameters(array $params, array $context){
         $newParams = $params;
         foreach($params as $key => $val){
-            $newParams[$key] = $this->evaluator->evaluate($val, $data);
+            $newParams[$key] = $this->evaluator->evaluate($val, $context);
 
         }
 

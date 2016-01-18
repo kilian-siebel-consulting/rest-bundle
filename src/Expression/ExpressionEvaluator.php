@@ -1,7 +1,6 @@
 <?php
 namespace Ibrows\RestBundle\Expression;
 
-use Hateoas\Expression\ExpressionFunctionInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class ExpressionEvaluator

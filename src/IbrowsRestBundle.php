@@ -4,7 +4,6 @@ namespace Ibrows\RestBundle;
 
 use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
-use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ResourceTransformerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
