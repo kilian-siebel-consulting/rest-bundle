@@ -62,7 +62,8 @@ file of your project:
     
     ibrows_rest:
         resources:
-            -   name: resourceName
+            -   singular_name: resourceName
+                plural_name: resourcesName
                 class: resourceClass
         listener:
             debug:
