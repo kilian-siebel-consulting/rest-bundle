@@ -27,20 +27,20 @@ class Executioner
     }
 
     /**
-     * @param object              $object
-     * @param OperationCollection $patch
+     * @param object               $object
+     * @param OperationInterface[] $patch
      * @throws NotImplementedException
      */
-    public function execute($object, OperationCollection $patch)
+    public function execute($object, array $patch)
     {
-        foreach($patch as $operation) {
+        array_walk($patch, function(OperationInterface $operation) use ($object) {
             $property = $this->getProperty($object, $operation->getPath());
             if(!$property) {
                 throw new BadRequestHttpException('Property ' . $operation->getPath() . ' does not exist or is not writable.');
             }
 
             $operation->apply($object, $property);
-        }
+        });
     }
 
     /**

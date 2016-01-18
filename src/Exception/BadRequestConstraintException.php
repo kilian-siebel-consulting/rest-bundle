@@ -6,6 +6,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class BadRequestConstraintException extends BadRequestHttpException
 {
     /**

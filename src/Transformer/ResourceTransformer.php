@@ -2,6 +2,8 @@
 namespace Ibrows\RestBundle\Transformer;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ibrows\RestBundle\Model\ApiListableInterface;
+use InvalidArgumentException;
 
 class ResourceTransformer
 {
@@ -47,6 +49,29 @@ class ResourceTransformer
 
         return $resource;
     }
+    /**
+     * @param ApiListableInterface $object
+     * @return string|null
+     */
+    public function getResourcesName(ApiListableInterface $object)
+    {
+        if($this->getConfigByClass($object)) {
+            return $this->getConfigByClass($object)['plural_name'];
+        }
+        return null;
+    }
+
+    /**
+     * @param ApiListableInterface $object
+     * @return string|null
+     */
+    public function getResourceName(ApiListableInterface $object)
+    {
+        if($this->getConfigByClass($object)) {
+            return $this->getConfigByClass($object)['singular_name'];
+        }
+        return null;
+    }
 
     /**
      * @param string $path
@@ -57,7 +82,7 @@ class ResourceTransformer
         $parts = explode('/', $path);
         $parts = array_filter($parts);
         if(count($parts) !== 2) {
-            throw new \InvalidArgumentException('Path has to consist of exactly two parts.');
+            throw new InvalidArgumentException('Path has to consist of exactly two parts.');
         }
         return array_values($parts);
     }
@@ -70,7 +95,21 @@ class ResourceTransformer
     private function getConfigByName($resourceName)
     {
         $matchingConfiguration = array_filter($this->configuration, function($resourceConfiguration) use ($resourceName) {
-            return $resourceConfiguration['name'] === $resourceName;
+            return $resourceConfiguration['plural_name'] === $resourceName;
+        });
+        return array_shift($matchingConfiguration);
+    }
+
+    /**
+     * @param ApiListableInterface $object
+     *
+     * @return array<string, mixed>
+     */
+    private function getConfigByClass(ApiListableInterface $object)
+    {
+        $matchingConfiguration = array_filter($this->configuration, function($resourceConfiguration) use ($object) {
+            return get_class($object) === $resourceConfiguration['class'] ||
+            is_subclass_of($object, $resourceConfiguration['class']);
         });
         return array_shift($matchingConfiguration);
     }

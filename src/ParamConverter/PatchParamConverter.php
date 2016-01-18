@@ -3,7 +3,8 @@ namespace Ibrows\RestBundle\ParamConverter;
 
 use Ibrows\RestBundle\Exception\BadRequestConstraintException;
 use Ibrows\RestBundle\Patch\Executioner;
-use Ibrows\RestBundle\Patch\OperationCollection;
+use Ibrows\RestBundle\Patch\Operation;
+use Ibrows\RestBundle\Patch\OperationInterface;
 use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,12 +66,12 @@ class PatchParamConverter extends ManipulationParamConverter
     /**
      * @param Request $request
      *
-     * @return OperationCollection
+     * @return OperationInterface[]
      */
     private function getOperations(Request $request)
     {
         $bodyParserConfiguration = new ParamConverter([
-            'class' => OperationCollection::class,
+            'class' => 'array<' . Operation::class . '>',
             'options' => [
                 'source' => 'fos_rest.request_body',
             ],

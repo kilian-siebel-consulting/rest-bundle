@@ -90,12 +90,8 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
             $errors
         );
 
-        $failOnValidationError = isset($configuration->getOptions()['fail_on_validation_error'])
-            ? $configuration->getOptions()['fail_on_validation_error']
-            : $this->configuration['fail_on_validation_error'];
-
         if(
-            $failOnValidationError &&
+            $this->shouldFail($configuration) &&
             count($errors) > 0
         ) {
             throw new BadRequestConstraintException($errors);
@@ -103,11 +99,22 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
     }
 
     /**
+     * @param $configuration
+     * @return bool
+     */
+    protected function shouldFail(ParamConverter $configuration)
+    {
+        return isset($configuration->getOptions()['fail_on_validation_error'])
+            ? $configuration->getOptions()['fail_on_validation_error']
+            : $this->configuration['fail_on_validation_error'];
+    }
+
+    /**
      * @param array $options
      *
      * @return array
      */
-    protected function getValidatorOptions(array $options)
+    private function getValidatorOptions(array $options)
     {
         $resolver = new OptionsResolver();
         $resolver->setDefaults(array(

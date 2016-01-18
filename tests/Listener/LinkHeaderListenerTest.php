@@ -97,6 +97,14 @@ class LinkHeaderListenerTest extends PHPUnit_Framework_TestCase
         $listener = $this->getListener();
         $event = $this->getEvent();
 
+        $urlParams = [
+            'foo' => 'bar',
+        ];
+        $this->urlMatcher
+            ->expects($this->exactly(3))
+            ->method('match')
+            ->willReturn($urlParams);
+
         $event->getRequest()->setMethod($method);
         $event->getRequest()->headers->set('Link', 'link1,link2, link3');
 
@@ -122,6 +130,7 @@ class LinkHeaderListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(3, count($links));
         $this->assertEquals('link1', $links[0]->getOriginalHeader());
+        $this->assertEquals($urlParams, $links[0]->getUrlParameters());
         $this->assertEquals('link2', $links[1]->getOriginalHeader());
         $this->assertEquals('link3', $links[2]->getOriginalHeader());
     }

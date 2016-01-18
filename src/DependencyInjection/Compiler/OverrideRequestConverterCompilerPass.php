@@ -4,6 +4,12 @@ namespace Ibrows\RestBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
+/**
+ * Class OverrideRequestConverterCompilerPass
+ * @package Ibrows\RestBundle\DependencyInjection\Compiler
+ *
+ * @codeCoverageIgnore
+ */
 class OverrideRequestConverterCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)

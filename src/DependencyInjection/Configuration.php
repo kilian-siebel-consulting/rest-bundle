@@ -9,6 +9,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * This is the class that validates and merges configuration from your app/config files.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/configuration.html}
+ *
+ * @codeCoverageIgnore
  */
 class Configuration implements ConfigurationInterface
 {
@@ -25,7 +27,8 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('resources')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('name')->end()
+                            ->scalarNode('singular_name')->end()
+                            ->scalarNode('plural_name')->end()
                             ->scalarNode('class')->end()
                             ->scalarNode('identifier')
                                 ->defaultValue('id')

@@ -9,6 +9,9 @@ use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * @codeCoverageIgnore
+ */
 class IbrowsRestBundle extends Bundle
 {
     public function build(ContainerBuilder $container)

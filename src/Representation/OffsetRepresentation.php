@@ -37,10 +37,12 @@ class OffsetRepresentation extends BaseOffsetRepresentation
         $absolute = false,
         Exclusion $exclusion = null
     ) {
-        if($exclusion === null) {
-            $exclusion = new Exclusion([
-                'hateoas_list'
-            ]);
+        if ($exclusion === null) {
+            $exclusion = new Exclusion(
+                [
+                    'hateoas_list'
+                ]
+            );
         }
 
         parent::__construct(
@@ -58,6 +60,12 @@ class OffsetRepresentation extends BaseOffsetRepresentation
         $this->exclusion = $exclusion;
     }
 
+    /**
+     * @param OffsetRepresentation   $object
+     * @param ClassMetadataInterface $classMetadata
+     * @return Relation[]
+     * @codeCoverageIgnore
+     */
     public function getRelations($object, ClassMetadataInterface $classMetadata)
     {
         return [

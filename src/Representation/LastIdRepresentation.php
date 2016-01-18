@@ -49,7 +49,10 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
      */
     protected $sortDir;
 
-    public function __construct( $inline, $route, array $parameters = array(), $lastId, $lastIdParamName, $limit, $limitParameterName = null, $sortBy = null, $sortDir = null, $absolute = false)
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($inline, $route, array $parameters = array(), $lastId, $lastIdParamName, $limit, $limitParameterName = null, $sortBy = null, $sortDir = null, $absolute = false)
     {
         parent::__construct($inline, $route, $parameters, $limit, null, $limitParameterName, $absolute);
 
@@ -59,30 +62,32 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         $this->sortBy = $sortBy;
         $this->sortDir = $sortDir;
 
-        if($exclusion === null) {
-            $exclusion = new Exclusion([
-                'hateoas_list'
-            ]);
+        if ($exclusion === null) {
+            $exclusion = new Exclusion(
+                [
+                    'hateoas_list'
+                ]
+            );
         }
 
         $this->exclusion = $exclusion;
     }
 
     /**
-     * @param  null  $page
-     * @param  null  $limit
+     * @param null $limit
+     * @param null $offsetId
      * @return array
      */
     public function getParameters($limit = null, $offsetId = null)
     {
         $params = array(
             $this->getLimitParameterName() => $limit ? $limit : $this->getLimit(),
-            'sortBy' => $this->sortBy,
-            'sortDir' => $this->sortDir,
+            'sortBy'                       => $this->sortBy,
+            'sortDir'                      => $this->sortDir,
         );
 
-        if($offsetId !== false){
-            $params[$this->lastIdParamName] =  $offsetId ? $offsetId : $this->lastId;
+        if ($offsetId !== false) {
+            $params[$this->lastIdParamName] = $offsetId ? $offsetId : $this->lastId;
         }
 
         return $params;
@@ -90,9 +95,10 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
 
 
     /**
-     * @param $object
+     * @param LastIdRepresentation   $object
      * @param ClassMetadataInterface $classMetadata
-     * @return array
+     * @return Relation[]
+     * @codeCoverageIgnore
      */
     public function getRelations($object, ClassMetadataInterface $classMetadata)
     {

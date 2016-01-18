@@ -3,9 +3,11 @@ namespace Ibrows\RestBundle\Listener;
 
 use Ibrows\RestBundle\Request\LinkHeader;
 use Ibrows\RestBundle\Transformer\ResourceTransformer;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 class LinkHeaderListener
@@ -61,12 +63,14 @@ class LinkHeaderListener
         foreach (explode(',', $event->getRequest()->headers->get('link')) as $header) {
             $header = trim($header);
             $link = new LinkHeader($header);
-            if($urlParameters = $this->urlMatcher->match($link->getValue())) {
-                $link->setUrlParameters($urlParameters);
-            }
-            //try {
+            try {
+                if($urlParameters = $this->urlMatcher->match($link->getValue())) {
+                    $link->setUrlParameters($urlParameters);
+                }
+            } catch(ResourceNotFoundException $exception) {}
+            try {
                 $link->setResource($this->resourceTransformer->getResourceProxy($link->getValue()));
-            //} catch(\Exception $e) {}
+            } catch(InvalidArgumentException $e) {}
 
             $links[] = $link;
         }

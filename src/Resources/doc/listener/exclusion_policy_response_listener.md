@@ -1,12 +1,10 @@
-Exclusion Policy Response Listener
-==================================
+# Exclusion Policy Response Listener
 
 The exclusion policy listener allows the user of the api to supply a predefined serializer group name via
 query-parameter which is then used by JMSSerializer to serialize the response. That way you can limit
 the result size for certain queries.
 
-Configuration
--------------
+## Configuration
 
 The default configuration would look like this: 
 
@@ -22,8 +20,7 @@ The default configuration would look like this:
  - The `param_name` describes which query-parameter is used to get the serializer group name (default: `expolicy`). 
    Any name is acceptable as long as it doesn't colide with other parameter names.
  
-Usage
------
+## Usage
  
 If you want to use the listener in your action you have to first add the `@QueryParam` annotation:
  

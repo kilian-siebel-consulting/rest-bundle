@@ -1,7 +1,6 @@
 <?php
 namespace Ibrows\RestBundle\Annotation;
 
-use Ibrows\ApiBundle\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations\View as BaseView;
 
 /**
@@ -9,6 +8,8 @@ use FOS\RestBundle\Controller\Annotations\View as BaseView;
  *
  * @Annotation
  * @Target({"METHOD","CLASS"})
+ *
+ * @codeCoverageIgnore
  */
 class View extends BaseView
 {
@@ -40,7 +41,7 @@ class View extends BaseView
     }
 
     /**
-     * @return \Ibrows\ApiBundle\Annotation\Route
+     * @return Route
      */
     public function getLocation()
     {
@@ -48,7 +49,7 @@ class View extends BaseView
     }
 
     /**
-     * @param \Ibrows\ApiBundle\Annotation\Route $location
+     * @param Route $location
      */
     public function setLocation($location)
     {

@@ -50,16 +50,32 @@ class DebugResponseListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if(
-            $this->enabled &&
-            $this->profilerListener !== null &&
-            $event->isMasterRequest() &&
-            $event->getResponse()->getStatusCode() !== Response::HTTP_NO_CONTENT &&
-            $event->getResponse()->headers->get('Content-Type') === 'application/json' &&
-            $event->getResponse()->getContent() != null
+        if (
+            $this->isEnabled() &&
+            $this->isSuitableEvent($event)
         ) {
             $this->appendDebugInformation($event);
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isEnabled()
+    {
+        return $this->enabled &&
+            $this->profilerListener !== null;
+    }
+
+    /**
+     * @param FilterResponseEvent $event
+     * @return bool
+     */
+    protected function isSuitableEvent(FilterResponseEvent $event)
+    {
+        return $event->isMasterRequest() &&
+            $event->getResponse()->headers->get('Content-Type') === 'application/json' &&
+            $event->getResponse()->getContent() != null;
     }
 
     /**
@@ -68,7 +84,7 @@ class DebugResponseListener
     protected function appendDebugInformation(FilterResponseEvent $event)
     {
         $profile = $this->getProfile($event->getRequest());
-        if(!$profile) {
+        if (!$profile) {
             return;
         }
 
@@ -92,7 +108,7 @@ class DebugResponseListener
         $profiles = $profilesProperty->getValue($this->profilerListener);
 
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
-        if(!isset($profiles[$request])) {
+        if (!isset($profiles[$request])) {
             return null;
         }
 
@@ -101,30 +117,37 @@ class DebugResponseListener
     }
 
     /**
-     * @param Profile $profile
+     * @param FilterResponseEvent $event
+     * @return string
+     */
+    protected function getTokenLink(FilterResponseEvent $event)
+    {
+        return (
+        $event->getRequest()->isSecure()
+            ? 'https://'
+            : 'http://'
+        ) .
+        $event->getRequest()->getHttpHost() .
+        $event->getResponse()->headers->get('X-Debug-Token-Link');
+    }
+
+    /**
+     * @param Profile             $profile
      * @param FilterResponseEvent $event
      * @return array
      */
     protected function extractInformation(Profile $profile, FilterResponseEvent $event)
     {
-        $tokenLink = (
-            $event->getRequest()->isSecure()
-                ? 'https://'
-                : 'http://'
-            ) .
-            $event->getRequest()->getHttpHost() .
-            $event->getResponse()->headers->get('X-Debug-Token-Link');
-
         $debugInformation = [
-            'tokenUrl' => $tokenLink,
-            'ip' => $profile->getIp(),
-            'method' => $profile->getMethod(),
-            'url' => $profile->getUrl(),
-            'time' => date('c', $profile->getTime()),
+            'tokenUrl'   => $this->getTokenLink($event),
+            'ip'         => $profile->getIp(),
+            'method'     => $profile->getMethod(),
+            'url'        => $profile->getUrl(),
+            'time'       => date('c', $profile->getTime()),
             'statusCode' => $profile->getStatusCode(),
         ];
 
-        foreach($profile->getCollectors() as $collector) {
+        foreach ($profile->getCollectors() as $collector) {
             $debugInformation = array_merge(
                 $debugInformation,
                 $this->convertCollector($collector)
@@ -142,14 +165,23 @@ class DebugResponseListener
     {
         $debugInformation = [];
 
-        foreach($this->converters as $converter) {
-            if(
-                $converter->supports($collector) &&
-                $data = $converter->convert($collector)
-            ) {
-                $debugInformation[$converter->getName()] = $data;
+        $matchingConverters = array_filter(
+            $this->converters,
+            function (ConverterInterface $converter) use ($collector) {
+                return $converter->supports($collector);
             }
-        }
+        );
+
+        array_walk(
+            $matchingConverters,
+            function (ConverterInterface $converter) use ($collector, & $debugInformation) {
+                if (
+                    $data = $converter->convert($collector)
+                ) {
+                    $debugInformation[$converter->getName()] = $data;
+                }
+            }
+        );
 
         return $debugInformation;
     }

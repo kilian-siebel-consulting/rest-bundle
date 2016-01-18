@@ -6,14 +6,20 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class ParamConvertersCompilerPass
+ * @package Ibrows\RestBundle\DependencyInjection\Compiler
+ *
+ * @codeCoverageIgnore
+ */
 class ParamConvertersCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
         $ids = [
-            'ibrows_api.param_converter.patch',
-            'ibrows_api.param_converter.link',
-            'ibrows_api.param_converter.unlink',
+            'ibrows_rest.param_converter.patch',
+            'ibrows_rest.param_converter.link',
+            'ibrows_rest.param_converter.unlink',
         ];
 
         $taggedServices = $container->findTaggedServiceIds(
