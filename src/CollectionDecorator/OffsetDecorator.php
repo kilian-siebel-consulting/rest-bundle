@@ -9,13 +9,30 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class OffsetDecorator implements DecoratorInterface
 {
     /**
+     * @var string
+     */
+    private $offsetParameterName;
+
+    /**
+     * @var string
+     */
+    private $limitParameterName;
+
+    public function __construct(
+        array $configuration
+    ) {
+        $this->offsetParameterName = $configuration['offset_parameter_name'];
+        $this->limitParameterName = $configuration['limit_parameter_name'];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function decorate(ParameterBag $params, $collection)
     {
-        if(
+        if (
             !$collection instanceof CollectionRepresentation ||
-            !$params->has('paramConverter') ||
+            !$params->has('paramFetcher') ||
             !$params->has('_route')
         ) {
             return $collection;
@@ -26,8 +43,11 @@ class OffsetDecorator implements DecoratorInterface
                 $collection,
                 $params->get('_route'),
                 $params->all(),
-                $params->get('paramConverter')->get('offset'),
-                $params->get('paramConverter')->get('limit')
+                $params->get('paramFetcher')->get($this->offsetParameterName),
+                $params->get('paramFetcher')->get($this->limitParameterName),
+                null,
+                $this->offsetParameterName,
+                $this->limitParameterName
             );
         } catch (InvalidArgumentException $exception) {
             return $collection;

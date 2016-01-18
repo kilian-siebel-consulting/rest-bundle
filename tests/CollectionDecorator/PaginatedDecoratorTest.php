@@ -23,86 +23,122 @@ class PaginatedDecoratorTest extends PHPUnit_Framework_TestCase
         $this->paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
     }
 
+    /**
+     * @return PaginatedDecorator
+     */
+    protected function getDecorator()
+    {
+        return new PaginatedDecorator(
+            [
+                'page_parameter_name'  => 'page',
+                'limit_parameter_name' => 'limit',
+            ]
+        );
+    }
+
     public function testNonCollectionResponse()
     {
         $data = [
             'foo',
         ];
 
-        $decorator = new PaginatedDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => true,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => true,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertEquals($data, $result);
     }
 
     public function testMissingParameters()
     {
-        $data = new CollectionRepresentation([
-            'foo',
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                'foo',
+            ]
+        );
 
-        $decorator = new PaginatedDecorator();
-        $result = $decorator->decorate(new ParameterBag([]), $data);
+        $result = $this->getDecorator()->decorate(new ParameterBag([]), $data);
 
         $this->assertEquals($data, $result);
     }
 
     public function testMissingParamFetchers()
     {
-        $data = new CollectionRepresentation([
-            new PaginatedTestClass(),
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                new PaginatedTestClass(),
+            ]
+        );
 
         $this->paramFetcher
             ->method('get')
             ->willThrowException(new InvalidArgumentException());
 
-        $decorator = new PaginatedDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => $this->paramFetcher,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertEquals($data, $result);
     }
 
     public function testEmptyParamFetchers()
     {
-        $data = new CollectionRepresentation([
-            new PaginatedTestClass(),
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                new PaginatedTestClass(),
+            ]
+        );
 
         $this->paramFetcher
             ->method('get')
             ->willReturn(null);
 
-        $decorator = new PaginatedDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => $this->paramFetcher,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertEquals($data, $result);
     }
 
     public function testCollectionResponse()
     {
-        $data = new CollectionRepresentation([
-            new PaginatedTestClass(),
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                new PaginatedTestClass(),
+            ]
+        );
 
         $this->paramFetcher
             ->method('get')
             ->willReturn(7);
 
-        $decorator = new PaginatedDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => $this->paramFetcher,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertInstanceOf(PaginationRepresentation::class, $result);
         $this->assertEquals($data, $result->getInline());

@@ -23,63 +23,95 @@ class LastIdDecoratorTest extends PHPUnit_Framework_TestCase
         $this->paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
     }
 
+    /**
+     * @return LastIdDecorator
+     */
+    protected function getDecorator()
+    {
+        return new LastIdDecorator(
+            [
+                'sort_by_parameter_name'        => 'sortBy',
+                'sort_direction_parameter_name' => 'sortDir',
+                'offset_id_parameter_name'      => 'offsetId',
+                'limit_parameter_name'          => 'limit',
+            ]
+        );
+    }
+
     public function testNonCollectionResponse()
     {
         $data = [
             'foo',
         ];
 
-        $decorator = new LastIdDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => true,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => true,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertEquals($data, $result);
     }
 
     public function testMissingParameters()
     {
-        $data = new CollectionRepresentation([
-            'foo',
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                'foo',
+            ]
+        );
 
-        $decorator = new LastIdDecorator();
-        $result = $decorator->decorate(new ParameterBag([]), $data);
+        $result = $this->getDecorator()->decorate(new ParameterBag([]), $data);
 
         $this->assertEquals($data, $result);
     }
 
     public function testMissingParamFetchers()
     {
-        $data = new CollectionRepresentation([
-            new LastIdTestClass(),
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                new LastIdTestClass(),
+            ]
+        );
 
         $this->paramFetcher
             ->method('get')
             ->willThrowException(new InvalidArgumentException());
 
-        $decorator = new LastIdDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => $this->paramFetcher,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertEquals($data, $result);
     }
 
     public function testCollectionResponse()
     {
-        $data = new CollectionRepresentation([
-            new LastIdTestClass(),
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                new LastIdTestClass(),
+            ]
+        );
 
-        $decorator = new LastIdDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => $this->paramFetcher,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertInstanceOf(LastIdRepresentation::class, $result);
         $this->assertEquals($data, $result->getInline());

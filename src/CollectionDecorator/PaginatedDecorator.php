@@ -9,13 +9,30 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class PaginatedDecorator implements DecoratorInterface
 {
     /**
+     * @var string
+     */
+    private $pageParameterName;
+
+    /**
+     * @var string
+     */
+    private $limitParameterName;
+
+    public function __construct(
+        array $configuration
+    ) {
+        $this->pageParameterName = $configuration['page_parameter_name'];
+        $this->limitParameterName = $configuration['limit_parameter_name'];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function decorate(ParameterBag $params, $collection)
     {
-        if(
+        if (
             !$collection instanceof CollectionRepresentation ||
-            !$params->has('paramConverter') ||
+            !$params->has('paramFetcher') ||
             !$params->has('_route')
         ) {
             return $collection;
@@ -23,8 +40,8 @@ class PaginatedDecorator implements DecoratorInterface
 
         try {
             if (
-                $params->get('paramConverter')->get('limit') === null ||
-                $params->get('paramConverter')->get('page') === null
+                $params->get('paramFetcher')->get($this->limitParameterName) === null ||
+                $params->get('paramFetcher')->get($this->pageParameterName) === null
             ) {
                 return $collection;
             }
@@ -33,9 +50,11 @@ class PaginatedDecorator implements DecoratorInterface
                 $collection,
                 $params->get('_route'),
                 $params->all(),
-                $params->get('paramConverter')->get('page'),
-                $params->get('paramConverter')->get('limit'),
-                null
+                $params->get('paramFetcher')->get($this->pageParameterName),
+                $params->get('paramFetcher')->get($this->limitParameterName),
+                null,
+                $this->pageParameterName,
+                $this->limitParameterName
             );
         } catch (InvalidArgumentException $exception) {
             return $collection;

@@ -12,6 +12,18 @@ The listener first wraps a `Ibrows\RestBundle\Representation\CollectionRepresent
         listener:
             collection_decorator:
                 enabled: false
+        decorator:
+            paginated:
+                page_parameter_name: page
+                limit_parameter_name: limit
+            offset:
+                offset_parameter_name: offset
+                limit_parameter_name: limit
+            last_id:
+                sort_by_parameter_name: sortBy
+                sort_direction_parameter_name: sortDir
+                offset_id_parameter_name: offsetId
+                limit_parameter_name: limit
                
 ```
  - `enabled` - Enable / Disable the listener (default: `false`)

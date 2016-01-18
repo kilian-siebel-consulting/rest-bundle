@@ -23,63 +23,93 @@ class OffsetDecoratorTest extends PHPUnit_Framework_TestCase
         $this->paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
     }
 
+    /**
+     * @return OffsetDecorator
+     */
+    protected function getDecorator()
+    {
+        return new OffsetDecorator(
+            [
+                'offset_parameter_name' => 'offset',
+                'limit_parameter_name'  => 'limit',
+            ]
+        );
+    }
+
     public function testNonCollectionResponse()
     {
         $data = [
             'foo',
         ];
 
-        $decorator = new OffsetDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => true,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => true,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertEquals($data, $result);
     }
 
     public function testMissingParameters()
     {
-        $data = new CollectionRepresentation([
-            'foo',
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                'foo',
+            ]
+        );
 
-        $decorator = new OffsetDecorator();
-        $result = $decorator->decorate(new ParameterBag([]), $data);
+        $result = $this->getDecorator()->decorate(new ParameterBag([]), $data);
 
         $this->assertEquals($data, $result);
     }
 
     public function testMissingParamFetchers()
     {
-        $data = new CollectionRepresentation([
-            new OffsetTestClass(),
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                new OffsetTestClass(),
+            ]
+        );
 
         $this->paramFetcher
             ->method('get')
             ->willThrowException(new InvalidArgumentException());
 
-        $decorator = new OffsetDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => $this->paramFetcher,
-            '_route' => true,
-        ]), $data);
-        
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
+
         $this->assertEquals($data, $result);
     }
 
     public function testCollectionResponse()
     {
-        $data = new CollectionRepresentation([
-            new OffsetTestClass(),
-        ]);
+        $data = new CollectionRepresentation(
+            [
+                new OffsetTestClass(),
+            ]
+        );
 
-        $decorator = new OffsetDecorator();
-        $result = $decorator->decorate(new ParameterBag([
-            'paramConverter' => $this->paramFetcher,
-            '_route' => true,
-        ]), $data);
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
 
         $this->assertInstanceOf(OffsetRepresentation::class, $result);
         $this->assertEquals($data, $result->getInline());

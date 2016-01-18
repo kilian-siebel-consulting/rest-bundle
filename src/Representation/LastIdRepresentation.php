@@ -47,7 +47,17 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     /**
      * @var string
      */
+    protected $sortByParamName;
+
+    /**
+     * @var string
+     */
     protected $sortDir;
+
+    /**
+     * @var string
+     */
+    protected $sortDirParamName;
 
     /**
      * {@inheritdoc}
@@ -61,7 +71,9 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         $limit,
         $limitParameterName = null,
         $sortBy = null,
+        $sortByParameterName = null,
         $sortDir = null,
+        $sortDirParameterName = null,
         $absolute = false
     ) {
         parent::__construct(
@@ -78,7 +90,9 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         $this->lastId = $lastId;
         $this->lastIdParamName = $lastIdParamName;
         $this->sortBy = $sortBy;
+        $this->sortByParamName = $sortByParameterName;
         $this->sortDir = $sortDir;
+        $this->sortDirParamName = $sortDirParameterName;
 
         if ($exclusion === null) {
             $exclusion = new Exclusion(
@@ -100,8 +114,8 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     {
         $params = array(
             $this->getLimitParameterName() => $limit ? $limit : $this->getLimit(),
-            'sortBy'                       => $this->sortBy,
-            'sortDir'                      => $this->sortDir,
+            $this->sortByParamName         => $this->sortBy,
+            $this->sortDirParamName        => $this->sortDir,
         );
 
         if ($offsetId !== false) {
