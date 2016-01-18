@@ -9,14 +9,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class UnlinkParamConverter extends AbstractLinkParamConverter
 {
     /**
-     * @return string
-     */
-    protected function getName()
-    {
-        return 'unlink';
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function applyLink(LinkHeader $link, $object, array $allowedRelations)

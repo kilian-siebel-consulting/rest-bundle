@@ -22,7 +22,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
     private $paramConverters;
 
     /**
-     * @var ValidatorInterface
+     * @var ValidatorInterface|null
      */
     private $validator;
 
@@ -34,17 +34,12 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      */
     public function __construct(
         array $configuration,
-        ValidatorInterface $validator
+        ValidatorInterface $validator = null
     ) {
         $this->paramConverters = [];
         $this->configuration = $configuration;
         $this->validator = $validator;
     }
-
-    /**
-     * @return string
-     */
-    abstract protected function getName();
 
     /**
      * {@inheritdoc}
@@ -135,7 +130,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
     protected function getConverter(ParamConverter $configuration)
     {
         if(!isset($configuration->getOptions()['source'])) {
-            throw new InvalidConfigurationException('The option "source" has to be provided for the ParamConverter "' . $this->getName() . '".');
+            throw new InvalidConfigurationException('The option "source" has to be provided for the ParamConverter.');
         }
 
         $name = $configuration->getOptions()['source'];
