@@ -52,6 +52,7 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($event->getControllerResult() instanceof LastIdRepresentation);
     }
 
+
     public function testOffsetDecoration(){
         $listener = $this->getListener();
 
@@ -68,6 +69,7 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($event->getControllerResult() instanceof OffsetRepresentation);
     }
+
 
     public function testPaginationDecoration(){
         $listener = $this->getListener();

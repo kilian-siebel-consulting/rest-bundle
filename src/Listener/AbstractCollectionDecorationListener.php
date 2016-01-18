@@ -1,4 +1,6 @@
 <?php
+
+
 namespace Ibrows\RestBundle\Listener;
 
 use Doctrine\Common\Collections\Collection;
@@ -16,132 +18,66 @@ use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
-class CollectionViewResponseListener
+abstract class AbstractCollectionDecorationListener
 {
+
     /**
      * @param GetResponseForControllerResultEvent $event
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        if(
-            $event->getControllerResult() instanceof Collection ||
-            is_array($event->getControllerResult())
-        ) {
+        $result = $event->getControllerResult();
+
+        if(!$result instanceof CollectionRepresentation){
+            return;
+        }
+
+        if(($result instanceof Collection || is_array($event->getControllerResult())) && $this->validateCollection($result)) {
+
             $this->decorateView($event);
         }
     }
 
     /**
+     * @param $data
+     */
+    private function validateCollection($data){
+        foreach($data as $item){
+            if(!$item instanceof ApiListableInterface){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * @param GetResponseForControllerResultEvent $event
      */
-    private function decorateView(GetResponseForControllerResultEvent $event)
+    protected function decorateView(GetResponseForControllerResultEvent $event)
     {
         $response = $event->getControllerResult();
         $route = $event->getRequest()->attributes->get('_route');
-        $response = new CollectionRepresentation($response);
+
         /** @var ParamFetcherInterface $paramFetcher */
         $paramFetcher = $event->getRequest()->attributes->get('paramFetcher');
+
         /** @var View $view */
         $view = $event->getRequest()->attributes->get('_view');
         $params = $this->getParams($view, $event->getRequest());
 
         $this->addListGroup($view);
-        $this->decorateOffsetView($paramFetcher, $route, $params, $response);
-        $this->decorateLastIdView($paramFetcher, $route, $params, $response);
-        $this->decoratePaginatedView($paramFetcher, $route, $params, $response);
+        $this->decorate($paramFetcher, $route, $params, $response);
         $event->setControllerResult($response);
     }
 
     /**
      * @param ParamFetcherInterface $paramFetcher
-     * @param string                $route
-     * @param array                 $params
-     * @param mixed                 $response
+     * @param $route
+     * @param array $params
+     * @param $response
+     * @return mixed
      */
-    private function decorateOffsetView(ParamFetcherInterface $paramFetcher, $route, array $params, & $response)
-    {
-        if(!$this->hasParameter($paramFetcher, 'limit') || !$this->hasParameter($paramFetcher, 'offset') ){
-            return;
-        }
-
-        $limit = $this->getParameter($paramFetcher, 'limit');
-        $offset = $this->getParameter($paramFetcher, 'offset');
-
-        $response = new OffsetRepresentation(
-            $response,
-            $route,
-            $params,
-            $offset,
-            $limit
-        );
-    }
-
-    /**
-     * @param ParamFetcherInterface $paramFetcher
-     * @param string                $route
-     * @param array                 $params
-     * @param mixed                 $response
-     */
-    private function decorateLastIdView(ParamFetcherInterface $paramFetcher, $route, array $params, &$response)
-    {
-        if(!$this->hasParameter($paramFetcher, 'limit') || !$this->hasParameter($paramFetcher, 'offsetId') ){
-            return;
-        }
-
-        $limit = $this->getParameter($paramFetcher, 'limit');
-        $last = $this->getParameter($paramFetcher, 'offsetId');
-        $sortBy = $this->getParameter($paramFetcher, 'sortBy');
-        $sortDir = $this->getParameter($paramFetcher, 'sortDir');
-
-        $resources = $response->getResources();
-        $lastElement = end($resources);
-
-        if(!$lastElement || !$lastElement instanceof ApiListableInterface) {
-            return;
-        }
-
-        $response = new LastIdRepresentation(
-            $response,
-            $route,
-            $params,
-            $lastElement->getId(),
-            'offsetId',
-            $limit,
-            'limit',
-            $sortBy,
-            $sortDir
-        );
-    }
-
-    /**
-     * @param ParamFetcherInterface $paramFetcher
-     * @param string                $route
-     * @param array                 $params
-     * @param mixed                 $response
-     */
-    private function decoratePaginatedView(ParamFetcherInterface $paramFetcher, $route, array $params, & $response)
-    {
-
-        if(!$this->hasParameter($paramFetcher, 'limit') || !$this->hasParameter($paramFetcher, 'page') ){
-            return;
-        }
-
-        $limit = $this->getParameter($paramFetcher, 'limit');
-        $page = $this->getParameter($paramFetcher, 'page');
-
-        if(($limit === null || $page === null)){
-            return;
-        }
-
-        $response = new PaginatedRepresentation(
-            $response,
-            $route,
-            $params,
-            $page,
-            $limit,
-            null
-        );
-    }
+    protected abstract function decorate(ParamFetcherInterface $paramFetcher, $route, array $params, & $response);
 
     /**
      * @param View $view
@@ -188,7 +124,6 @@ class CollectionViewResponseListener
         }
         return $params;
     }
-
 
     /**
      * @param ParamFetcherInterface $paramFetcher
