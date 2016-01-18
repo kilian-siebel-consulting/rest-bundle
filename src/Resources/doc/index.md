@@ -45,6 +45,7 @@ file of your project:
 - Debug Listener - [Read Documentation](listener/debug_response_listener.md)
 - Exclusion Policy Listener - [Read Documentation](listener/exclusion_policy_response_listener.md)
 - Location Response Listener - [Read Documentation](listener/location_response_listener.md)
+- Collection Decoration Listener - [Read Documentation](listener/collection_decoration_listener.md)
 
 ## Param Converters
 - `abstract ManipulateParamConverter` - [Read Documentation](param_converter/manipulate_param_converter.md)
@@ -79,6 +80,8 @@ The patching system is used to apply patches to an object in the `PatchParamConv
             exclusion_policy:
                 enabled: false
                 param_name: expolicy
+            collection_decorator:
+                enabled: false
                
 ```
 

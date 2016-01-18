@@ -52,7 +52,12 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
      */
     protected function getListener()
     {
-        $listener = new CollectionDecorationListener($this->resourceTransformer);
+        $listener = new CollectionDecorationListener(
+            [
+                'enabled' => true,
+            ],
+            $this->resourceTransformer
+        );
 
         $listener->addDecorator($this->decorator);
 
@@ -127,11 +132,15 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
         $this->decorator
             ->expects($this->once())
             ->method('decorate')
-            ->will($this->returnCallback(function(ParameterBag $params, $collection) {
-                return [
-                    $collection,
-                ];
-            }));
+            ->will(
+                $this->returnCallback(
+                    function (ParameterBag $params, $collection) {
+                        return [
+                            $collection,
+                        ];
+                    }
+                )
+            );
 
         $this->getListener()->onKernelView($event);
 

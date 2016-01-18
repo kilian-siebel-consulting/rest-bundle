@@ -13,6 +13,11 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 class CollectionDecorationListener
 {
     /**
+     * @var boolean
+     */
+    private $enabled;
+
+    /**
      * @var TransformerInterface
      */
     private $resourceTransformer;
@@ -24,11 +29,14 @@ class CollectionDecorationListener
 
     /**
      * AbstractCollectionDecorationListener constructor.
+     * @param array                $configuration
      * @param TransformerInterface $resourceTransformer
      */
     public function __construct(
+        array $configuration,
         TransformerInterface $resourceTransformer
     ) {
+        $this->enabled = $configuration['enabled'];
         $this->resourceTransformer = $resourceTransformer;
         $this->decorators = [];
     }
@@ -38,7 +46,10 @@ class CollectionDecorationListener
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        if ($this->validateCollection($event->getControllerResult())) {
+        if (
+            $this->enabled &&
+            $this->validateCollection($event->getControllerResult())
+        ) {
             $this->wrapCollection($event);
 
             $this->decorateView($event);
