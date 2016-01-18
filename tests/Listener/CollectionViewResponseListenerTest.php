@@ -43,12 +43,10 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
         $collectionListener->onKernelView($event);
         $listener = new $class;
         return $listener;
-
     }
 
     public function testLastIdDecoration()
     {
-
         $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
         $paramFetcher->method('all')->willReturn(array('limit' => 10, 'offsetId' => 1, 'sortBy' => 'id', 'sortDir' => 'ASC'));
         $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
@@ -65,6 +63,41 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($event->getControllerResult() instanceof LastIdRepresentation);
     }
 
+    public function testLastIdDecorationFail()
+    {
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('offsetId' => null, 'sortBy' => 'id', 'sortDir' => 'ASC'));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+
+        $listener = $this->setupDecoration(LastIdDecorationListener::class, $event);
+
+        $listener->onKernelView($event);
+
+        $this->assertFalse($event->getControllerResult() instanceof LastIdRepresentation, 'recived '.get_class($event->getControllerResult()));
+    }
+
+    public function testLastIdDecorationFailSecond()
+    {
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('limit' => 1, 'sortBy' => 'id', 'sortDir' => 'ASC'));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+
+        $listener = $this->setupDecoration(LastIdDecorationListener::class, $event);
+
+        $listener->onKernelView($event);
+
+        $this->assertFalse($event->getControllerResult() instanceof LastIdRepresentation, 'recived '.get_class($event->getControllerResult()));
+    }
 
     public function testOffsetDecoration(){
 
@@ -83,6 +116,40 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($event->getControllerResult() instanceof OffsetRepresentation);
     }
 
+    public function testOffsetDecorationFail(){
+
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('offset' => 5));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+
+        $listener = $this->setupDecoration(OffsetDecorationListener::class, $event);
+        $listener->onKernelView($event);
+
+        $this->assertFalse($event->getControllerResult() instanceof OffsetRepresentation);
+    }
+
+    public function testOffsetDecorationSecondFail(){
+
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('limit' => 5));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+
+        $listener = $this->setupDecoration(OffsetDecorationListener::class, $event);
+        $listener->onKernelView($event);
+
+        $this->assertFalse($event->getControllerResult() instanceof OffsetRepresentation);
+    }
+
     public function testPaginationDecoration ( ) {
 
         $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
@@ -97,6 +164,38 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
         $listener->onKernelView($event);
 
         $this->assertTrue($event->getControllerResult() instanceof PaginatedRepresentation);
+    }
+
+    public function testPaginationDecorationFail ( ) {
+
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('page' => 5));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+        $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
+        $listener->onKernelView($event);
+
+        $this->assertFalse($event->getControllerResult() instanceof PaginatedRepresentation);
+    }
+
+    public function testPaginationDecorationSecondFail ( ) {
+
+        $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $paramFetcher->method('all')->willReturn(array('limit' => 5));
+        $paramFetcher->method('get')->willThrowException(new \InvalidArgumentException());
+
+        $listEntity = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $listEntity->method('getId')->willReturn(42);
+
+        $event = $this->getEvent($paramFetcher, array($listEntity));
+        $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
+        $listener->onKernelView($event);
+
+        $this->assertFalse($event->getControllerResult() instanceof PaginatedRepresentation);
     }
 
     protected function getEvent(ParamFetcherInterface $paramFetcher = null, $controllerResult = array()){
