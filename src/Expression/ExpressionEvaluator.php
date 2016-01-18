@@ -52,17 +52,4 @@ class ExpressionEvaluator
 
         return $expression;
     }
-
-    public function evaluateArray(array $array, $data)
-    {
-        $newArray = array();
-        foreach ($array as $key => $value) {
-            $key   = $this->evaluate($key, $data);
-            $value = is_array($value) ? $this->evaluateArray($value, $data) : $this->evaluate($value, $data);
-
-            $newArray[$key] = $value;
-        }
-
-        return $newArray;
-    }
 }
