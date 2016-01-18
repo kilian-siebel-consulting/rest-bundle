@@ -116,6 +116,39 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('category', $transformer->getResourceName(new CategoryEntity()));
     }
+
+    public function testInvalidGetResourcePath()
+    {
+        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
+        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
+
+        $transformer = new ResourceTransformer($entityManager, []);
+
+        $this->assertNull($transformer->getResourcePath(new CategoryEntity()));
+    }
+
+    public function testGetResourcePath()
+    {
+        /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $entityManager */
+        $entityManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
+
+        $config = [
+            [
+                'singular_name' => 'car',
+                'plural_name' => 'cars',
+                'class' => CarEntity::class
+            ],
+            [
+                'singular_name' => 'category',
+                'plural_name' => 'categories',
+                'class' => CategoryEntity::class
+            ]
+        ];
+
+        $transformer = new ResourceTransformer($entityManager, $config);
+
+        $this->assertEquals('/categories/42', $transformer->getResourcePath(new CategoryEntity()));
+    }
 }
 
 class CarEntity implements ApiListableInterface
