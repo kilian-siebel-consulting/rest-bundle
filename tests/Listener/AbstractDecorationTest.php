@@ -7,6 +7,7 @@ namespace Ibrows\RestBundle\Tests\Listener;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Listener\Decoration\CollectionDecorationListener;
+use Ibrows\RestBundle\Transformer\TransformerInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,9 +26,18 @@ abstract class AbstractDecorationTest extends PHPUnit_Framework_TestCase
         $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
     }
 
-    protected function setupDecoration($class, $event){
-        $collectionListener = new CollectionDecorationListener();
+    protected function setupDecoration($class, $event)
+    {
+        /** @var TransformerInterface|PHPUnit_Framework_MockObject_MockObject $resourceTransformer */
+        $resourceTransformer = $this->getMockForAbstractClass(TransformerInterface::class);
+
+        $collectionListener = new CollectionDecorationListener($resourceTransformer);
         $collectionListener->onKernelView($event);
+
+        if($class === CollectionDecorationListener::class) {
+            return $collectionListener;
+        }
+
         $listener = new $class;
         return $listener;
     }

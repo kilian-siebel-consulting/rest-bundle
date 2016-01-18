@@ -31,6 +31,7 @@
 
         <!-- REPRESENTATION LISTENER -->
         <service id="ibrows_rest.listener.representation.collection" class="%ibrows_rest.listener.representation.collection.class%">
+            <argument type="service" id="ibrows_rest.resource_transformer" />
             <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
         </service>
 

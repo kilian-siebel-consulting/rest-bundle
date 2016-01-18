@@ -34,7 +34,7 @@ abstract class AbstractCollectionDecorationListener
      * @param $data
      * @return bool isValid
      */
-    private function validateCollection($data)
+    protected function validateCollection($data)
     {
         foreach ($data as $item) {
             if (!$item instanceof ApiListableInterface) {
