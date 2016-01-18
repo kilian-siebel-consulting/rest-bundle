@@ -32,8 +32,7 @@ abstract class AbstractCollectionDecorationListener
             return;
         }
 
-        if(($result instanceof Collection || is_array($event->getControllerResult())) && $this->validateCollection($result)) {
-
+        if(($result instanceof CollectionRepresentation || is_array($event->getControllerResult())) && $this->validateCollection($result)) {
             $this->decorateView($event);
         }
     }

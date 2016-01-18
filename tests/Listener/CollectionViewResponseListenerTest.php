@@ -12,6 +12,10 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Listener\CollectionViewResponseListener;
+use Ibrows\RestBundle\Listener\Decoration\CollectionDecorationListener;
+use Ibrows\RestBundle\Listener\Decoration\LastIdDecorationListener;
+use Ibrows\RestBundle\Listener\Decoration\OffsetDecorationListener;
+use Ibrows\RestBundle\Listener\Decoration\PaginatedDecorationListener;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use Ibrows\RestBundle\Representation\OffsetRepresentation;
@@ -34,9 +38,16 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
         $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
     }
 
+    protected function setupDecoration($class, $event){
+        $collectionListener = new CollectionDecorationListener();
+        $collectionListener->onKernelView($event);
+        $listener = new $class;
+        return $listener;
+
+    }
+
     public function testLastIdDecoration()
     {
-        $listener = $this->getListener();
 
         $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
         $paramFetcher->method('all')->willReturn(array('limit' => 10, 'offsetId' => 1, 'sortBy' => 'id', 'sortDir' => 'ASC'));
@@ -47,6 +58,8 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $event = $this->getEvent($paramFetcher, array($listEntity));
 
+        $listener = $this->setupDecoration(LastIdDecorationListener::class, $event);
+
         $listener->onKernelView($event);
 
         $this->assertTrue($event->getControllerResult() instanceof LastIdRepresentation);
@@ -54,7 +67,6 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
 
 
     public function testOffsetDecoration(){
-        $listener = $this->getListener();
 
         $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
         $paramFetcher->method('all')->willReturn(array('limit' => 10, 'offset' => 5));
@@ -65,14 +77,13 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $event = $this->getEvent($paramFetcher, array($listEntity));
 
+        $listener = $this->setupDecoration(OffsetDecorationListener::class, $event);
         $listener->onKernelView($event);
 
         $this->assertTrue($event->getControllerResult() instanceof OffsetRepresentation);
     }
 
-
-    public function testPaginationDecoration(){
-        $listener = $this->getListener();
+    public function testPaginationDecoration ( ) {
 
         $paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
         $paramFetcher->method('all')->willReturn(array('limit' => 10, 'page' => 5));
@@ -82,16 +93,10 @@ class CollectionViewResponseListenerTest extends PHPUnit_Framework_TestCase
         $listEntity->method('getId')->willReturn(42);
 
         $event = $this->getEvent($paramFetcher, array($listEntity));
-
+        $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
         $this->assertTrue($event->getControllerResult() instanceof PaginatedRepresentation);
-    }
-
-
-
-    protected function getListener(){
-        return new CollectionViewResponseListener();
     }
 
     protected function getEvent(ParamFetcherInterface $paramFetcher = null, $controllerResult = array()){

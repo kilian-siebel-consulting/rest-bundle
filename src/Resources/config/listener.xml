@@ -35,15 +35,15 @@
         </service>
 
         <service id="ibrows_rest.listener.representation.lastid" class="%ibrows_rest.listener.representation.lastid.class%">
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
+            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="400" />
         </service>
 
         <service id="ibrows_rest.listener.representation.offset" class="%ibrows_rest.listener.representation.offset.class%">
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
+            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="401" />
         </service>
 
         <service id="ibrows_rest.listener.representation.paginated" class="%ibrows_rest.listener.representation.paginated.class%">
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
+            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="402" />
         </service>
         <!-- REPRESENTATION LISTENER END -->
 
