@@ -7,6 +7,7 @@ namespace Ibrows\RestBundle\Listener\Decoration;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Listener\AbstractCollectionDecorationListener;
+use Ibrows\RestBundle\Representation\PaginationRepresentation;
 
 class PaginatedDecorationListener extends AbstractCollectionDecorationListener
 {
@@ -31,7 +32,7 @@ class PaginatedDecorationListener extends AbstractCollectionDecorationListener
             return;
         }
 
-        $response = new PaginatedRepresentation(
+    $response = new PaginationRepresentation(
             $response,
             $route,
             $params,

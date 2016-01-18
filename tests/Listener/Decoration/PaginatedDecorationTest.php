@@ -8,6 +8,7 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Listener\Decoration\PaginatedDecorationListener;
 use Ibrows\RestBundle\Model\ApiListableInterface;
+use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use Ibrows\RestBundle\Tests\Listener\AbstractDecorationTest;
 
 class PaginatedDecorationTest extends AbstractDecorationTest
@@ -26,7 +27,7 @@ class PaginatedDecorationTest extends AbstractDecorationTest
         $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
-        $this->assertTrue($event->getControllerResult() instanceof PaginatedRepresentation);
+        $this->assertTrue($event->getControllerResult() instanceof PaginationRepresentation);
     }
 
 
@@ -43,7 +44,7 @@ class PaginatedDecorationTest extends AbstractDecorationTest
         $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
-        $this->assertFalse($event->getControllerResult() instanceof PaginatedRepresentation);
+        $this->assertFalse($event->getControllerResult() instanceof PaginationRepresentation);
     }
 
     public function testPaginationDecorationThird ( ) {
@@ -59,7 +60,7 @@ class PaginatedDecorationTest extends AbstractDecorationTest
         $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
-        $this->assertFalse($event->getControllerResult() instanceof PaginatedRepresentation);
+        $this->assertFalse($event->getControllerResult() instanceof PaginationRepresentation);
     }
 
 
@@ -76,7 +77,7 @@ class PaginatedDecorationTest extends AbstractDecorationTest
         $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
-        $this->assertFalse($event->getControllerResult() instanceof PaginatedRepresentation);
+        $this->assertFalse($event->getControllerResult() instanceof PaginationRepresentation);
     }
 
     public function testPaginationDecorationFifth ( ) {
@@ -89,7 +90,7 @@ class PaginatedDecorationTest extends AbstractDecorationTest
         $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
-        $this->assertTrue($event->getControllerResult() instanceof PaginatedRepresentation);
+        $this->assertTrue($event->getControllerResult() instanceof PaginationRepresentation);
     }
 
     public function testPaginationDecorationSixth ( ) {
@@ -102,7 +103,7 @@ class PaginatedDecorationTest extends AbstractDecorationTest
         $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
-        $this->assertFalse($event->getControllerResult() instanceof PaginatedRepresentation);
+        $this->assertFalse($event->getControllerResult() instanceof PaginationRepresentation);
     }
 
 
@@ -116,6 +117,6 @@ class PaginatedDecorationTest extends AbstractDecorationTest
         $listener = $this->setupDecoration(PaginatedDecorationListener::class, $event);
         $listener->onKernelView($event);
 
-        $this->assertFalse($event->getControllerResult() instanceof PaginatedRepresentation);
+        $this->assertFalse($event->getControllerResult() instanceof PaginationRepresentation);
     }
 }
