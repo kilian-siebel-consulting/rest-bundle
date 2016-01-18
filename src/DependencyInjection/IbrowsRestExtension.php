@@ -2,6 +2,7 @@
 
 namespace Ibrows\RestBundle\DependencyInjection;
 
+use Ibrows\RestBundle\DependencyInjection\Compiler\CollectionDecorationListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
@@ -40,6 +41,7 @@ class IbrowsRestExtension extends Extension
         $container->addCompilerPass(new OverrideRequestConverterCompilerPass());
         $container->addCompilerPass(new DebugViewResponseListenerCompilerPass());
         $container->addCompilerPass(new ResourceTransformerCompilerPass());
+        $container->addCompilerPass(new CollectionDecorationListenerCompilerPass());
 
         $fileLocator = new FileLocator($configPath);
         $finder = new Finder();
