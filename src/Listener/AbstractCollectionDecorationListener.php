@@ -32,7 +32,7 @@ abstract class AbstractCollectionDecorationListener
             return;
         }
 
-        if(($result instanceof CollectionRepresentation || is_array($event->getControllerResult())) && $this->validateCollection($result)) {
+        if($this->validateCollection($result->getResources())) {
             $this->decorateView($event);
         }
     }
@@ -62,7 +62,7 @@ abstract class AbstractCollectionDecorationListener
 
         /** @var View $view */
         $view = $event->getRequest()->attributes->get('_view');
-        $params = $this->getParams($view, $event->getRequest());
+        $params = $event->getRequest()->attributes->all();
 
         $this->addListGroup($view);
         $this->decorate($paramFetcher, $route, $params, $response);
@@ -94,34 +94,6 @@ abstract class AbstractCollectionDecorationListener
                 ]
             ));
         }
-    }
-
-    /**
-     * @param View    $view
-     * @param Request $request
-     *
-     * @return array
-     */
-    private function getParams(View $view, Request $request)
-    {
-        $params = [];
-        if(
-            $view instanceof IbrowsView &&
-            is_array($view->getRouteParams())
-        ) {
-            /** @var IbrowsView $view */
-            foreach($view->getRouteParams() as $paramName) {
-                $param = $request->get($paramName);
-                if(
-                    is_object($param) &&
-                    method_exists($param, 'getId')
-                ) {
-                    $param = $param->getId();
-                }
-                $params[$paramName] = $param;
-            }
-        }
-        return $params;
     }
 
     /**

@@ -13,6 +13,7 @@ use Ibrows\RestBundle\Annotation\Route;
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;
 use Ibrows\RestBundle\Listener\LocationResponseListener;
+use Ibrows\RestBundle\Model\ApiListableInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -117,7 +118,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($response, $event->getResponse());
         $this->assertEquals('/test/show', $response->headers->get('Location'));
     }
-    
+
     private function getEvent(Request $request, Response $response = null)
     {
         if (null === $response) {

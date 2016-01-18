@@ -63,7 +63,8 @@ class LocationResponseListener
      */
     protected function prepareRouteParameters($params, $data){
         $newParams = $params;
-        foreach($params as $key => $val){
+        foreach($params as $key => $val)
+        {
             $newParams[$key] = $this->evaluator->evaluate($val, $data);
 
         }
