@@ -1,7 +1,6 @@
 <?php
 namespace Ibrows\RestBundle\Expression;
 
-use Hateoas\Expression\ExpressionFunctionInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class ExpressionEvaluator
@@ -51,18 +50,5 @@ class ExpressionEvaluator
         }
 
         return $expression;
-    }
-
-    public function evaluateArray(array $array, $data)
-    {
-        $newArray = array();
-        foreach ($array as $key => $value) {
-            $key   = $this->evaluate($key, $data);
-            $value = is_array($value) ? $this->evaluateArray($value, $data) : $this->evaluate($value, $data);
-
-            $newArray[$key] = $value;
-        }
-
-        return $newArray;
     }
 }

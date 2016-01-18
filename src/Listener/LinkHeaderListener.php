@@ -2,9 +2,8 @@
 namespace Ibrows\RestBundle\Listener;
 
 use Ibrows\RestBundle\Request\LinkHeader;
-use Ibrows\RestBundle\Transformer\ResourceTransformer;
+use Ibrows\RestBundle\Transformer\TransformerInterface;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -18,19 +17,19 @@ class LinkHeaderListener
     private $urlMatcher;
 
     /**
-     * @var ResourceTransformer
+     * @var TransformerInterface
      */
     private $resourceTransformer;
 
     /**
      * LinkHeaderListener constructor.
      *
-     * @param UrlMatcherInterface $urlMatcher
-     * @param ResourceTransformer $resourceTransformer
+     * @param UrlMatcherInterface  $urlMatcher
+     * @param TransformerInterface $resourceTransformer
      */
     public function __construct(
         UrlMatcherInterface $urlMatcher,
-        ResourceTransformer $resourceTransformer
+        TransformerInterface $resourceTransformer
     ) {
         $this->urlMatcher = $urlMatcher;
         $this->resourceTransformer = $resourceTransformer;

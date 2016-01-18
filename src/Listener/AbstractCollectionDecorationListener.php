@@ -3,18 +3,11 @@
 
 namespace Ibrows\RestBundle\Listener;
 
-use Doctrine\Common\Collections\Collection;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use Hateoas\Representation\AbstractSegmentedRepresentation;
-use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\Annotation\View as IbrowsView;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
-use Ibrows\RestBundle\Representation\LastIdRepresentation;
-use Ibrows\RestBundle\Representation\OffsetRepresentation;
-use Ibrows\RestBundle\Representation\PaginationRepresentation;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
@@ -28,7 +21,7 @@ abstract class AbstractCollectionDecorationListener
     {
         $result = $event->getControllerResult();
 
-        if(!$result instanceof CollectionRepresentation){
+        if (!$result instanceof CollectionRepresentation) {
             return;
         }
 
@@ -39,10 +32,12 @@ abstract class AbstractCollectionDecorationListener
 
     /**
      * @param $data
+     * @return bool isValid
      */
-    private function validateCollection($data){
-        foreach($data as $item){
-            if(!$item instanceof ApiListableInterface){
+    private function validateCollection($data)
+    {
+        foreach ($data as $item) {
+            if (!$item instanceof ApiListableInterface) {
                 return false;
             }
         }
@@ -71,9 +66,9 @@ abstract class AbstractCollectionDecorationListener
 
     /**
      * @param ParamFetcherInterface $paramFetcher
-     * @param $route
-     * @param array $params
-     * @param $response
+     * @param                       $route
+     * @param array                 $params
+     * @param                       $response
      * @return mixed
      */
     protected abstract function decorate(ParamFetcherInterface $paramFetcher, $route, array $params, & $response);
@@ -83,27 +78,31 @@ abstract class AbstractCollectionDecorationListener
      */
     private function addListGroup(View $view)
     {
-        if(
+        if (
             $view &&
             count($view->getSerializerGroups()) > 0
         ) {
-            $view->setSerializerGroups(array_merge(
-                $view->getSerializerGroups(),
-                [
-                    'hateoas_list',
-                ]
-            ));
+            $view->setSerializerGroups(
+                array_merge(
+                    $view->getSerializerGroups(),
+                    [
+                        'hateoas_list',
+                    ]
+                )
+            );
         }
     }
 
     /**
+
      * @param ParamFetcherInterface $paramFetcher
-     * @param $key
+     * @param                       $key
      * @return null
      */
-    protected function getParameter(ParamFetcherInterface $paramFetcher, $key){
+    protected function getParameter(ParamFetcherInterface $paramFetcher, $key)
+    {
         $params = $paramFetcher->all();
-        if(isset($params[$key])){
+        if (isset($params[$key])) {
             return $params[$key];
         }
         return null;
@@ -111,10 +110,11 @@ abstract class AbstractCollectionDecorationListener
 
     /**
      * @param ParamFetcherInterface $paramFetcher
-     * @param $key
+     * @param                       $key
      * @return null
      */
-    protected function hasParameter(ParamFetcherInterface $paramFetcher, $key){
+    protected function hasParameter(ParamFetcherInterface $paramFetcher, $key)
+    {
         $params = $paramFetcher->all();
 
         return array_key_exists($key, $params);

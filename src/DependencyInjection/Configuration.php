@@ -30,6 +30,7 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('singular_name')->end()
                             ->scalarNode('plural_name')->end()
                             ->scalarNode('class')->end()
+                            ->scalarNode('converter')->end()
                             ->scalarNode('identifier')
                                 ->defaultValue('id')
                             ->end()

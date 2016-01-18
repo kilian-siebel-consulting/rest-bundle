@@ -7,7 +7,7 @@ For documentation, see:
 
     src/Resources/doc/
 
-[Read the documentation](https://ibrows.codebasehq.com/projects/ibrowsch/repositories/rest-bundle/blob/master/src/Resources/doc/index.md)
+[Read the documentation](src/Resources/doc/index.md)
 
 ## License
 

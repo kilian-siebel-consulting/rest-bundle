@@ -4,6 +4,7 @@ namespace Ibrows\RestBundle\Tests\Listener;
 use Ibrows\RestBundle\Listener\LinkHeaderListener;
 use Ibrows\RestBundle\Request\LinkHeader;
 use Ibrows\RestBundle\Transformer\ResourceTransformer;
+use Ibrows\RestBundle\Transformer\TransformerInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +21,7 @@ class LinkHeaderListenerTest extends PHPUnit_Framework_TestCase
     private $urlMatcher;
 
     /**
-     * @var ResourceTransformer|PHPUnit_Framework_MockObject_MockObject
+     * @var TransformerInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $resourceTransformer;
 
@@ -138,9 +139,7 @@ class LinkHeaderListenerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->urlMatcher = $this->getMockForAbstractClass(UrlMatcherInterface::class);
-        $this->resourceTransformer = $this->getMockBuilder(ResourceTransformer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->resourceTransformer = $this->getMockForAbstractClass(TransformerInterface::class);
         $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
         $this->context = $this->getMockBuilder(RequestContext::class)
             ->disableOriginalConstructor()

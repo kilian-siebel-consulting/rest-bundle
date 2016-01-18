@@ -13,7 +13,7 @@ use Ibrows\RestBundle\Annotation\Route;
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;
 use Ibrows\RestBundle\Listener\LocationResponseListener;
-use Ibrows\RestBundle\Model\ApiListableInterface;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -27,6 +27,10 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
     private $context;
     
     private $router;
+
+    /**
+     * @var ExpressionEvaluator|PHPUnit_Framework_MockObject_MockObject
+     */
     private $evaluator;
     
     public function setUp()
@@ -88,13 +92,14 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
 
         $route = new Route();
         $route->setRoute('test_show');
-        $route->setParams(array());
+        $route->setParams(array(
+            'foo' => 'bar',
+        ));
         $route->setParameterNames(array());
         
         $view->expects($this->atLeastOnce())
             ->method('getLocation')
             ->willReturn($route);
-
 
         $this->router = $this->getMockBuilder(Router::class)
             ->disableOriginalConstructor()
@@ -103,7 +108,9 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
         $this->router
             ->expects($this->once())
             ->method('generate')
-            ->with($this->equalTo('test_show'))
+            ->with('test_show', [
+                'foo' => 'bar',
+            ])
             ->willReturn('/test/show');
         
         $response = new Response();
@@ -111,6 +118,12 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
         $event = $this->getEvent(new Request([], [], [
             '_view' => $view
         ]), $response);
+
+        $this->evaluator
+            ->expects($this->once())
+            ->method('evaluate')
+            ->with('bar', $event->getRequest()->attributes->all())
+            ->willReturn('bar');
         
         $listener = $this->getListener();
         $listener->onKernelResponse($event);

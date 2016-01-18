@@ -87,12 +87,4 @@ class PatchParamConverter extends ManipulationParamConverter
 
         return $request->attributes->get('operations');
     }
-
-    /**
-     * @return string
-     */
-    protected function getName()
-    {
-        return 'patch';
-    }
 }
