@@ -52,9 +52,27 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     /**
      * {@inheritdoc}
      */
-    public function __construct($inline, $route, array $parameters = array(), $lastId, $lastIdParamName, $limit, $limitParameterName = null, $sortBy = null, $sortDir = null, $absolute = false)
-    {
-        parent::__construct($inline, $route, $parameters, $limit, null, $limitParameterName, $absolute);
+    public function __construct(
+        $inline,
+        $route,
+        array $parameters = array(),
+        $lastId,
+        $lastIdParamName,
+        $limit,
+        $limitParameterName = null,
+        $sortBy = null,
+        $sortDir = null,
+        $absolute = false
+    ) {
+        parent::__construct(
+            $inline,
+            $route,
+            $parameters,
+            $limit,
+            null,
+            $limitParameterName,
+            $absolute
+        );
 
         $exclusion = null;
         $this->lastId = $lastId;
