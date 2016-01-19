@@ -33,6 +33,7 @@ class IbrowsRestExtension extends Extension
         $configPath = __DIR__ . '/../Resources/config';
 
         $container->setParameter('ibrows_rest.config.resources', $config['resources']);
+        $container->setParameter('ibrows_rest.config.caches', $config['caches']);
         $container->setParameter('ibrows_rest.config.param_converter', $config['param_converter']);
         $container->setParameter('ibrows_rest.config.listener.exclusion_policy', $config['listener']['exclusion_policy']);
         $container->setParameter('ibrows_rest.config.listener.debug', $config['listener']['debug']);
