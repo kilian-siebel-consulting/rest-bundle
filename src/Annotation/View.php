@@ -30,6 +30,15 @@ class View extends BaseView
     protected $cachePolicyName;
 
     /**
+     * View constructor.
+     */
+    public function __construct(array $values = array())
+    {
+        parent::__construct($values);
+    }
+
+
+    /**
      * @return array
      */
     public function getRouteParams()

@@ -29,12 +29,8 @@ class CacheHeaderListener
         $this->caches = array();
 
         foreach($caches as $cache) {
-            $arrayObject = new \ArrayObject($cache);
             $name = $cache ['name'];
-            $_cache = $arrayObject->getArrayCopy();
-
-            unset($_cache['name']);
-            $this->caches[$name] = $_cache;
+            $this->caches[$name] = $cache;
         }
     }
 

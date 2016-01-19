@@ -49,11 +49,8 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testPrivateCacheHeader()
     {
-        $view = $this->getMockBuilder(View::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $view->method('getCachePolicyName')->willReturn('test');
+        $view = new View();
+        $view->setCachePolicyName('test');
 
         $response = new Response();
 
@@ -76,11 +73,8 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testNonPrivateCacheHeader()
     {
-        $view = $this->getMockBuilder(View::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $view->method('getCachePolicyName')->willReturn('test');
+        $view = new View();
+        $view->setCachePolicyName('test');
 
         $response = new Response();
 
@@ -104,11 +98,8 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testNonExistentCache()
     {
-        $view = $this->getMockBuilder(View::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $view->method('getCachePolicyName')->willReturn('test2');
+        $view = new View();
+        $view->setCachePolicyName('test2');
 
         $response = new Response();
 
@@ -129,11 +120,8 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
      */
     public function testWrongConfig()
     {
-        $view = $this->getMockBuilder(View::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $view->method('getCachePolicyName')->willReturn('test');
+        $view = new View();
+        $view->setCachePolicyName('test');
 
         $response = new Response();
 
@@ -151,15 +139,9 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelResponse($event);
     }
 
-    /**
-     */
     public function testWrongConfig2()
     {
-        $view = $this->getMockBuilder(View::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-//        $view->method('getCachePolicyName')->willReturn('test');
+        $view = new View();
 
         $response = new Response();
 
