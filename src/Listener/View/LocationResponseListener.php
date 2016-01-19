@@ -1,12 +1,15 @@
 <?php
-namespace Ibrows\RestBundle\Listener;
+namespace Ibrows\RestBundle\Listener\View;
 
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;
+use Ibrows\RestBundle\Listener\AbstractViewResponseListener;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\Routing\RouterInterface;
 
-class LocationResponseListener
+class LocationResponseListener extends AbstractViewResponseListener
 {
     /**
      * @var RouterInterface
@@ -29,34 +32,6 @@ class LocationResponseListener
         $this->evaluator = $evaluator;
     }
 
-
-    /**
-     * {@inheritdoc}
-     */
-    public function onKernelResponse(FilterResponseEvent $event)
-    {
-        $response = $event->getResponse();
-        $request = $event->getRequest();
-
-        /** @var View $configuration */
-        $configuration = $request->attributes->get('_view');
-
-        if(
-            !$configuration instanceof View ||
-            !$configuration->getLocation()
-        ) {
-            return;
-        }
-
-        $objects = $request->attributes->all();
-
-        $params = $this->prepareRouteParameters($configuration->getLocation()->getParams(), $objects);
-        $url = $this->router->generate($configuration->getLocation()->getRoute(), $params);
-
-        $response->headers->add(array('Location' => $url));
-        $event->setResponse($response);
-    }
-
     /**
      * @param $params
      * @param $context
@@ -66,9 +41,23 @@ class LocationResponseListener
         $newParams = $params;
         foreach($params as $key => $val){
             $newParams[$key] = $this->evaluator->evaluate($val, $context);
-
         }
 
         return $newParams;
+    }
+
+    protected function onEvent(View $view, Request $request, Response $response, FilterResponseEvent $event)
+    {
+        if(!$view->getLocation()) {
+            return;
+        }
+
+        $objects = $request->attributes->all();
+
+        $params = $this->prepareRouteParameters($view->getLocation()->getParams(), $objects);
+        $url = $this->router->generate($view->getLocation()->getRoute(), $params);
+
+        $response->headers->add(array('Location' => $url));
+        $event->setResponse($response);
     }
 }

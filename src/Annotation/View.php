@@ -25,6 +25,11 @@ class View extends BaseView
     protected $location;
 
     /**
+     * @var string
+     */
+    protected $cachePolicyName;
+
+    /**
      * @return array
      */
     public function getRouteParams()
@@ -55,4 +60,21 @@ class View extends BaseView
     {
         $this->location = $location;
     }
+
+    /**
+     * @return string
+     */
+    public function getCachePolicyName()
+    {
+        return $this->cachePolicyName;
+    }
+
+    /**
+     * @param string $cachePolicyName
+     */
+    public function setCachePolicyName($cachePolicyName)
+    {
+        $this->cachePolicyName = $cachePolicyName;
+    }
+
 }
