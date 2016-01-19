@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="ibrows_rest.collection_decorator.last_id.class">Ibrows\RestBundle\CollectionDecorator\LastIdDecorator</parameter>
+        <parameter key="ibrows_rest.collection_decorator.offset.class">Ibrows\RestBundle\CollectionDecorator\OffsetDecorator</parameter>
+        <parameter key="ibrows_rest.collection_decorator.paginated.class">Ibrows\RestBundle\CollectionDecorator\PaginatedDecorator</parameter>
+    </parameters>
+    <services>
+        <service id="ibrows_rest.collection_decorator.last_id" class="%ibrows_rest.collection_decorator.last_id.class%">
+            <argument>%ibrows_rest.config.decorator.last_id%</argument>
+            <tag name="ibrows_rest.collection_decorator"/>
+        </service>
+        <service id="ibrows_rest.collection_decorator.offset" class="%ibrows_rest.collection_decorator.offset.class%">
+            <argument>%ibrows_rest.config.decorator.offset%</argument>
+            <tag name="ibrows_rest.collection_decorator"/>
+        </service>
+        <service id="ibrows_rest.collection_decorator.paginated" class="%ibrows_rest.collection_decorator.paginated.class%">
+            <argument>%ibrows_rest.config.decorator.paginated%</argument>
+            <tag name="ibrows_rest.collection_decorator"/>
+        </service>
+    </services>
+</container>

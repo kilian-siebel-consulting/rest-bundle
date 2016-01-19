@@ -2,6 +2,7 @@
 
 namespace Ibrows\RestBundle\DependencyInjection;
 
+use Ibrows\RestBundle\DependencyInjection\Compiler\CollectionDecorationListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
@@ -36,11 +37,16 @@ class IbrowsRestExtension extends Extension
         $container->setParameter('ibrows_rest.config.param_converter', $config['param_converter']);
         $container->setParameter('ibrows_rest.config.listener.exclusion_policy', $config['listener']['exclusion_policy']);
         $container->setParameter('ibrows_rest.config.listener.debug', $config['listener']['debug']);
+        $container->setParameter('ibrows_rest.config.listener.collection_decorator', $config['listener']['collection_decorator']);
+        $container->setParameter('ibrows_rest.config.decorator.paginated', $config['decorator']['paginated']);
+        $container->setParameter('ibrows_rest.config.decorator.offset', $config['decorator']['offset']);
+        $container->setParameter('ibrows_rest.config.decorator.last_id', $config['decorator']['last_id']);
 
         $container->addCompilerPass(new ParamConvertersCompilerPass());
         $container->addCompilerPass(new OverrideRequestConverterCompilerPass());
         $container->addCompilerPass(new DebugViewResponseListenerCompilerPass());
         $container->addCompilerPass(new ResourceTransformerCompilerPass());
+        $container->addCompilerPass(new CollectionDecorationListenerCompilerPass());
 
         $fileLocator = new FileLocator($configPath);
         $finder = new Finder();
