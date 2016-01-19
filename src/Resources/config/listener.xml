@@ -15,6 +15,8 @@
         <parameter key="ibrows_rest.listener.view.cache.class">Ibrows\RestBundle\Listener\CacheHeaderListener</parameter>
         <parameter key="ibrows_rest.listener.exclusion_policy.class">Ibrows\RestBundle\Listener\ExclusionPolicyResponseListener</parameter>
         <parameter key="ibrows_rest.listener.collection.class">Ibrows\RestBundle\Listener\CollectionDecorationListener</parameter>
+        <parameter key="ibrows_rest.listener.etag.class">Ibrows\RestBundle\Listener\EtagResponseListener</parameter>
+        <parameter key="ibrows_rest.listener.if_none_match.class">Ibrows\RestBundle\Listener\IfNonMatchResponseListener</parameter>
     </parameters>
     <services>
         <service id="ibrows_rest.listener.link_header" class="%ibrows_rest.listener.link_header.class%">
@@ -28,7 +30,17 @@
             <call method="setProfilerListener">
                 <argument type="service" id="profiler_listener" on-invalid="ignore" />
             </call>
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="-99999" />
+        </service>
+
+        <service id="ibrows_rest.listener.etag" class="%ibrows_rest.listener.etag.class%">
+            <argument>%ibrows_rest.config.listener.etag%</argument>
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="-500" />
+        </service>
+
+        <service id="ibrows_rest.listener.if_none_match" class="%ibrows_rest.listener.if_none_match.class%">
+            <argument>%ibrows_rest.config.listener.if_none_match%</argument>
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="-501" />
         </service>
 
         <service id="ibrows_rest.listener.collection" class="%ibrows_rest.listener.collection.class%">
@@ -36,19 +48,6 @@
             <argument type="service" id="ibrows_rest.resource_transformer" />
             <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200" />
         </service>
-
-        <service id="ibrows_rest.listener.representation.lastid" class="%ibrows_rest.listener.representation.lastid.class%">
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="400" />
-        </service>
-
-        <service id="ibrows_rest.listener.representation.offset" class="%ibrows_rest.listener.representation.offset.class%">
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="401" />
-        </service>
-
-        <service id="ibrows_rest.listener.representation.paginated" class="%ibrows_rest.listener.representation.paginated.class%">
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="402" />
-        </service>
-        <!-- REPRESENTATION LISTENER END -->
 
         <!-- VIEW RESPONSE LISTENER -->
         <service id="ibrows_rest.listener.view.location" class="%ibrows_rest.listener.view.location.class%">
