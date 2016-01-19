@@ -37,6 +37,8 @@ class IbrowsRestExtension extends Extension
         $container->setParameter('ibrows_rest.config.listener.exclusion_policy', $config['listener']['exclusion_policy']);
         $container->setParameter('ibrows_rest.config.listener.debug', $config['listener']['debug']);
         $container->setParameter('ibrows_rest.config.listener.collection_decorator', $config['listener']['collection_decorator']);
+        $container->setParameter('ibrows_rest.config.listener.etag', $config['listener']['etag']);
+        $container->setParameter('ibrows_rest.config.listener.if_none_match', $config['listener']['if_none_match']);
         $container->setParameter('ibrows_rest.config.decorator.paginated', $config['decorator']['paginated']);
         $container->setParameter('ibrows_rest.config.decorator.offset', $config['decorator']['offset']);
         $container->setParameter('ibrows_rest.config.decorator.last_id', $config['decorator']['last_id']);

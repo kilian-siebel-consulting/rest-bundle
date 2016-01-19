@@ -46,6 +46,8 @@ file of your project:
 - Exclusion Policy Listener - [Read Documentation](listener/exclusion_policy_response_listener.md)
 - Location Response Listener - [Read Documentation](listener/location_response_listener.md)
 - Collection Decoration Listener - [Read Documentation](listener/collection_decoration_listener.md)
+- ETag Response Listener - [Read Documentation](listener/etag_response_listener.md)
+- If-None-Match Response Listener - [Read Documentation](listener/if_none_match_response_listener.md)
 
 ## Param Converters
 - `abstract ManipulateParamConverter` - [Read Documentation](param_converter/manipulate_param_converter.md)
@@ -81,6 +83,11 @@ The patching system is used to apply patches to an object in the `PatchParamConv
                 enabled: false
                 param_name: expolicy
             collection_decorator:
+                enabled: false
+            etag:
+                enabled: false
+                hashing_algorithm: crc32
+            if_none_match:
                 enabled: false
                
 ```
