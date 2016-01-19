@@ -1,15 +1,14 @@
 <?php
-namespace Ibrows\RestBundle\Listener\View;
+namespace Ibrows\RestBundle\Listener;
 
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;
-use Ibrows\RestBundle\Listener\AbstractViewResponseListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\Routing\RouterInterface;
 
-class LocationResponseListener extends AbstractViewResponseListener
+class LocationResponseListener
 {
     /**
      * @var RouterInterface
@@ -33,6 +32,31 @@ class LocationResponseListener extends AbstractViewResponseListener
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        $response = $event->getResponse();
+        $request = $event->getRequest();
+
+        /** @var View $configuration */
+        $view = $request->attributes->get('_view');
+
+        if(!$view instanceof View || !$view->getLocation()) {
+            return;
+        }
+
+        $objects = $request->attributes->all();
+
+        $params = $this->prepareRouteParameters($view->getLocation()->getParams(), $objects);
+        $url = $this->router->generate($view->getLocation()->getRoute(), $params);
+
+        $response->headers->add(array('Location' => $url));
+        $event->setResponse($response);
+    }
+
+
+    /**
      * @param $params
      * @param $context
      * @return mixed
@@ -46,18 +70,4 @@ class LocationResponseListener extends AbstractViewResponseListener
         return $newParams;
     }
 
-    protected function onEvent(View $view, Request $request, Response $response, FilterResponseEvent $event)
-    {
-        if(!$view->getLocation()) {
-            return;
-        }
-
-        $objects = $request->attributes->all();
-
-        $params = $this->prepareRouteParameters($view->getLocation()->getParams(), $objects);
-        $url = $this->router->generate($view->getLocation()->getRoute(), $params);
-
-        $response->headers->add(array('Location' => $url));
-        $event->setResponse($response);
-    }
 }

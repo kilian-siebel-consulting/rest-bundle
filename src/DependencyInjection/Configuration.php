@@ -41,7 +41,7 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('name')->end()
-                            ->integerNode('timetolife')->defaultValue(3600)->end()
+                            ->integerNode('max_age')->defaultValue(3600)->end()
                             ->enumNode('type')->values(array('private', 'public', 'nocache', 'nostore'))->end()
                         ->end()
                     ->end()

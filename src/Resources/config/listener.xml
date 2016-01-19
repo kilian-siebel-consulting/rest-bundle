@@ -11,8 +11,8 @@
         <parameter key="ibrows_rest.listener.representation.lastid.class">Ibrows\RestBundle\Listener\Decoration\LastIdDecorationListener</parameter>
         <parameter key="ibrows_rest.listener.representation.offset.class">Ibrows\RestBundle\Listener\Decoration\OffsetDecorationListener</parameter>
         <parameter key="ibrows_rest.listener.representation.paginated.class">Ibrows\RestBundle\Listener\Decoration\PaginatedDecorationListener</parameter>
-        <parameter key="ibrows_rest.listener.view.location.class">Ibrows\RestBundle\Listener\View\LocationResponseListener</parameter>
-        <parameter key="ibrows_rest.listener.view.cache.class">Ibrows\RestBundle\Listener\View\CacheHeaderListener</parameter>
+        <parameter key="ibrows_rest.listener.view.location.class">Ibrows\RestBundle\Listener\LocationResponseListener</parameter>
+        <parameter key="ibrows_rest.listener.view.cache.class">Ibrows\RestBundle\Listener\CacheHeaderListener</parameter>
         <parameter key="ibrows_rest.listener.exclusion_policy.class">Ibrows\RestBundle\Listener\ExclusionPolicyResponseListener</parameter>
         <parameter key="ibrows_rest.listener.collection.class">Ibrows\RestBundle\Listener\CollectionDecorationListener</parameter>
     </parameters>

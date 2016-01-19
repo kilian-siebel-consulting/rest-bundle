@@ -2,6 +2,7 @@
 
 namespace Ibrows\RestBundle\DependencyInjection;
 
+use Ibrows\RestBundle\Cache\CachePolicy;
 use Ibrows\RestBundle\DependencyInjection\Compiler\CollectionDecorationListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;

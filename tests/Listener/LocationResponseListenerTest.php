@@ -12,7 +12,7 @@ namespace Ibrows\RestBundle\Tests\Listener;
 use Ibrows\RestBundle\Annotation\Route;
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;
-use Ibrows\RestBundle\Listener\View\LocationResponseListener;
+use Ibrows\RestBundle\Listener\LocationResponseListener;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,7 +71,6 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $view
-            ->expects($this->once())
             ->method('getLocation')
             ->willReturn('');
 

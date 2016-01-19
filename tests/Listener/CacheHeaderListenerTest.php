@@ -7,10 +7,10 @@ namespace Ibrows\RestBundle\Tests\Listener;
 
 use Ibrows\RestBundle\Annotation\Route;
 use Ibrows\RestBundle\Annotation\View;
-use Ibrows\RestBundle\Cache\CachePolicy;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;
-use Ibrows\RestBundle\Listener\View\CacheHeaderListener;
-use Ibrows\RestBundle\Listener\View\LocationResponseListener;
+use Ibrows\RestBundle\Listener\CacheHeaderListener;
+use Ibrows\RestBundle\Listener\LocationResponseListener;
+use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,8 +64,8 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new CacheHeaderListener(
             array([
                 'name' => 'test',
-                'timetolife' => 3600,
-                'type' => CachePolicy::TYPE_PRIVATE
+                'max_age' => 3600,
+                'type' => CacheHeaderListener::TYPE_PRIVATE
             ])
         );
         $listener->onKernelResponse($event);
@@ -91,8 +91,8 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new CacheHeaderListener(
             array([
                 'name' => 'test',
-                'timetolife' => 3600,
-                'type' => CachePolicy::TYPE_PUBLIC
+                'max_age' => 3600,
+                'type' => CacheHeaderListener::TYPE_PUBLIC
             ])
         );
         $listener->onKernelResponse($event);
@@ -101,13 +101,14 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('max-age=3600, public', $response->headers->get('Cache-Control'));
     }
 
-    public function testNoStoreCacheHeader()
+
+    public function testNonExistentCache()
     {
         $view = $this->getMockBuilder(View::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $view->method('getCachePolicyName')->willReturn('test');
+        $view->method('getCachePolicyName')->willReturn('test2');
 
         $response = new Response();
 
@@ -115,20 +116,18 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
             '_view' => $view
         ]), $response);
 
-        $listener = new CacheHeaderListener(
-            array([
-                'name' => 'test',
-                'timetolife' => 3600,
-                'type' => CachePolicy::TYPE_NO_STORE
-            ])
-        );
+        $listener = new CacheHeaderListener(array());
         $listener->onKernelResponse($event);
 
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-store, private', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
     }
 
-    public function testNoCacheCacheHeader()
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWrongConfig()
     {
         $view = $this->getMockBuilder(View::class)
             ->disableOriginalConstructor()
@@ -145,14 +144,39 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new CacheHeaderListener(
             array([
                 'name' => 'test',
-                'timetolife' => 3600,
-                'type' => CachePolicy::TYPE_NO_CACHE
+                'max_age' => 3600,
+                'type' => "YOLO"
             ])
         );
         $listener->onKernelResponse($event);
+    }
 
+    /**
+     */
+    public function testWrongConfig2()
+    {
+        $view = $this->getMockBuilder(View::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+//        $view->method('getCachePolicyName')->willReturn('test');
+
+        $response = new Response();
+
+        $event = $this->getEvent(new Request([], [], [
+            '_view' => $view
+        ]), $response);
+
+        $listener = new CacheHeaderListener(
+            array([
+                'name' => 'test',
+                'max_age' => 3600,
+                'type' => CacheHeaderListener::TYPE_PRIVATE
+            ])
+        );
+        $listener->onKernelResponse($event);
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-cache, private', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
     }
 
     private function getEvent(Request $request, Response $response = null)
