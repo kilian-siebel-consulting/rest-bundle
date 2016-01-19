@@ -11,7 +11,6 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class CacheHeaderListener
 {
-
     const TYPE_PRIVATE = 'private';
     const TYPE_PUBLIC = 'public';
 
@@ -27,10 +26,6 @@ class CacheHeaderListener
     public function __construct($caches)
     {
         $this->caches = array();
-
-        foreach($caches as $name => $cache) {
-            $this->caches[$name] = $cache;
-        }
     }
 
     /**
@@ -64,7 +59,7 @@ class CacheHeaderListener
         }elseif($policy['type'] == self::TYPE_PRIVATE){
             $config['private'] = true;
         }else{
-            throw new \InvalidArgumentException('Type '.$policy["type"].' not allowed');
+            throw new \InvalidArgumentException('Type '.$policy['type'].' not allowed');
         }
 
         $response->setCache($config);
