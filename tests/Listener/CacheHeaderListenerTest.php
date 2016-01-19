@@ -130,7 +130,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new CacheHeaderListener(
             array('test' => [
                 'max_age' => 3600,
-                'type' => "YOLO"
+                'type' => 'YOLO'
             ])
         );
         $listener->onKernelResponse($event);

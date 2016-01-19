@@ -25,7 +25,7 @@ class CacheHeaderListener
      */
     public function __construct($caches)
     {
-        $this->caches = array();
+        $this->caches = $caches;
     }
 
     /**
