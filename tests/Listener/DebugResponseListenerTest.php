@@ -114,7 +114,7 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
                     'ip'         => '8.8.8.8',
                     'method'     => Request::METHOD_HEAD,
                     'url'        => '/some/url',
-                    'time'       => '1970-01-12T14:46:40+01:00',
+                    'time'       => date('c', 1000000),
                     'statusCode' => Response::HTTP_I_AM_A_TEAPOT,
                     'foo'        => 'bar',
                 ],
