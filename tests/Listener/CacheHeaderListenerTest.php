@@ -59,8 +59,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         ]), $response);
 
         $listener = new CacheHeaderListener(
-            array([
-                'name' => 'test',
+            array('test' => [
                 'max_age' => 3600,
                 'type' => CacheHeaderListener::TYPE_PRIVATE
             ])
@@ -83,8 +82,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         ]), $response);
 
         $listener = new CacheHeaderListener(
-            array([
-                'name' => 'test',
+            array('test' => [
                 'max_age' => 3600,
                 'type' => CacheHeaderListener::TYPE_PUBLIC
             ])
@@ -130,8 +128,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         ]), $response);
 
         $listener = new CacheHeaderListener(
-            array([
-                'name' => 'test',
+            array('test' => [
                 'max_age' => 3600,
                 'type' => "YOLO"
             ])
@@ -150,8 +147,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         ]), $response);
 
         $listener = new CacheHeaderListener(
-            array([
-                'name' => 'test',
+            array('test' => [
                 'max_age' => 3600,
                 'type' => CacheHeaderListener::TYPE_PRIVATE
             ])

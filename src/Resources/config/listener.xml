@@ -50,13 +50,13 @@
         </service>
 
         <!-- VIEW RESPONSE LISTENER -->
-        <service id="ibrows_rest.listener.view.location" class="%ibrows_rest.listener.view.location.class%">
+        <service id="ibrows_rest.listener.location" class="%ibrows_rest.listener.view.location.class%">
             <argument type="service" id="router"/>
             <argument type="service" id="ibrows_rest.utils.expression_evaluator"/>
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="199" />
         </service>
 
-        <service id="ibrows_rest.listener.view.cache" class="%ibrows_rest.listener.view.cache.class%">
+        <service id="ibrows_rest.listener.cache" class="%ibrows_rest.listener.view.cache.class%">
             <argument>%ibrows_rest.config.caches%</argument>
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="199" />
         </service>

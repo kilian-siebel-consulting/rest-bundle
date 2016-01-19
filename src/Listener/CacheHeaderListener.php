@@ -28,8 +28,7 @@ class CacheHeaderListener
     {
         $this->caches = array();
 
-        foreach($caches as $cache) {
-            $name = $cache ['name'];
+        foreach($caches as $name => $cache) {
             $this->caches[$name] = $cache;
         }
     }
