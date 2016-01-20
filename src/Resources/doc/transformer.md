@@ -13,14 +13,14 @@ The transformer can be loaded using the service id `ibrows_rest.resource_transfo
             -   singular_name: resourceName
                 plural_name: resourcesName
                 class: resourceClass
-                converter: converterName
+                converter: converterServiceId
 ```
 
 Parameters:
  - `singular_name` - the name of the resource (for example "car")
  - `plural_name` - the plural name of the resource (for example "cars")
  - `class` - The class of the resource
- - `converter` - The converter which should search for the resource
+ - `converter` - The converter service id which should search for the resource
  
 ## Methods
  - `getResourceProxy(string): object|null` - get a proxy object for a resource by the specified path
@@ -29,16 +29,8 @@ Parameters:
  - `getResourcePath(ApiListableInterface): string|null` - get the path for the object
  
 ## Converters
-Converters must be tagged with the tag `ibrows_rest.resource_transformer.converter`. The additional attribute `converter="name"` must be specified.
-
-**Example:**
-
-```xml
-    <service id="ibrows_rest.resource_transformer.converter.something" class="%ibrows_rest.resource_transformer.converter.something.class%">
-        <tag name="ibrows_rest.resource_transformer.converter" converter="something" />
-    </service>
-```
+Converters must implement the `Ibrows\RestBundle\Transformer\Converter\ConverterInterface` interface and be registered as a service.
 
 ### Default Converters
 #### Doctrine
-There is a default converter for doctrine. The name to use in the config is `doctrine`.
+There is a default converter for doctrine. The service id to use in the config is `ibrows_rest.resource_transformer.converter.doctrine`.
