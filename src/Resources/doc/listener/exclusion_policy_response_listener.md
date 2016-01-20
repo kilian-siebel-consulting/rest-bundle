@@ -37,3 +37,12 @@ The name of the query parameter is of course given by the `param_name` configura
 In this example we have two serialization groups we want to use: `car_list` and `car_detail`. You *should* limit the 
 list of possible values in the `requirements` of the `QueryParam` annotation. You *should* also supply a default value
 in case the action is called without the parameter.
+
+**Important**: Please bear in mind that you can also set the default exclusion policy using the `serializerGroups` 
+attribute of the `View`-annotation. The default exclusion policy set by the View-Annotation is not overwritten by
+the exclusion policy listener. You have two options: 
+
+- You can remove the `serializerGroups` attribute and set the default in the 
+  `QueryParam`-annotation, so there is no conflict with the `View`-annotation.
+- You have to set a careful default in the `View` which exposes only the minimal ammount of fields. So that
+  any serialization group added by the exclusion policy listener just extends the ammount of fields returned.
