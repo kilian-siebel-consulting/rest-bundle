@@ -52,12 +52,7 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
      */
     protected function getListener()
     {
-        $listener = new CollectionDecorationListener(
-            [
-                'enabled' => true,
-            ],
-            $this->resourceTransformer
-        );
+        $listener = new CollectionDecorationListener([], $this->resourceTransformer);
 
         $listener->addDecorator($this->decorator);
 

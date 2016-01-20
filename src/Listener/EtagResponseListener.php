@@ -7,11 +7,6 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 class EtagResponseListener
 {
     /**
-     * @var boolean
-     */
-    private $enabled;
-
-    /**
      * @var string
      */
     private $hashingAlgorithm;
@@ -23,7 +18,6 @@ class EtagResponseListener
     public function __construct(
         array $configuration
     ) {
-        $this->enabled = $configuration['enabled'];
         $this->hashingAlgorithm = $configuration['hashing_algorithm'];
     }
 
@@ -33,7 +27,6 @@ class EtagResponseListener
     public function onKernelResponse(FilterResponseEvent $event)
     {
         if (
-            $this->enabled &&
             in_array($event->getRequest()->getMethod(), [Request::METHOD_GET, Request::METHOD_HEAD]) &&
             $event->getResponse()->isSuccessful()
         ) {

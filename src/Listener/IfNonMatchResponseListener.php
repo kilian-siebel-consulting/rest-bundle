@@ -5,10 +5,6 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class IfNonMatchResponseListener
 {
-    /**
-     * @var boolean
-     */
-    private $enabled;
 
     /**
      * DebugViewResponseListener constructor.
@@ -17,7 +13,6 @@ class IfNonMatchResponseListener
     public function __construct(
         array $configuration
     ) {
-        $this->enabled = $configuration['enabled'];
     }
 
     /**
@@ -25,10 +20,7 @@ class IfNonMatchResponseListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (
-            $this->enabled &&
-            $event->getResponse()->isNotModified($event->getRequest())
-        ) {
+        if ($event->getResponse()->isNotModified($event->getRequest())) {
             $event->getResponse()->setNotModified();
         }
     }

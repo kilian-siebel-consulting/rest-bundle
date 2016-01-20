@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="ibrows_rest.listener.link_header.class">Ibrows\RestBundle\Listener\LinkHeaderListener</parameter>
+    </parameters>
+    <services>
+        <service id="ibrows_rest.listener.link_header" class="%ibrows_rest.listener.link_header.class%">
+            <argument type="service" id="router"/>
+            <argument type="service" id="ibrows_rest.resource_transformer"/>
+            <tag name="kernel.event_listener" event="kernel.request"/>
+        </service>
+    </services>
+</container>

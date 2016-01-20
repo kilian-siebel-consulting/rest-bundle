@@ -16,11 +16,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 class ExclusionPolicyResponseListener
 {
     /**
-     * @var bool
-     */
-    private $enabled;
-
-    /**
      * @var string
      */
     private $paramName;
@@ -30,7 +25,6 @@ class ExclusionPolicyResponseListener
      */
     public function __construct(array $config)
     {
-        $this->enabled = $config['enabled'];
         $this->paramName = $config['param_name'];
     }
 
@@ -40,7 +34,6 @@ class ExclusionPolicyResponseListener
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         if (
-            !$this->enabled ||
             !$event->getRequest()->attributes->has('paramFetcher') ||
             !$event->getRequest()->attributes->has('_view')
         ) {
@@ -55,14 +48,14 @@ class ExclusionPolicyResponseListener
 
         try {
             $e = $paramFetcher->get($this->paramName);
-        } catch(\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             // There is no way to check if a param exists without catching an exception
             return;
         }
 
-        $groups = [ $e ];
+        $groups = [$e];
 
-        if(is_array($origGroups = $view->getSerializerGroups())) {
+        if (is_array($origGroups = $view->getSerializerGroups())) {
             $groups = array_merge($origGroups, $groups);
         }
 

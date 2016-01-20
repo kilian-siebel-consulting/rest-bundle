@@ -3,7 +3,7 @@
 namespace Ibrows\RestBundle;
 
 use Ibrows\RestBundle\DependencyInjection\Compiler\CollectionDecorationListenerCompilerPass;
-use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerCompilerPass;
+use Ibrows\RestBundle\DependencyInjection\Compiler\DebugResponseListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ResourceTransformerCompilerPass;
@@ -20,7 +20,7 @@ class IbrowsRestBundle extends Bundle
         parent::build($container);
         $container->addCompilerPass(new ParamConvertersCompilerPass());
         $container->addCompilerPass(new OverrideRequestConverterCompilerPass());
-        $container->addCompilerPass(new DebugViewResponseListenerCompilerPass());
+        $container->addCompilerPass(new DebugResponseListenerCompilerPass());
         $container->addCompilerPass(new ResourceTransformerCompilerPass());
         $container->addCompilerPass(new CollectionDecorationListenerCompilerPass());
     }

@@ -2,16 +2,8 @@
 
 namespace Ibrows\RestBundle\DependencyInjection;
 
-use Ibrows\RestBundle\Cache\CachePolicy;
-use Ibrows\RestBundle\DependencyInjection\Compiler\CollectionDecorationListenerCompilerPass;
-use Ibrows\RestBundle\DependencyInjection\Compiler\DebugViewResponseListenerCompilerPass;
-use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
-use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
-use Ibrows\RestBundle\DependencyInjection\Compiler\ResourceTransformerCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
@@ -29,35 +21,32 @@ class IbrowsRestExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
-        $configPath = __DIR__ . '/../Resources/config';
+        $configuration = $this->processConfiguration(new Configuration(), $configs);
 
-        $container->setParameter('ibrows_rest.config.resources', $config['resources']);
-        $container->setParameter('ibrows_rest.config.caches', $config['caches']);
-        $container->setParameter('ibrows_rest.config.param_converter', $config['param_converter']);
-        $container->setParameter('ibrows_rest.config.listener.exclusion_policy', $config['listener']['exclusion_policy']);
-        $container->setParameter('ibrows_rest.config.listener.debug', $config['listener']['debug']);
-        $container->setParameter('ibrows_rest.config.listener.collection_decorator', $config['listener']['collection_decorator']);
-        $container->setParameter('ibrows_rest.config.listener.etag', $config['listener']['etag']);
-        $container->setParameter('ibrows_rest.config.listener.if_none_match', $config['listener']['if_none_match']);
-        $container->setParameter('ibrows_rest.config.decorator.paginated', $config['decorator']['paginated']);
-        $container->setParameter('ibrows_rest.config.decorator.offset', $config['decorator']['offset']);
-        $container->setParameter('ibrows_rest.config.decorator.last_id', $config['decorator']['last_id']);
+        $container->setParameter('ibrows_rest.config.resources', $configuration['resources']);
+        $container->setParameter('ibrows_rest.config.caches', $configuration['caches']);
+        $container->setParameter('ibrows_rest.config.param_converter', $configuration['param_converter']);
 
-        $container->addCompilerPass(new ParamConvertersCompilerPass());
-        $container->addCompilerPass(new OverrideRequestConverterCompilerPass());
-        $container->addCompilerPass(new DebugViewResponseListenerCompilerPass());
-        $container->addCompilerPass(new ResourceTransformerCompilerPass());
-        $container->addCompilerPass(new CollectionDecorationListenerCompilerPass());
-
-        $fileLocator = new FileLocator($configPath);
-        $finder = new Finder();
+        $fileLocator = new FileLocator( __DIR__ . '/../Resources/config');
 
         $loader = new XmlFileLoader($container, $fileLocator);
-        /** @var SplFileInfo $xml */
-        foreach($finder->in($configPath)->name('*.xml') as $xml){
-            $loader->load($xml->getRelativePathname());
+        $loader->load('collection_decorator.xml');
+        $loader->load('debug_converter.xml');
+        $loader->load('param_converter.xml');
+        $loader->load('patch.xml');
+        $loader->load('transformer.xml');
+        $loader->load('utils.xml');
+
+        // Listeners are loaded dynamically according to the configuration.
+        foreach ($configuration['listener'] as $name => $listener) {
+            if ($listener['enabled']) {
+                $loader->load('listener/' . $name . '.xml');
+            }
+            $container->setParameter('ibrows_rest.config.listener.' . $name, $listener);
+        }
+
+        foreach ($configuration['decorator'] as $name => $decorator) {
+            $container->setParameter('ibrows_rest.config.decorator.' . $name, $decorator);
         }
     }
 }

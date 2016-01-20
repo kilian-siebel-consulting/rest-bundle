@@ -86,8 +86,6 @@ class IfNoneMatchResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     private function getListener()
     {
-        return new IfNonMatchResponseListener([
-            'enabled' => true,
-        ]);
+        return new IfNonMatchResponseListener([]);
     }
 }

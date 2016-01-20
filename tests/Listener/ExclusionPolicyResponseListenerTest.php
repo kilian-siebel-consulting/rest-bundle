@@ -32,15 +32,6 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
     }
 
 
-    public function testDoNothingWhenDisabled()
-    {
-        $listener = $this->getListener(false);
-        $event = $this->getEvent(false, '_expolicy', 'whatever', 'whatever');
-
-        $listener->onKernelView($event);
-    }
-
-
     public function testReturnPolicyNameWhenSet()
     {
         $listener = $this->getListener(true, '_expolicy');
@@ -87,16 +78,17 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
 
 
     /**
-     * @param bool $enabled
+     * @param bool   $enabled
      * @param string $paramName
      * @return ExclusionPolicyResponseListener
      */
     private function getListener($enabled = true, $paramName = '_expolicy')
     {
-        return new ExclusionPolicyResponseListener([
-            'enabled'    => $enabled,
-            'param_name' => $paramName
-        ]);
+        return new ExclusionPolicyResponseListener(
+            [
+                'param_name' => $paramName
+            ]
+        );
     }
 
     /**
@@ -129,7 +121,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $enabled
+     * @param       $enabled
      * @param array $result
      * @return View
      */
@@ -149,10 +141,10 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param boolean $enabled
-     * @param string $paramName
+     * @param boolean     $enabled
+     * @param string      $paramName
      * @param string|null $paramValue
-     * @param string $defaultValue
+     * @param string      $defaultValue
      * @return ParamFetcher
      */
     private function getParamFetcher($enabled, $paramName, $paramValue, $defaultValue)

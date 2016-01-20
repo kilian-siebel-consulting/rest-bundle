@@ -15,11 +15,11 @@ class CollectionDecorationListenerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->findDefinition('ibrows_rest.listener.collection');
-
-        if(!$definition) {
+        if (!$container->hasDefinition('ibrows_rest.listener.collection_decorator')) {
             return;
         }
+
+        $definition = $container->findDefinition('ibrows_rest.listener.collection_decorator');
 
         $taggedServices = $container->findTaggedServiceIds(
             'ibrows_rest.collection_decorator'

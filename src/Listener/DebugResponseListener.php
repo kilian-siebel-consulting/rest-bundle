@@ -12,10 +12,6 @@ use Symfony\Component\HttpKernel\Profiler\Profile;
 
 class DebugResponseListener
 {
-    /**
-     * @var boolean
-     */
-    private $enabled;
 
     /**
      * @var string
@@ -39,7 +35,6 @@ class DebugResponseListener
     public function __construct(
         array $configuration
     ) {
-        $this->enabled = $configuration['enabled'];
         $this->keyName = $configuration['key_name'];
         $this->profilerListener = null;
         $this->converters = [];
@@ -51,20 +46,11 @@ class DebugResponseListener
     public function onKernelResponse(FilterResponseEvent $event)
     {
         if (
-            $this->isEnabled() &&
+            $this->profilerListener !== null &&
             $this->isSuitableEvent($event)
         ) {
             $this->appendDebugInformation($event);
         }
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isEnabled()
-    {
-        return $this->enabled &&
-            $this->profilerListener !== null;
     }
 
     /**
@@ -74,8 +60,8 @@ class DebugResponseListener
     protected function isSuitableEvent(FilterResponseEvent $event)
     {
         return $event->isMasterRequest() &&
-            $event->getResponse()->headers->get('Content-Type') === 'application/json' &&
-            $event->getResponse()->getContent() != null;
+        $event->getResponse()->headers->get('Content-Type') === 'application/json' &&
+        $event->getResponse()->getContent() != null;
     }
 
     /**
@@ -176,7 +162,7 @@ class DebugResponseListener
             $matchingConverters,
             function (ConverterInterface $converter) use ($collector, & $debugInformation) {
                 if (
-                    $data = $converter->convert($collector)
+                $data = $converter->convert($collector)
                 ) {
                     $debugInformation[$converter->getName()] = $data;
                 }

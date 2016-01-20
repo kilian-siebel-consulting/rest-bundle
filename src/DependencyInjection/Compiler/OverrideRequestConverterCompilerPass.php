@@ -14,10 +14,11 @@ class OverrideRequestConverterCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('fos_rest.converter.request_body');
-        if(!$definition) {
+        if (!$container->hasDefinition('fos_rest.converter.request_body')) {
             return;
         }
+
+        $definition = $container->getDefinition('fos_rest.converter.request_body');
 
         $arguments = $definition->getArguments();
         array_unshift($arguments, $container->getParameter('ibrows_rest.config.param_converter'));

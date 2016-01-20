@@ -11,15 +11,15 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @codeCoverageIgnore
  */
-class DebugViewResponseListenerCompilerPass implements CompilerPassInterface
+class DebugResponseListenerCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->findDefinition('ibrows_rest.listener.view_debug');
-
-        if(!$definition) {
+        if (!$container->hasDefinition('ibrows_rest.listener.debug')) {
             return;
         }
+
+        $definition = $container->findDefinition('ibrows_rest.listener.debug');
 
         $taggedServices = $container->findTaggedServiceIds(
             'ibrows_rest.listener.view_debug.converter'

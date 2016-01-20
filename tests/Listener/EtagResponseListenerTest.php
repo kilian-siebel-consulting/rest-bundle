@@ -93,8 +93,8 @@ class EtagResponseListenerTest extends PHPUnit_Framework_TestCase
     public function getMethodsProvider()
     {
         return [
-            [ Request::METHOD_GET ],
-            [ Request::METHOD_HEAD ],
+            [Request::METHOD_GET],
+            [Request::METHOD_HEAD],
         ];
     }
 
@@ -104,14 +104,14 @@ class EtagResponseListenerTest extends PHPUnit_Framework_TestCase
     public function otherMethodsProvider()
     {
         return [
-            [ Request::METHOD_POST ],
-            [ Request::METHOD_PUT ],
-            [ Request::METHOD_DELETE ],
-            [ Request::METHOD_PATCH ],
-            [ Request::METHOD_OPTIONS ],
-            [ Request::METHOD_PURGE ],
-            [ Request::METHOD_TRACE ],
-            [ Request::METHOD_CONNECT ],
+            [Request::METHOD_POST],
+            [Request::METHOD_PUT],
+            [Request::METHOD_DELETE],
+            [Request::METHOD_PATCH],
+            [Request::METHOD_OPTIONS],
+            [Request::METHOD_PURGE],
+            [Request::METHOD_TRACE],
+            [Request::METHOD_CONNECT],
         ];
     }
 
@@ -131,9 +131,10 @@ class EtagResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     private function getListener($algorithm = 'md5')
     {
-        return new EtagResponseListener([
-            'enabled' => true,
-            'hashing_algorithm' => $algorithm,
-        ]);
+        return new EtagResponseListener(
+            [
+                'hashing_algorithm' => $algorithm,
+            ]
+        );
     }
 }

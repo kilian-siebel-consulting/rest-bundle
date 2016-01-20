@@ -127,7 +127,6 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
     {
         $listener = new DebugResponseListener(
             [
-                'enabled'  => false,
                 'key_name' => '_debug'
             ]
         );
@@ -144,7 +143,7 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
             ),
             200,
             [
-                'Content-Type'       => 'application/json',
+                'Content-Type' => 'application/json',
             ]
         );
 
@@ -156,7 +155,7 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                'some'   => [
+                'some' => [
                     'data',
                 ],
             ],
@@ -185,7 +184,7 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
             ),
             200,
             [
-                'Content-Type'       => 'application/json',
+                'Content-Type' => 'application/json',
             ]
         );
 
@@ -197,7 +196,7 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                'some'   => [
+                'some' => [
                     'data',
                 ],
             ],
