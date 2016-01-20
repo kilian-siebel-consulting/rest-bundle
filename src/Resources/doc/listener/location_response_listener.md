@@ -3,8 +3,13 @@
 This listener allows you to define a location header using an annotation. 
 
 ## Configuration
-
-Currently there is no configuration required - the listener ist active by default.
+```yml
+    ibrows_rest:
+        listener:
+            location:
+                enabled: false
+```
+ - The `enabled` boolean setting allows you to enable or disable the listener globally (default: `false`).
 
 ## Usage
 

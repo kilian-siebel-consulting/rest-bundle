@@ -12,6 +12,18 @@ The same as any `ManipulateParamConverter`.
 Additional Options:
 - `relations: string[]` - The name of the supported Relations. **The method get{Relation} has to exist on the object!**
 
+### Configuration
+The LinkHeaderListener has to be enabled.
+
+```yaml
+    # app/config/config*.yml
+    
+    ibrows_rest:
+        listener:
+            link_header:
+                enabled: true       
+```
+
 ## Example
 
 **Entity:**

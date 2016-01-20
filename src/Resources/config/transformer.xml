@@ -11,9 +11,9 @@
         <service id="ibrows_rest.resource_transformer" class="%ibrows_rest.resource_transformer.class%">
             <argument>%ibrows_rest.config.resources%</argument>
         </service>
+
         <service id="ibrows_rest.resource_transformer.converter.doctrine" class="%ibrows_rest.resource_transformer.converter.doctrine.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <tag name="ibrows_rest.resource_transformer.converter" converter="doctrine" />
         </service>
     </services>
 </container>

@@ -8,12 +8,16 @@ This listener sets the cachemeta in the response header.
     ibrows_rest:
         caches:
             cache1: 
-              type: private
-              max_age: 600
+                type: private
+                max_age: 600
+        listener:
+            cache:
+                enabled: false
 ```
  - The `type` string defines the type of the cache. The `type` have to be `private` or `public`. 
  - The `max_age` integer describes the lifetime of the cache.
 `no-cache` and `no-store` are currently not supported
+ - `enabled` - Enable / Disable the listener (default: `false`)
 
 These caches can later be accessed via its name. The name have to be configured in the `View` annotation on the action
 

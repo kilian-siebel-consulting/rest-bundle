@@ -48,6 +48,7 @@ file of your project:
 - Collection Decoration Listener - [Read Documentation](listener/collection_decoration_listener.md)
 - ETag Response Listener - [Read Documentation](listener/etag_response_listener.md)
 - If-None-Match Response Listener - [Read Documentation](listener/if_none_match_response_listener.md)
+- Link Header Listener - [Read Documentation](listener/link_header_listener.md)
 
 ## Param Converters
 - `abstract ManipulateParamConverter` - [Read Documentation](param_converter/manipulate_param_converter.md)
@@ -74,22 +75,27 @@ The patching system is used to apply patches to an object in the `PatchParamConv
             -   singular_name: resourceName
                 plural_name: resourcesName
                 class: resourceClass
-                converter: converterName
+                converter: converterServiceId
         listener:
+            cache:
+                enabled: false
+            collection_decorator:
+                enabled: false
             debug:
                 enabled: false
                 key_name: _debug
-            exclusion_policy:
-                enabled: false
-                param_name: expolicy
-            collection_decorator:
-                enabled: false
             etag:
                 enabled: false
                 hashing_algorithm: crc32
+            exclusion_policy:
+                enabled: false
+                param_name: expolicy
             if_none_match:
                 enabled: false
-               
+            link_header:
+                enabled: false
+            location:
+                enabled: false        
 ```
 
 
