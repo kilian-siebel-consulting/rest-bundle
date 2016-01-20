@@ -8,7 +8,7 @@
     <services>
         <service id="ibrows_rest.listener.view_exclusion_policy" class="%ibrows_rest.listener.exclusion_policy.class%">
             <argument>%ibrows_rest.config.listener.exclusion_policy%</argument>
-            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="200"/>
+            <tag name="kernel.event_listener" event="kernel.view" method="onKernelView" priority="250"/>
         </service>
     </services>
 </container>
