@@ -34,7 +34,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
 
     public function testReturnPolicyNameWhenSet()
     {
-        $listener = $this->getListener(true, '_expolicy');
+        $listener = $this->getListener('_expolicy');
         $event = $this->getEvent(true, '_expolicy', 'jedi-power', 'whatever');
 
         $listener->onKernelView($event);
@@ -42,7 +42,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
 
     public function testReturnDefaultValueWhenOmmited()
     {
-        $listener = $this->getListener(true, '_expolicy');
+        $listener = $this->getListener('_expolicy');
         $event = $this->getEvent(true, '_expolicy', null, 'whatever');
 
         $listener->onKernelView($event);
@@ -50,7 +50,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
 
     public function testHandleWhenParamFetcherNotDefined()
     {
-        $listener = $this->getListener(true, '_expolicy');
+        $listener = $this->getListener('_expolicy');
 
         $paramFetcher = $this->getMock(ParamFetcher::class, [], [], '', false);
 
@@ -78,11 +78,10 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
 
 
     /**
-     * @param bool   $enabled
      * @param string $paramName
      * @return ExclusionPolicyResponseListener
      */
-    private function getListener($enabled = true, $paramName = '_expolicy')
+    private function getListener($paramName = '_expolicy')
     {
         return new ExclusionPolicyResponseListener(
             [
