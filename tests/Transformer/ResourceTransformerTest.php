@@ -159,6 +159,33 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('/categories/42', $transformer->getResourcePath(new CategoryEntity()));
     }
+
+    public function testInvalidIsResource()
+    {
+        $transformer = new ResourceTransformer([]);
+
+        $this->assertFalse($transformer->isResource(CategoryEntity::class));
+    }
+
+    public function testIsResource()
+    {
+        $config = [
+            [
+                'singular_name' => 'car',
+                'plural_name' => 'cars',
+                'class' => CarEntity::class
+            ],
+            [
+                'singular_name' => 'category',
+                'plural_name' => 'categories',
+                'class' => CategoryEntity::class
+            ]
+        ];
+
+        $transformer = new ResourceTransformer($config);
+
+        $this->assertTrue($transformer->isResource(CategoryEntity::class));
+    }
 }
 
 class CarEntity implements ApiListableInterface

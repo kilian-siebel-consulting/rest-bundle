@@ -31,4 +31,10 @@ interface TransformerInterface
      * @return string|null
      */
     public function getResourcePath(ApiListableInterface $object);
+
+    /**
+     * @param string $class
+     * @return boolean
+     */
+    public function isResource($class);
 }

@@ -20,7 +20,7 @@ class ResourceTransformer implements TransformerInterface
     /**
      * ResourceTransformer constructor.
      *
-     * @param array                  $configuration
+     * @param array $configuration
      */
     public function __construct(
         array $configuration
@@ -37,7 +37,7 @@ class ResourceTransformer implements TransformerInterface
         list($resourceName, $id) = $this->parse($path);
 
         $resourceConfig = $this->getConfigByName($resourceName);
-        if($resourceConfig) {
+        if ($resourceConfig) {
             return $this->converters[$resourceConfig['converter']]->getResourceProxy(
                 $resourceConfig['class'],
                 $id
@@ -55,7 +55,7 @@ class ResourceTransformer implements TransformerInterface
         list($resourceName, $id) = $this->parse($path);
 
         $resourceConfig = $this->getConfigByName($resourceName);
-        if($resourceConfig) {
+        if ($resourceConfig) {
             return $this->converters[$resourceConfig['converter']]->getResource(
                 $resourceConfig['class'],
                 $id
@@ -70,8 +70,10 @@ class ResourceTransformer implements TransformerInterface
      */
     public function getResourceConfig(ApiListableInterface $object)
     {
-        if($this->getConfigByClass($object)) {
-            return $this->getConfigByClass($object);
+        $className = get_class($object);
+
+        if ($this->getConfigByClass($className)) {
+            return $this->getConfigByClass($className);
         }
         return null;
     }
@@ -81,8 +83,10 @@ class ResourceTransformer implements TransformerInterface
      */
     public function getResourcePath(ApiListableInterface $object)
     {
-        if($this->getConfigByClass($object)) {
-            return '/' . $this->getConfigByClass($object)['plural_name'] . '/' . $object->getId();
+        $className = get_class($object);
+
+        if ($this->getConfigByClass($className)) {
+            return '/' . $this->getConfigByClass($className)['plural_name'] . '/' . $object->getId();
         }
         return null;
     }
@@ -95,7 +99,7 @@ class ResourceTransformer implements TransformerInterface
     {
         $parts = explode('/', $path);
         $parts = array_filter($parts);
-        if(count($parts) !== 2) {
+        if (count($parts) !== 2) {
             throw new InvalidArgumentException('Path has to consist of exactly two parts.');
         }
         return array_values($parts);
@@ -108,23 +112,29 @@ class ResourceTransformer implements TransformerInterface
      */
     private function getConfigByName($resourceName)
     {
-        $matchingConfiguration = array_filter($this->configuration, function($resourceConfiguration) use ($resourceName) {
-            return $resourceConfiguration['plural_name'] === $resourceName;
-        });
+        $matchingConfiguration = array_filter(
+            $this->configuration,
+            function ($resourceConfiguration) use ($resourceName) {
+                return $resourceConfiguration['plural_name'] === $resourceName;
+            }
+        );
         return array_shift($matchingConfiguration);
     }
 
     /**
-     * @param ApiListableInterface $object
+     * @param string $className
      *
      * @return array<string, mixed>
      */
-    private function getConfigByClass(ApiListableInterface $object)
+    private function getConfigByClass($className)
     {
-        $matchingConfiguration = array_filter($this->configuration, function($resourceConfiguration) use ($object) {
-            return get_class($object) === $resourceConfiguration['class'] ||
-            is_subclass_of($object, $resourceConfiguration['class']);
-        });
+        $matchingConfiguration = array_filter(
+            $this->configuration,
+            function ($resourceConfiguration) use ($className) {
+                return $className === $resourceConfiguration['class'] ||
+                is_subclass_of($className, $resourceConfiguration['class']);
+            }
+        );
         return array_shift($matchingConfiguration);
     }
 
@@ -135,5 +145,14 @@ class ResourceTransformer implements TransformerInterface
     public function addConverter($name, ConverterInterface $converter)
     {
         $this->converters[$name] = $converter;
+    }
+
+    /**
+     * @param string $class
+     * @return boolean
+     */
+    public function isResource($class)
+    {
+        return $this->getConfigByClass($class) !== null;
     }
 }

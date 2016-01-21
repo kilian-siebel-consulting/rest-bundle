@@ -49,6 +49,7 @@ file of your project:
 - ETag Response Listener - [Read Documentation](listener/etag_response_listener.md)
 - If-None-Match Response Listener - [Read Documentation](listener/if_none_match_response_listener.md)
 - Link Header Listener - [Read Documentation](listener/link_header_listener.md)
+- Resource Deserialization Listener - [Read Documentation](listener/resource_deserialization_listener.md)
 
 ## Param Converters
 - `abstract ManipulateParamConverter` - [Read Documentation](param_converter/manipulate_param_converter.md)
@@ -95,7 +96,9 @@ The patching system is used to apply patches to an object in the `PatchParamConv
             link_header:
                 enabled: false
             location:
-                enabled: false        
+                enabled: false  
+            resource_deserialization:
+                enabled: false  
 ```
 
 
