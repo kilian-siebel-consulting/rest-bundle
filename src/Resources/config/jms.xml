@@ -3,14 +3,12 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
-        <parameter key="ibrows_rest.listener.resource_deserialization.class">Ibrows\RestBundle\Listener\ResourceDeserializationListener</parameter>
+        <parameter key="ibrows_rest.jms.handler.api_resource.class">Ibrows\RestBundle\JMS\ApiResourceHandler</parameter>
     </parameters>
     <services>
-        <service id="ibrows_rest.listener.resource_deserialization" class="%ibrows_rest.listener.resource_deserialization.class%">
+        <service id="ibrows_rest.jms.handler.api_resource" class="%ibrows_rest.jms.handler.api_resource.class%">
             <argument type="service" id="ibrows_rest.resource_transformer"/>
-            <tag name="jms_serializer.event_subscriber"/>
+            <tag name="jms_serializer.subscribing_handler"/>
         </service>
     </services>
 </container>
-
-

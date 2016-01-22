@@ -32,6 +32,7 @@ class IbrowsRestExtension extends Extension
         $loader = new XmlFileLoader($container, $fileLocator);
         $loader->load('collection_decorator.xml');
         $loader->load('debug_converter.xml');
+        $loader->load('jms.xml');
         $loader->load('patch.xml');
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
