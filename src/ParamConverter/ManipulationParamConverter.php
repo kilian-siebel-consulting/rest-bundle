@@ -19,24 +19,20 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
     /**
      * @var array<string, ParamConverterInterface>
      */
-    private $paramConverters;
+    private $paramConverters = array();
 
     /**
      * @var ValidatorInterface|null
      */
-    private $validator;
+    private $validator = null;
 
     /**
      * ManipulationParamConverter constructor.
      *
      * @param array              $configuration
      */
-    public function __construct(
-        array $configuration
-    ) {
-        $this->paramConverters = [];
-        $this->configuration = $configuration;
-        $this->validator = null;
+    public function __construct($failOnValidationError) {
+        $this->failOnValidationError = $failOnValidationError;
     }
 
     /**
@@ -99,11 +95,11 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      * @param $configuration
      * @return bool
      */
-    protected function shouldFail(ParamConverter $configuration)
+    private function shouldFail(ParamConverter $configuration)
     {
         return isset($configuration->getOptions()['fail_on_validation_error'])
             ? $configuration->getOptions()['fail_on_validation_error']
-            : $this->configuration['fail_on_validation_error'];
+            : $this->failOnValidationError;
     }
 
     /**

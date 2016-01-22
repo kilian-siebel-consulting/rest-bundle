@@ -11,7 +11,7 @@
     </parameters>
     <services>
         <service id="ibrows_rest.param_converter.patch" class="%ibrows_rest.param_converter.patch.class%">
-            <argument>%ibrows_rest.config.param_converter%</argument>
+            <argument>%ibrows_rest.config.param_converter.fail_on_validation_error%</argument>
             <argument type="service" id="jms_serializer"/>
             <argument type="service" id="ibrows_rest.patch.executioner"/>
             <call method="setValidator">
@@ -21,7 +21,7 @@
         </service>
 
         <service id="ibrows_rest.param_converter.link" class="%ibrows_rest.param_converter.link.class%">
-            <argument>%ibrows_rest.config.param_converter%</argument>
+            <argument>%ibrows_rest.config.param_converter.fail_on_validation_error%</argument>
             <call method="setValidator">
                 <argument type="service" id="validator"/>
             </call>
@@ -29,7 +29,7 @@
         </service>
 
         <service id="ibrows_rest.param_converter.unlink" class="%ibrows_rest.param_converter.unlink.class%">
-            <argument>%ibrows_rest.config.param_converter%</argument>
+            <argument>%ibrows_rest.config.param_converter.fail_on_validation_error%</argument>
             <call method="setValidator">
                 <argument type="service" id="validator"/>
             </call>

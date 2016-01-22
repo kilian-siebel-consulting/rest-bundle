@@ -25,7 +25,6 @@ class IbrowsRestExtension extends Extension
 
         $container->setParameter('ibrows_rest.config.resources', $configuration['resources']);
         $container->setParameter('ibrows_rest.config.caches', $configuration['caches']);
-        $container->setParameter('ibrows_rest.config.param_converter', $configuration['param_converter']);
 
         $fileLocator = new FileLocator( __DIR__ . '/../Resources/config');
 
@@ -37,10 +36,11 @@ class IbrowsRestExtension extends Extension
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
 
-        if($configuration['param_converter']){
+        if($configuration['param_converter']['enabled']){
+            $container->setParameter('ibrows_rest.config.param_converter.fail_on_validation_error', $configuration['param_converter']['fail_on_validation_error']);
             $loader->load('param_converter.xml');
         }
-
+        
         // Listeners are loaded dynamically according to the configuration.
         foreach ($configuration['listener'] as $name => $listener) {
             if ($listener['enabled']) {

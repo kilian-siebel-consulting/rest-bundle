@@ -25,17 +25,12 @@ class PatchParamConverter extends ManipulationParamConverter
     /**
      * PatchParamConverter constructor.
      *
-     * @param array               $configuration
      * @param SerializerInterface $serializer
      * @param Executioner         $patchExecutioner
      */
-    public function __construct(
-        array $configuration,
-        SerializerInterface $serializer,
-        Executioner $patchExecutioner
-    )
+    public function __construct($failOnValidationError, SerializerInterface $serializer, Executioner $patchExecutioner)
     {
-        parent::__construct($configuration);
+        parent::__construct($failOnValidationError);
         $this->serializer = $serializer;
         $this->patchExecutioner = $patchExecutioner;
     }
