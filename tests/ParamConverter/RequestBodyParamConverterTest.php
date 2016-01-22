@@ -10,6 +10,7 @@ namespace Ibrows\RestBundle\Tests\ParamConverter;
 
 
 use Ibrows\RestBundle\ParamConverter\RequestBodyParamConverter;
+use FOS\RestBundle\Request\RequestBodyParamConverter as FOSRequestBodyParamConverter;
 use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,8 +36,8 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
             ->willReturn($constraintViolationsListInterface);
 
         $serializer = $this->getMockForAbstractClass(SerializerInterface::class);
-        
-        $converter = new RequestBodyParamConverter($configuraiton, $serializer, null, null, $validator, 'testValidationErrors');
+        $fosConverter = new FOSRequestBodyParamConverter($serializer, null, null, $validator,'testValidationErrors');
+        $converter = new RequestBodyParamConverter($fosConverter, 'testValidationErrors');
         
         return $converter;
     }

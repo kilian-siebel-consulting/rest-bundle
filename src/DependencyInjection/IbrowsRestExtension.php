@@ -32,10 +32,13 @@ class IbrowsRestExtension extends Extension
         $loader = new XmlFileLoader($container, $fileLocator);
         $loader->load('collection_decorator.xml');
         $loader->load('debug_converter.xml');
-        $loader->load('param_converter.xml');
         $loader->load('patch.xml');
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
+
+        if($configuration['param_converter']){
+            $loader->load('param_converter.xml');
+        }
 
         // Listeners are loaded dynamically according to the configuration.
         foreach ($configuration['listener'] as $name => $listener) {

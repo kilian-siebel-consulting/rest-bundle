@@ -19,7 +19,6 @@ class IbrowsRestBundle extends Bundle
     {
         parent::build($container);
         $container->addCompilerPass(new ParamConvertersCompilerPass());
-        $container->addCompilerPass(new OverrideRequestConverterCompilerPass());
         $container->addCompilerPass(new DebugResponseListenerCompilerPass());
         $container->addCompilerPass(new ResourceTransformerCompilerPass());
         $container->addCompilerPass(new CollectionDecorationListenerCompilerPass());
