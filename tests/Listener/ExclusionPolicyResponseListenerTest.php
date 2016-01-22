@@ -48,7 +48,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
         $listener->onKernelView($event);
     }
 
-    public function testHandleWhenParamFetcherNotDefined()
+    public function testHandleWhenParamNotDefined()
     {
         $listener = $this->getListener('_expolicy');
 
@@ -62,6 +62,51 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
         $request = new Request(
             [], [], [
                 '_view'        => $this->getView(false, []),
+                'paramFetcher' => $paramFetcher
+            ]
+        );
+
+        $event = new GetResponseForControllerResultEvent(
+            $this->kernel,
+            $request,
+            'whatever',
+            'whatever-result'
+        );
+
+        $listener->onKernelView($event);
+    }
+
+    public function testHandleWhenViewWhenParamFetcherNotDefined()
+    {
+        $listener = $this->getListener('_expolicy');
+
+        $request = new Request(
+            [], [], [
+                '_view' => $this->getView(false, []),
+            ]
+        );
+
+        $event = new GetResponseForControllerResultEvent(
+            $this->kernel,
+            $request,
+            'whatever',
+            'whatever-result'
+        );
+
+        $listener->onKernelView($event);
+    }
+    
+    public function testHandleWhenViewNotDefined()
+    {
+        $listener = $this->getListener('_expolicy');
+
+        $paramFetcher = $this->getMock(ParamFetcher::class, [], [], '', false);
+
+        $paramFetcher->expects($this->never())
+            ->method('get');
+
+        $request = new Request(
+            [], [], [
                 'paramFetcher' => $paramFetcher
             ]
         );
