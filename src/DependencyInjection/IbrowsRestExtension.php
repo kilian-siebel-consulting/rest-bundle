@@ -33,6 +33,7 @@ class IbrowsRestExtension extends Extension
         $loader->load('collection_decorator.xml');
         $loader->load('debug_converter.xml');
         $loader->load('param_converter.xml');
+        $loader->load('jms.xml');
         $loader->load('patch.xml');
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
