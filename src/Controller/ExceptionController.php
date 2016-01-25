@@ -45,10 +45,14 @@ class ExceptionController
             'error' => [
                 'code' => $exception->getStatusCode(),
                 'message' => $exception->getMessage(),
-                'exception' => $exception->toArray()
             ]
         ];
-        $responseContent = json_encode($object);
+        
+        if ($this->debug) {
+            $object['error']['exception'] = $exception->toArray();
+        }
+        
+        $responseContent = $this->serializer->serialize($object, $request->getRequestFormat());
         
         return new Response($responseContent, $exception->getStatusCode());
     }

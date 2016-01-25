@@ -35,7 +35,6 @@ class IbrowsRestExtension extends Extension
         $loader->load('patch.xml');
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
-        $loader->load('exception_controller.xml');
 
         // ParamConverters are loaded dynamically according to the configuration.
         foreach ($configuration['param_converter'] as $name => $paramConverter) {
@@ -66,12 +65,16 @@ class IbrowsRestExtension extends Extension
             $container->setParameter('ibrows_rest.config.decorator.' . $name, $decorator);
         }
 
-        if($configuration['exception_controller']['enabled']) {
+        if ($configuration['exception_controller']['enabled']) {
+            $loader->load('exception_controller.xml');
             $controller = $configuration['exception_controller']['controller'];
-            if($configuration['exception_controller']['force_default'] ||
-                !$container->hasParameter('twig.exception_listener.controller')) {
+
+            if (
+                $configuration['exception_controller']['force_default'] ||
+                !$container->hasParameter('twig.exception_listener.controller')
+            ) {
                 $container->setParameter('twig.exception_listener.controller', $controller);
-            }            
+            }
         }
     }
 }
