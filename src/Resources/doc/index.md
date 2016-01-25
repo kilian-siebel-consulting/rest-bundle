@@ -53,8 +53,9 @@ file of your project:
 
 ## Param Converters
 - `abstract ManipulateParamConverter` - [Read Documentation](param_converter/manipulate_param_converter.md)
-- `PatchParamConverter` - [Read Documentation](param_converter/patch_param_converter.md)
 - `LinkParamConverter` - [Read Documentation](param_converter/link_param_converter.md)
+- `PatchParamConverter` - [Read Documentation](param_converter/patch_param_converter.md)
+- `RequestBodyParamConverter` - [Read Documentation](param_converter/request_body_param_converter.md)
 - `UnlinkParamConverter` - [Read Documentation](param_converter/unlink_param_converter.md)
  
 ## Patch
@@ -77,6 +78,26 @@ The patching system is used to apply patches to an object in the `PatchParamConv
                 plural_name: resourcesName
                 class: resourceClass
                 converter: converterServiceId
+        param_converter:
+            common:
+                fail_on_validation_error: true
+                validation_errors_argument: null
+            link:
+                enabled: true
+                fail_on_validation_error: true
+                validation_errors_argument: null
+            patch:
+                enabled: true
+                fail_on_validation_error: true
+                validation_errors_argument: null
+            request_body:
+                enabled: true
+                fail_on_validation_error: true
+                validation_errors_argument: null
+            unlink:
+                enabled: true
+                fail_on_validation_error: true
+                validation_errors_argument: null
         listener:
             cache:
                 enabled: false

@@ -21,8 +21,22 @@ The LinkHeaderListener has to be enabled.
     ibrows_rest:
         listener:
             link_header:
-                enabled: true       
+                enabled: true
+        param_converter:
+            common:
+                fail_on_validation_error: true
+                validation_errors_argument: null
+            link:
+                enabled: true
+                fail_on_validation_error: true
+                validation_errors_argument: null
 ```
+
+ - `enabled` - Enable / Disable the param converter (default: `true`)
+ - `fail_on_validation_error` - Fail if a validation Error is detected (default: `true`)
+ - `validation_errors_argument` - Store the validation errors in which key in the request attributes
+ 
+Values from `common` can be overwritten in `link`.
 
 ## Example
 

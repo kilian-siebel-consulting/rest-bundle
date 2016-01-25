@@ -26,7 +26,7 @@ class IbrowsRestExtension extends Extension
         $container->setParameter('ibrows_rest.config.resources', $configuration['resources']);
         $container->setParameter('ibrows_rest.config.caches', $configuration['caches']);
 
-        $fileLocator = new FileLocator( __DIR__ . '/../Resources/config');
+        $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');
 
         $loader = new XmlFileLoader($container, $fileLocator);
         $loader->load('collection_decorator.xml');
@@ -36,11 +36,23 @@ class IbrowsRestExtension extends Extension
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
 
-        if($configuration['param_converter']['enabled']){
-            $container->setParameter('ibrows_rest.config.param_converter.fail_on_validation_error', $configuration['param_converter']['fail_on_validation_error']);
-            $loader->load('param_converter.xml');
+        // ParamConverters are loaded dynamically according to the configuration.
+        foreach ($configuration['param_converter'] as $name => $paramConverter) {
+            if (
+                $name !== 'common' &&
+                $paramConverter['enabled']
+            ) {
+                $loader->load('param_converter/' . $name . '.xml');
+            }
+            $container->setParameter(
+                'ibrows_rest.config.param_converter.' . $name,
+                array_merge(
+                    $configuration['param_converter']['common'],
+                    $paramConverter
+                )
+            );
         }
-        
+
         // Listeners are loaded dynamically according to the configuration.
         foreach ($configuration['listener'] as $name => $listener) {
             if ($listener['enabled']) {
