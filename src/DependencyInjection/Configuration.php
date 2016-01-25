@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('ibrows_rest');
 
         $rootNode
+            ->isRequired()
             ->children()
                 ->arrayNode('resources')
                     ->prototype('array')
@@ -47,9 +48,11 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('param_converter')
+                    ->isRequired()
                     ->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('common')
+                            ->isRequired()
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->booleanNode('fail_on_validation_error')

@@ -1,7 +1,6 @@
 <?php
 namespace Ibrows\RestBundle\ParamConverter;
 
-use FOS\RestBundle\Request\RequestBodyParamConverter as BaseRequestBodyParamConverter;
 use Ibrows\RestBundle\Exception\BadRequestConstraintException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -10,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestBodyParamConverter implements ParamConverterInterface
 {
     /**
-     * @var BaseRequestBodyParamConverter
+     * @var ParamConverterInterface
      */
     private $decoratedRequestBodyParamConverter;
 
@@ -26,11 +25,11 @@ class RequestBodyParamConverter implements ParamConverterInterface
 
     /**
      * RequestBodyParamConverter constructor.
-     * @param BaseRequestBodyParamConverter $decoratedRequestBodyParamConverter
-     * @param array                         $configuration
+     * @param ParamConverterInterface $decoratedRequestBodyParamConverter
+     * @param array                   $configuration
      */
     public function __construct(
-        BaseRequestBodyParamConverter $decoratedRequestBodyParamConverter,
+        ParamConverterInterface $decoratedRequestBodyParamConverter,
         array $configuration
     ) {
         $this->decoratedRequestBodyParamConverter = $decoratedRequestBodyParamConverter;

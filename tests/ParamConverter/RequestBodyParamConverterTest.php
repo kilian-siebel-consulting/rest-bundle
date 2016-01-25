@@ -6,6 +6,7 @@ use Ibrows\RestBundle\ParamConverter\RequestBodyParamConverter;
 use FOS\RestBundle\Request\RequestBodyParamConverter as FOSRequestBodyParamConverter;
 use PHPUnit_Framework_MockObject_MockObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -23,9 +24,7 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->requestBodyConverter = $this->getMockBuilder(FOSRequestBodyParamConverter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->requestBodyConverter = $this->getMockForAbstractClass(ParamConverterInterface::class);
         $this->constraintViolations = $this->getMockForAbstractClass(ConstraintViolationListInterface::class);
     }
 
