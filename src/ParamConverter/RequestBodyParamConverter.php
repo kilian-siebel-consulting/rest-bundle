@@ -14,41 +14,54 @@ class RequestBodyParamConverter implements ParamConverterInterface
      */
     private $decoratedRequestBodyParamConverter;
 
-
     /**
      * @var string
      */
     private $validationErrorsArgument;
 
+    /**
+     * @var boolean
+     */
+    private $failOnValidationError;
 
-    public function __construct(BaseRequestBodyParamConverter $decoratedRequestBodyParamConverter, $validationErrorsArgument)
-    {
+    /**
+     * RequestBodyParamConverter constructor.
+     * @param BaseRequestBodyParamConverter $decoratedRequestBodyParamConverter
+     * @param array                         $configuration
+     */
+    public function __construct(
+        BaseRequestBodyParamConverter $decoratedRequestBodyParamConverter,
+        array $configuration
+    ) {
         $this->decoratedRequestBodyParamConverter = $decoratedRequestBodyParamConverter;
-        $this->validationErrorsArgument = $validationErrorsArgument;
+        $this->validationErrorsArgument = $configuration['validation_errors_argument'];
+        $this->failOnValidationError = $configuration['fail_on_validation_error'];
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function apply(Request $request, ParamConverter $configuration)
     {
         $value = $this->decoratedRequestBodyParamConverter->apply($request, $configuration);
+
         $validationErrors = $request->attributes->get($this->validationErrorsArgument);
-        if (count($validationErrors) > 0) {
+
+        if (
+            $this->failOnValidationError &&
+            count($validationErrors) > 0
+        ) {
             throw new BadRequestConstraintException($validationErrors);
         }
+
         return $value;
     }
 
     /**
-     * Checks if the object is supported.
-     *
-     * @param ParamConverter $configuration Should be an instance of ParamConverter
-     *
-     * @return bool True if the object is supported, else false
+     * {@inheritdoc}
      */
     public function supports(ParamConverter $configuration)
     {
         return $this->decoratedRequestBodyParamConverter->supports($configuration);
     }
-
-
 }

@@ -12,14 +12,19 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class ManipulationParamConverter implements ParamConverterInterface
 {
     /**
-     * @var array<string, mixed>
+     * @var boolean
      */
-    private $configuration;
+    private $failOnValidationError;
+
+    /**
+     * @var string
+     */
+    private $validationErrorsArgument;
 
     /**
      * @var array<string, ParamConverterInterface>
      */
-    private $paramConverters = array();
+    private $paramConverters = [];
 
     /**
      * @var ValidatorInterface|null
@@ -29,10 +34,12 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
     /**
      * ManipulationParamConverter constructor.
      *
-     * @param array              $configuration
+     * @param array $configuration
      */
-    public function __construct($failOnValidationError) {
-        $this->failOnValidationError = $failOnValidationError;
+    public function __construct($configuration)
+    {
+        $this->failOnValidationError = $configuration['fail_on_validation_error'];
+        $this->validationErrorsArgument = $configuration['validation_errors_argument'];
     }
 
     /**
@@ -44,7 +51,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
             $converter = $this->getConverter($configuration);
 
             return $converter->supports($configuration);
-        } catch(InvalidConfigurationException $exception) {
+        } catch (InvalidConfigurationException $exception) {
             return false;
         }
     }
@@ -71,7 +78,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      */
     protected function validate($object, ParamConverter $configuration, Request $request)
     {
-        if($this->validator === null) {
+        if ($this->validator === null) {
             return;
         }
 
@@ -79,11 +86,11 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
         $errors = $this->validator->validate($object, null, $validatorOptions['groups']);
 
         $request->attributes->set(
-            'validationErrors',
+            $this->validationErrorsArgument,
             $errors
         );
 
-        if(
+        if (
             $this->shouldFail($configuration) &&
             count($errors) > 0
         ) {
@@ -110,11 +117,13 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
     private function getValidatorOptions(array $options)
     {
         $resolver = new OptionsResolver();
-        $resolver->setDefaults(array(
-            'groups' => null,
-            'traverse' => false,
-            'deep' => false,
-        ));
+        $resolver->setDefaults(
+            array(
+                'groups'   => null,
+                'traverse' => false,
+                'deep'     => false,
+            )
+        );
 
         return $resolver->resolve(isset($options['validator']) ? $options['validator'] : array());
     }
@@ -127,13 +136,13 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
      */
     protected function getConverter(ParamConverter $configuration)
     {
-        if(!isset($configuration->getOptions()['source'])) {
+        if (!isset($configuration->getOptions()['source'])) {
             throw new InvalidConfigurationException('The option "source" has to be provided for the ParamConverter.');
         }
 
         $name = $configuration->getOptions()['source'];
 
-        if(!isset($this->paramConverters[$name])) {
+        if (!isset($this->paramConverters[$name])) {
             throw new InvalidConfigurationException('The ParamConverter ' . $name . ' does not exist.');
         }
 

@@ -1,55 +1,65 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: stefanvetsch
- * Date: 18.01.16
- * Time: 15:29
- */
 
 namespace Ibrows\RestBundle\Tests\ParamConverter;
 
-
 use Ibrows\RestBundle\ParamConverter\RequestBodyParamConverter;
 use FOS\RestBundle\Request\RequestBodyParamConverter as FOSRequestBodyParamConverter;
-use JMS\Serializer\SerializerInterface;
+use PHPUnit_Framework_MockObject_MockObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
 {
-    
-    private function getConverter($configuraiton = [], $failingValidator = false)
+    /**
+     * @var FOSRequestBodyParamConverter|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $requestBodyConverter;
+
+    /**
+     * @var ConstraintViolationListInterface|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $constraintViolations;
+
+    public function setUp()
     {
-        $validator = $this->getMockForAbstractClass(ValidatorInterface::class);
+        $this->requestBodyConverter = $this->getMockBuilder(FOSRequestBodyParamConverter::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->constraintViolations = $this->getMockForAbstractClass(ConstraintViolationListInterface::class);
+    }
 
-        $constraintViolationsListInterface = $this->getMockForAbstractClass(ConstraintViolationListInterface::class);
+    /**
+     * @param array $configuration
+     * @return RequestBodyParamConverter
+     */
+    private function getConverter(array $configuration)
+    {
+        $converter = new RequestBodyParamConverter(
+            $this->requestBodyConverter,
+            $configuration
+        );
 
-        $constraintViolationsListInterface
-            ->method('count')
-            ->willReturn((int)$failingValidator);
-
-        $validator
-            ->expects($this->any())
-            ->method('validate')
-            ->willReturn($constraintViolationsListInterface);
-
-        $serializer = $this->getMockForAbstractClass(SerializerInterface::class);
-        $fosConverter = new FOSRequestBodyParamConverter($serializer, null, null, $validator,'testValidationErrors');
-        $converter = new RequestBodyParamConverter($fosConverter, 'testValidationErrors');
-        
         return $converter;
     }
-    
-    
+
+
     private function getRequest()
     {
-        $request = new Request();
-        
+        $request = new Request(
+            [],
+            [],
+            [
+                'testValidationErrors' => $this->constraintViolations,
+            ]
+        );
+
         return $request;
     }
-    
+
+    /**
+     * @return ParamConverter|PHPUnit_Framework_MockObject_MockObject
+     */
     private function getConfiguration()
     {
         $configuration = $this->getMockBuilder(ParamConverter::class)
@@ -58,23 +68,34 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
 
         $configuration
             ->method('getOptions')
-            ->willReturn([
-                'fail_on_validation_error' => true,
-            ]);
-        
+            ->willReturn(
+                [
+                    'fail_on_validation_error' => true,
+                ]
+            );
+
         return $configuration;
     }
-    
+
     public function testWithValidRequest()
     {
-        $converter = $this->getConverter();
+        $converter = $this->getConverter(
+            [
+                'fail_on_validation_error'   => true,
+                'validation_errors_argument' => 'testValidationErrors',
+            ]
+        );
+
+        $this->constraintViolations
+            ->method('count')
+            ->willReturn(0);
 
         $request = $this->getRequest();
 
         $configuration = $this->getConfiguration();
-        
+
         $converter->apply($request, $configuration);
-        
+
         $this->assertTrue($request->attributes->has('testValidationErrors'));
         $this->assertEmpty($request->attributes->get('testValidationErrors'));
     }
@@ -84,12 +105,39 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithFailingValidator()
     {
-        $converter = $this->getConverter([], true);
+        $converter = $this->getConverter(
+            [
+                'fail_on_validation_error'   => true,
+                'validation_errors_argument' => 'testValidationErrors',
+            ]
+        );
+
+        $this->constraintViolations
+            ->method('count')
+            ->willReturn(7);
 
         $request = $this->getRequest();
 
         $configuration = $this->getConfiguration();
 
         $converter->apply($request, $configuration);
+    }
+
+    public function testSupports()
+    {
+        $converter = $this->getConverter(
+            [
+                'fail_on_validation_error'   => true,
+                'validation_errors_argument' => 'testValidationErrors',
+            ]
+        );
+
+        $configuration = $this->getConfiguration();
+
+        $this->requestBodyConverter
+            ->method('supports')
+            ->willReturn(true);
+
+        $this->assertTrue($converter->supports($configuration));
     }
 }

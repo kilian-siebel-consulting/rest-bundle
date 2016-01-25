@@ -58,7 +58,10 @@ class PatchParamConverterTest extends PHPUnit_Framework_TestCase
             ->method('getName')
             ->willReturn('foo');
 
-        $converter = new PatchParamConverter([], $serializer, $executioner);
+        $converter = new PatchParamConverter([
+            'fail_on_validation_error' => true,
+            'validation_errors_argument' => 'validationErrors',
+        ], $serializer, $executioner);
         $converter->addConverter('source', $sourceConverter);
         $converter->addConverter('fos_rest.request_body', $bodyConverter);
 
@@ -122,7 +125,10 @@ class PatchParamConverterTest extends PHPUnit_Framework_TestCase
             ->method('getName')
             ->willReturn('foo');
 
-        $converter = new PatchParamConverter([], $serializer, $executioner);
+        $converter = new PatchParamConverter([
+            'fail_on_validation_error' => true,
+            'validation_errors_argument' => 'validationErrors',
+        ], $serializer, $executioner);
         $converter->addConverter('source', $sourceConverter);
         $converter->addConverter('fos_rest.request_body', $bodyConverter);
 

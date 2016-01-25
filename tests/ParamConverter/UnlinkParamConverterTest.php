@@ -135,15 +135,19 @@ class UnlinkParamConverterTest extends \PHPUnit_Framework_TestCase
 
         $converter = $this->getConverter($car);
         $converter->apply($request, $configuration);
-    }    
+    }
 
     /**
+     * @param Car $car
      * @return UnlinkParamConverter
      */
-    public function getConverter($car, $failingValidator = false)
+    public function getConverter($car)
     {
         $validator = $this->getMockForAbstractClass(ValidatorInterface::class);
-        $converter =  new UnlinkParamConverter([], $validator);
+        $converter =  new UnlinkParamConverter([
+            'fail_on_validation_error' => true,
+            'validation_errors_argument' => 'validationErrors',
+        ], $validator);
 
         $carConverter = $this->getMockBuilder(ParamConverterInterface::class)
             ->getMock();
@@ -156,7 +160,7 @@ class UnlinkParamConverterTest extends \PHPUnit_Framework_TestCase
         $carConverter
             ->expects($this->any())
             ->method('apply')
-            ->willReturnCallback(function(Request $request, ParamConverter $configuration) use($car) {
+            ->willReturnCallback(function(Request $request) use($car) {
                 $request->attributes->set('car', $car);
             });
 

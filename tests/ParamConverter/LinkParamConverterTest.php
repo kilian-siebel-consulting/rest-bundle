@@ -245,7 +245,10 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
             ->willReturn($constraintViolationsListInterface);
         
         
-        $converter =  new LinkParamConverter([]);
+        $converter =  new LinkParamConverter([
+            'fail_on_validation_error' => true,
+            'validation_errors_argument' => 'validationErrors',
+        ]);
         $converter->setValidator($validator);
         
         
