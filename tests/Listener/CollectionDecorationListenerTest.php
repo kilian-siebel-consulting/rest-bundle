@@ -2,6 +2,7 @@
 namespace Ibrows\RestBundle\Tests\Listener;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\CollectionDecorator\DecoratorInterface;
@@ -173,6 +174,33 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
             ],
             $view->getSerializerGroups()
         );
+    }
+
+    public function testCollectionResponse () {
+
+        $this->decorator
+            ->expects($this->once())
+            ->method('decorate')
+            ->will(
+                $this->returnCallback(
+                    function (ParameterBag $params, $collection) {
+                        return $collection;
+                    }
+                )
+            );
+
+        $element = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $element->method('getId')->willReturn(42);
+
+        $collection = new ArrayCollection();
+        $collection->add($element);
+
+        $event = $this->getEvent($collection);
+
+
+        $this->getListener()->onKernelView($event);
+
+        $this->assertInstanceOf(CollectionRepresentation::class, $event->getControllerResult());
     }
 }
 
