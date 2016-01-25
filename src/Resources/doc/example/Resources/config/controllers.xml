@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="example.controller.car" class="Ibrows\ExampleBundle\Controller\CarController">
+            <argument type="service" id="example.handler.car"/>
+            <argument type="service" id="example.handler.category"/>
+        </service>
+
+        <service id="example.controller.wheel" class="Ibrows\ExampleBundle\Controller\WheelController">
+            <argument type="service" id="example.handler.car"/>
+        </service>
+
+        <service id="example.controller.category" class="Ibrows\ExampleBundle\Controller\CategoryController">
+            <argument type="service" id="example.handler.category"/>
+        </service>
+    </services>
+</container>
