@@ -11,20 +11,37 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 class BadRequestConstraintException extends BadRequestHttpException
 {
+
+    /**
+     * @var ConstraintViolationListInterface
+     */
+    private $violations;
+
     /**
      * BadRequestConstraintException constructor.
      *
      * @param ConstraintViolationListInterface $violations
-     * @param Exception|null                  $previous
+     * @param Exception|null                   $previous
      * @param int                              $code
      */
     public function __construct(ConstraintViolationListInterface $violations, Exception $previous = null, $code = 0)
     {
+        $this->violations = $violations;
         $message = '';
         /** @var ConstraintViolationInterface $violation */
-        foreach($violations as $violation) {
+        foreach ($violations as $violation) {
             $message .= $violation->getPropertyPath() . ' - ' . $violation->getMessage() . PHP_EOL;
         }
         parent::__construct($message, $previous, $code);
     }
+
+    /**
+     * @return ConstraintViolationListInterface
+     */
+    public function getViolations()
+    {
+        return $this->violations;
+    }
+
+
 }
