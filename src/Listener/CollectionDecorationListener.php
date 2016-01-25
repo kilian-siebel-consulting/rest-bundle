@@ -2,6 +2,7 @@
 namespace Ibrows\RestBundle\Listener;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\PersistentCollection;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Ibrows\RestBundle\CollectionDecorator\DecoratorInterface;
@@ -57,7 +58,6 @@ class CollectionDecorationListener
     {
         if (
             (
-
                 !$data instanceof Collection &&
                 !is_array($data)
             ) ||
@@ -71,6 +71,7 @@ class CollectionDecorationListener
                 return false;
             }
         }
+
         return true;
     }
 
@@ -79,8 +80,13 @@ class CollectionDecorationListener
      */
     protected function wrapCollection(GetResponseForControllerResultEvent $event)
     {
-        $response = $event->getControllerResult();
-        $element = reset($response);
+        $data = $event->getControllerResult();
+
+        if($data instanceof Collection){
+            $data = $data->toArray();
+        }
+
+        $element = reset($data);
         $resourceConfig = $this->resourceTransformer->getResourceConfig($element);
 
         $event->setControllerResult(
