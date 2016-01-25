@@ -35,6 +35,7 @@ class IbrowsRestExtension extends Extension
         $loader->load('patch.xml');
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
+        $loader->load('exception_controller.xml');
 
         // ParamConverters are loaded dynamically according to the configuration.
         foreach ($configuration['param_converter'] as $name => $paramConverter) {
@@ -66,7 +67,6 @@ class IbrowsRestExtension extends Extension
         }
 
         if ($configuration['exception_controller']['enabled']) {
-            $loader->load('exception_controller.xml');
             $controller = $configuration['exception_controller']['controller'];
 
             if (

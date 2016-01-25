@@ -4,10 +4,10 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
-        <parameter key="ibrows_rest.utils.exception_controller.class">Ibrows\RestBundle\Controller\ExceptionController</parameter>
+        <parameter key="ibrows_rest.controller.exception.class">Ibrows\RestBundle\Controller\ExceptionController</parameter>
     </parameters>
     <services>
-        <service id="ibrows_rest.utils.exception_controller" class="%ibrows_rest.utils.exception_controller.class%">
+        <service id="ibrows_rest.controller.exception" class="%ibrows_rest.controller.exception.class%">
             <argument type="service" id="jms_serializer.serializer" />
             <argument>%kernel.debug%</argument>
         </service>
