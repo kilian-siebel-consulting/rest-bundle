@@ -21,14 +21,4 @@ abstract class ValueOperation extends Operation
     {
         return $this->value;
     }
-
-    /**
-     * @param mixed $value
-     * @return ValueOperation
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-        return $this;
-    }
 }
