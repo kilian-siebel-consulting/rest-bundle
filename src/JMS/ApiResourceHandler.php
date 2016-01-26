@@ -50,10 +50,16 @@ class ApiResourceHandler implements SubscribingHandlerInterface
      */
     public function deserialize(VisitorInterface $visitor, $path, array $type, Context $context)
     {
-        $resource = $this->transformer->getResourceProxy($path);
-        if($resource) {
-            return $resource;
+        try {
+            $resource = $this->transformer->getResourceProxy($path);
+
+            if ($resource) {
+                return $resource;
+            }
+        } catch (\InvalidArgumentException $e) {
+            // Data may be invalid, nothing should happen
         }
+
         return $path;
     }
 }
