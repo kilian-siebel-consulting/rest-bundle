@@ -2,7 +2,7 @@
 
 The exception controller overrides the default twig exception controller. By default it only overrides the 
 controller if it is not set to ensure compatibility with FOSREstBundle when twig is not enabled (which is
- usefull for api-only projects which doesn't have any need for views).
+ useful for api-only projects which doesn't have any need for views).
  
 This component basically works by setting the parameter `twig.exception_listener.controller` parameter. 
 
