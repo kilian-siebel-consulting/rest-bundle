@@ -2,10 +2,10 @@
 
 namespace Ibrows\RestBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -53,9 +53,9 @@ class IbrowsRestExtension extends Extension
                 )
             );
         }
-
         // Listeners are loaded dynamically according to the configuration.
         foreach ($configuration['listener'] as $name => $listener) {
+
             if ($listener['enabled']) {
                 $loader->load('listener/' . $name . '.xml');
             }
