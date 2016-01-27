@@ -4,7 +4,7 @@ namespace Ibrows\RestBundle\Listener;
 use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\JsonSerializationVisitor;
 use Symfony\Component\PropertyAccess\PropertyPath;
-use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class ConstraintViolationListener
 {
@@ -22,11 +22,11 @@ class ConstraintViolationListener
     }
 
     /**
-     * @param JsonSerializationVisitor $visitor
-     * @param ConstraintViolation      $violation
+     * @param JsonSerializationVisitor     $visitor
+     * @param ConstraintViolationInterface $violation
      * @return array
      */
-    public function serializeToJson(JsonSerializationVisitor $visitor, ConstraintViolation $violation)
+    public function serializeToJson(JsonSerializationVisitor $visitor, ConstraintViolationInterface $violation)
     {
         $data = array(
             'propertyPath' => $this->transformPropertyPath($violation->getPropertyPath()),
@@ -46,7 +46,8 @@ class ConstraintViolationListener
      * @param $path
      * @return string
      */
-    private function transformPropertyPath($path){
+    private function transformPropertyPath($path)
+    {
         $path = new PropertyPath($path);
         return '/' . implode('/', $path->getElements());
     }
