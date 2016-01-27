@@ -4,10 +4,10 @@ namespace Ibrows\RestBundle\DependencyInjection;
 
 use Ibrows\RestBundle\Controller\ExceptionController;
 use Ibrows\RestBundle\Listener\ExceptionListener;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -70,7 +70,10 @@ class IbrowsRestExtension extends Extension
             if ($configuration['exception_controller']['force_default'] ||
                 !$container->hasParameter('twig.exception_listener.controller')
             ) {
-                $container->setParameter('twig.exception_listener.controller', $container->getParameter('fos_rest.exception_listener.controller'));
+                $container->setParameter(
+                    'twig.exception_listener.controller',
+                    $container->getParameter('fos_rest.exception_listener.controller')
+                );
                 $container->setParameter('fos_rest.controller.exception.class', ExceptionController::class);
                 $container->setParameter('fos_rest.exception_listener.class', ExceptionListener::class);
             }

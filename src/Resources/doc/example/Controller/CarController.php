@@ -58,11 +58,36 @@ class CarController implements ClassResourceInterface
      * @FOSRest\Get()
      *
      * @param ParamFetcher $paramFetcher
-     * @FOSRest\QueryParam(name="limit", requirements="\d+", default="10", description="Limit Results")
-     * @FOSRest\QueryParam(name="offsetId", requirements="\d+", description="Last Result")
-     * @FOSRest\QueryParam(name="sortBy", requirements="\w+", default="id", description="sortBy")
-     * @FOSRest\QueryParam(name="sortDir", requirements="\w+", default="ASC", description="sort direction")
-     * @FOSRest\QueryParam(name="expolicy", requirements="(car_list|car_detail)", default="car_list", strict=true, description="Serialization group")
+     * @FOSRest\QueryParam(
+     *     name="limit",
+     *     requirements="\d+",
+     *     default="10",
+     *     description="Limit Results"
+     * )
+     * @FOSRest\QueryParam(
+     *     name="offsetId",
+     *     requirements="\d+",
+     *     description="Last Result"
+     * )
+     * @FOSRest\QueryParam(
+     *     name="sortBy",
+     *     requirements="\w+",
+     *     default="id",
+     *     description="sortBy"
+     * )
+     * @FOSRest\QueryParam(
+     *     name="sortDir",
+     *     requirements="\w+",
+     *     default="ASC",
+     *     description="sort direction"
+     * )
+     * @FOSRest\QueryParam(
+     *     name="expolicy",
+     *     requirements="(car_list|car_detail)",
+     *     default="car_list",
+     *     strict=true,
+     *     description="Serialization group"
+     * )
      *
      * @IbrowsAPI\View()
      *

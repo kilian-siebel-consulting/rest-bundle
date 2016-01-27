@@ -131,7 +131,10 @@ class Configuration implements ConfigurationInterface
                                     ->defaultValue('crc32')
                                     ->validate()
                                     ->ifNotInArray(hash_algos())
-                                        ->thenInvalid('Invalid hashing algorithm "%s". Use one of those: ' . implode(', ', hash_algos()))
+                                        ->thenInvalid(
+                                            'Invalid hashing algorithm "%s". Use one of those: ' .
+                                            implode(', ', hash_algos())
+                                        )
                                     ->end()
                                 ->end()
                             ->end()

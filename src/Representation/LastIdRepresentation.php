@@ -65,7 +65,7 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     public function __construct(
         $inline,
         $route,
-        array $parameters = array(),
+        array $parameters,
         $lastId,
         $lastIdParamName,
         $limit,
