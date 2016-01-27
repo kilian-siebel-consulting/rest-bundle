@@ -50,10 +50,14 @@ class ApiResourceHandler implements SubscribingHandlerInterface
      */
     public function deserialize(VisitorInterface $visitor, $path, array $type, Context $context)
     {
+        $className = $this->getValidOriginalClassname($type);
+
         try {
             $resource = $this->transformer->getResourceProxy($path);
 
-            if ($resource) {
+            if (is_object($resource) && $className && !$resource instanceof $className) {
+                return null;
+            } elseif (is_object($resource) && (!$className || $resource instanceof $className)) {
                 return $resource;
             }
         } catch (\InvalidArgumentException $e) {
@@ -61,5 +65,20 @@ class ApiResourceHandler implements SubscribingHandlerInterface
         }
 
         return $path;
+    }
+    
+    private function getValidOriginalClassname($type)
+    {
+        if (!isset($type['params']['originalType'])) {
+            return null;
+        }
+
+        if (class_exists($type['params']['originalType'])
+            || interface_exists($type['params']['originalType'])
+        ) {
+            return $type['params']['originalType'];
+        }
+
+        return null;
     }
 }

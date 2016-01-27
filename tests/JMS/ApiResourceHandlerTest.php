@@ -37,7 +37,7 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
     {
         $handler = $this->getHandler();
 
-        $resource = 'im a resource';
+        $resource = new \DateTime();
 
         $this->transformer
             ->method('getResourceProxy')
@@ -46,11 +46,63 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
         $result = $handler->deserialize(
             $this->visitor,
             'resource',
-            [],
+            [
+                'params' => [
+                    'originalType' => \DateTime::class
+                ]
+            ],
             $this->context
         );
 
         $this->assertEquals($resource, $result);
+    }
+
+    public function testHandlerWithInvalidOriginalType()
+    {
+        $handler = $this->getHandler();
+
+        $resource = new \DateTime();
+
+        $this->transformer
+            ->method('getResourceProxy')
+            ->willReturn($resource);
+
+        $result = $handler->deserialize(
+            $this->visitor,
+            'resource',
+            [
+                'params' => [
+                    'originalType' => '\This\Class\Does\Not\Exists\Schwurbel'
+                ]
+            ],
+            $this->context
+        );
+
+        $this->assertEquals($resource, $result);
+    }
+
+    public function testHandlerWithNonMatchingResourceType()
+    {
+        $handler = $this->getHandler();
+
+        $resource = new \DateTime();
+
+        $this->transformer
+            ->method('getResourceProxy')
+            ->willReturn($resource);
+
+        $result = $handler->deserialize(
+            $this->visitor,
+            'resource',
+            [
+                'params' => [
+                    'originalType' => \DOMDocument::class
+                ]
+            ],
+            $this->context
+        );
+
+        $this->assertNull($result);
     }
 
     public function testHandlerWithNonResource()

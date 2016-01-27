@@ -19,6 +19,26 @@ class ChangeTest extends PHPUnit_Framework_TestCase
         $change->apply($object, new PropertyMetadata($object, 'property'));
         $this->assertEquals('bar', $object->property);
     }
+
+    /**
+     * @expectedException Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     */
+    public function testInvalidApply()
+    {
+        $change = new Change();
+
+        $reflectionProperty = new \ReflectionProperty(ValueOperation::class, 'value');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($change, 'bar');
+
+        $object = new Something();
+        
+        $propertyMetadata = new PropertyMetadata($object, 'property');
+        $propertyMetadata->setType(\DateTime::class);
+        
+        $change->apply($object, $propertyMetadata);
+        $this->assertEquals('bar', $object->property);        
+    }
 }
 
 class Something
