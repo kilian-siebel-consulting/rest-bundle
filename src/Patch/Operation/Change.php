@@ -24,9 +24,9 @@ class Change extends ValueOperation
         $typeName = isset($property->type['name']) ? $property->type['name'] : null;
         
         if (null !== $typeName
-            && is_object($object)
+            && is_object($this->getValue())
             && (class_exists($typeName) || interface_exists($typeName))
-            && !$object instanceof $typeName) {
+            && !$this->getValue() instanceof $typeName) {
             
             throw new BadRequestHttpException("Invalid change value for " . $property->name);
         }
