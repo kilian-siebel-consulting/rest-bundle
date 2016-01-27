@@ -13,8 +13,7 @@ class ExceptionController extends BaseExceptionController
     {
         $parameters = parent::getParameters($viewHandler, $currentContent, $code, $exception, $logger, $format);
         
-        if (
-            $exception instanceof FlattenException &&
+        if ($exception instanceof FlattenException &&
             $exception->getDisplayableException()
         ) {
             $parameters['errors'] = $exception->getDisplayableException()->toArray();

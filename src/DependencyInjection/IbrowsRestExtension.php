@@ -40,8 +40,7 @@ class IbrowsRestExtension extends Extension
 
         // ParamConverters are loaded dynamically according to the configuration.
         foreach ($configuration['param_converter'] as $name => $paramConverter) {
-            if (
-                $name !== 'common' &&
+            if ($name !== 'common' &&
                 $paramConverter['enabled']
             ) {
                 $loader->load('param_converter/' . $name . '.xml');
@@ -68,8 +67,7 @@ class IbrowsRestExtension extends Extension
         }
 
         if ($configuration['exception_controller']['enabled']) {
-            if (
-                $configuration['exception_controller']['force_default'] ||
+            if ($configuration['exception_controller']['force_default'] ||
                 !$container->hasParameter('twig.exception_listener.controller')
             ) {
                 $container->setParameter('twig.exception_listener.controller', $container->getParameter('fos_rest.exception_listener.controller'));

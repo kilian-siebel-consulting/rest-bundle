@@ -47,7 +47,7 @@ class BadRequestConstraintException extends BadRequestHttpException implements D
         $violations = [];
         
         /** @var ConstraintViolationInterface $violation */
-        foreach($this->violations as $violation) {
+        foreach ($this->violations as $violation) {
             $violations[] = [
                 'code' => $violation->getCode(),
                 'message' => $violation->getMessage(),
@@ -62,7 +62,8 @@ class BadRequestConstraintException extends BadRequestHttpException implements D
      * @param string $path
      * @return string
      */
-    private function mapPropertyPath($path) {
+    private function mapPropertyPath($path)
+    {
         $propertyPath = new PropertyPath($path);
         $pathElements = $propertyPath->getElements();
 

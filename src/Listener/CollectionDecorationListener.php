@@ -56,8 +56,7 @@ class CollectionDecorationListener
      */
     protected function validateCollection($data)
     {
-        if (
-            (
+        if ((
                 !$data instanceof Collection &&
                 !is_array($data)
             ) ||
@@ -82,7 +81,7 @@ class CollectionDecorationListener
     {
         $data = $event->getControllerResult();
 
-        if($data instanceof Collection){
+        if ($data instanceof Collection) {
             $data = $data->toArray();
         }
 
@@ -125,8 +124,7 @@ class CollectionDecorationListener
         /** @var View $view */
         $view = $event->getRequest()->attributes->get('_view');
 
-        if (
-            $view &&
+        if ($view &&
             count($view->getSerializerGroups()) > 0
         ) {
             $view->setSerializerGroups(

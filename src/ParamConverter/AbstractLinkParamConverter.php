@@ -22,7 +22,7 @@ abstract class AbstractLinkParamConverter extends ManipulationParamConverter
 
         $links = $request->attributes->get('links');
 
-        array_walk($links, function(LinkHeader $link) use($allowedRelations, $object) {
+        array_walk($links, function (LinkHeader $link) use ($allowedRelations, $object) {
             $this->applyLink($link, $object, $allowedRelations);
         });
 
@@ -44,7 +44,7 @@ abstract class AbstractLinkParamConverter extends ManipulationParamConverter
      */
     protected function checkRelation(LinkHeader $link, array $allowedRelations)
     {
-        if(!in_array($link->getRelation(), $allowedRelations)) {
+        if (!in_array($link->getRelation(), $allowedRelations)) {
             throw new BadRequestHttpException('Relation type "' . $link->getRelation() . '" is not allowed."');
         }
     }
@@ -54,7 +54,7 @@ abstract class AbstractLinkParamConverter extends ManipulationParamConverter
      */
     protected function checkConfiguration(ParamConverter $configuration)
     {
-        if(!isset($configuration->getOptions()['relations'])) {
+        if (!isset($configuration->getOptions()['relations'])) {
             throw new InvalidConfigurationException('Option relations has to be specified for ParamConverter "link".');
         }
     }

@@ -33,9 +33,9 @@ class Executioner
      */
     public function execute($object, array $patch)
     {
-        array_walk($patch, function(OperationInterface $operation) use ($object) {
+        array_walk($patch, function (OperationInterface $operation) use ($object) {
             $property = $this->getProperty($object, $operation->getPath());
-            if(!$property) {
+            if (!$property) {
                 throw new BadRequestHttpException('Property ' . $operation->getPath() . ' does not exist or is not writable.');
             }
 
@@ -57,7 +57,7 @@ class Executioner
 
         $properties = array_filter(
             $metadata->propertyMetadata,
-            function(PropertyMetadata $propertyMetadata) use ($propertyPath) {
+            function (PropertyMetadata $propertyMetadata) use ($propertyPath) {
                 $name = $propertyMetadata->serializedName !== null ? $propertyMetadata->serializedName : $propertyMetadata->name;
                 return $name === $propertyPath &&
                     $propertyMetadata->readOnly === false;

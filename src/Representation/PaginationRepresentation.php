@@ -8,7 +8,6 @@
 
 namespace Ibrows\RestBundle\Representation;
 
-
 use Hateoas\Configuration\Annotation as Hateoas;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
@@ -31,7 +30,7 @@ class PaginationRepresentation extends PaginatedRepresentation
      */
     private $exclusion;
 
-    public function __construct($inline, $route, array $parameters = array(), $page, $limit, $pages, $pageParameterName = null, $limitParameterName = null, $absolute = false,$total = null, Exclusion $exclusion = null)
+    public function __construct($inline, $route, array $parameters = array(), $page, $limit, $pages, $pageParameterName = null, $limitParameterName = null, $absolute = false, $total = null, Exclusion $exclusion = null)
     {
         if ($exclusion === null) {
             $exclusion = new Exclusion(
@@ -120,5 +119,4 @@ class PaginationRepresentation extends PaginatedRepresentation
             ),
         ];
     }
-
 }

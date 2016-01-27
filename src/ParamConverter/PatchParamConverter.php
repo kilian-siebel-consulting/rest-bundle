@@ -74,7 +74,7 @@ class PatchParamConverter extends ManipulationParamConverter
 
         $converter->apply($request, $bodyParserConfiguration);
 
-        if(count($request->attributes->get('validationErrors')) > 0) {
+        if (count($request->attributes->get('validationErrors')) > 0) {
             throw new BadRequestConstraintException($request->attributes->get('validationErrors'));
         }
 

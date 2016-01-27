@@ -2,7 +2,6 @@
 
 namespace Ibrows\RestBundle\Exception;
 
-
 interface DisplayableException
 {
     /**

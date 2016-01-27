@@ -85,5 +85,4 @@ class View extends BaseView
     {
         $this->cachePolicyName = $cachePolicyName;
     }
-
 }

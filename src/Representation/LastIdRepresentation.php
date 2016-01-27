@@ -158,5 +158,4 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
 
         ];
     }
-
 }

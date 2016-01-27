@@ -90,8 +90,7 @@ abstract class ManipulationParamConverter implements ParamConverterInterface
             $errors
         );
 
-        if (
-            $this->shouldFail($configuration) &&
+        if ($this->shouldFail($configuration) &&
             count($errors) > 0
         ) {
             throw new BadRequestConstraintException($errors);

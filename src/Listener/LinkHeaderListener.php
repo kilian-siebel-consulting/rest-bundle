@@ -37,14 +37,13 @@ class LinkHeaderListener
 
     public function onKernelRequest(KernelEvent $event)
     {
-        if(
-            strtoupper($event->getRequest()->getMethod()) !== 'LINK' &&
+        if (strtoupper($event->getRequest()->getMethod()) !== 'LINK' &&
             strtoupper($event->getRequest()->getMethod()) !== 'UNLINK'
         ) {
             return;
         }
 
-        if(!$event->getRequest()->headers->has('link')) {
+        if (!$event->getRequest()->headers->has('link')) {
             throw new BadRequestHttpException('Please specify at least one Link.');
         }
 
@@ -63,13 +62,17 @@ class LinkHeaderListener
             $header = trim($header);
             $link = new LinkHeader($header);
             try {
-                if($urlParameters = $this->urlMatcher->match($link->getValue())) {
+                if ($urlParameters = $this->urlMatcher->match($link->getValue())) {
                     $link->setUrlParameters($urlParameters);
                 }
-            } catch(ResourceNotFoundException $exception) {}
+            } catch (ResourceNotFoundException $exception) {
+
+            }
             try {
                 $link->setResource($this->resourceTransformer->getResourceProxy($link->getValue()));
-            } catch(InvalidArgumentException $e) {}
+            } catch (InvalidArgumentException $e) {
+
+            }
 
             $links[] = $link;
         }
