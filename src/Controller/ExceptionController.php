@@ -2,58 +2,24 @@
 
 namespace Ibrows\RestBundle\Controller;
 
-
-use JMS\Serializer\SerializerInterface;
-use Symfony\Component\Debug\Exception\FlattenException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\View\ViewHandler;
+use Ibrows\RestBundle\Exception\FlattenException;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
+use FOS\RestBundle\Controller\ExceptionController as BaseExceptionController;
 
-class ExceptionController
+class ExceptionController extends BaseExceptionController
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var bool
-     */
-    private $debug;
-
-    /**
-     * ExceptionController constructor.
-     * @param SerializerInterface $serializer
-     * @param boolean $debug
-     */
-    public function __construct(SerializerInterface $serializer, $debug)
+    protected function getParameters(ViewHandler $viewHandler, $currentContent, $code, $exception, DebugLoggerInterface $logger = null, $format = 'html')
     {
-        $this->serializer = $serializer;
-        $this->debug = $debug;
-    }
-
-    /**
-     * @param Request              $request   The request
-     * @param FlattenException     $exception A FlattenException instance
-     * @param DebugLoggerInterface $logger    A DebugLoggerInterface instance
-     *
-     * @return Response
-     */
-    public function showAction(Request $request, FlattenException $exception, DebugLoggerInterface $logger = null)
-    {
-        $object = [ 
-            'error' => [
-                'code' => $exception->getStatusCode(),
-                'message' => $exception->getMessage(),
-            ]
-        ];
+        $parameters = parent::getParameters($viewHandler, $currentContent, $code, $exception, $logger, $format);
         
-        if ($this->debug) {
-            $object['error']['exception'] = $exception->toArray();
+        if (
+            $exception instanceof FlattenException &&
+            $exception->getDisplayableException()
+        ) {
+            $parameters['errors'] = $exception->getDisplayableException()->toArray();
         }
-        
-        $responseContent = $this->serializer->serialize($object, $request->getRequestFormat());
-        
-        return new Response($responseContent, $exception->getStatusCode());
+
+        return $parameters;
     }
 }

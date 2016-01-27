@@ -52,7 +52,6 @@ class Configuration implements ConfigurationInterface
                     ->canBeEnabled()
                     ->children()
                         ->booleanNode('force_default')->defaultValue(false)->end()
-                        ->scalarNode('controller')->defaultValue('ibrows_rest.controller.exception:showAction')->end()
                     ->end()
                 ->end()
                 ->arrayNode('param_converter')
