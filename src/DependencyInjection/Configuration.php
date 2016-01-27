@@ -52,7 +52,6 @@ class Configuration implements ConfigurationInterface
                     ->canBeEnabled()
                     ->children()
                         ->booleanNode('force_default')->defaultValue(false)->end()
-                        ->scalarNode('controller')->defaultValue('ibrows_rest.controller.exception:showAction')->end()
                     ->end()
                 ->end()
                 ->arrayNode('param_converter')
@@ -135,7 +134,10 @@ class Configuration implements ConfigurationInterface
                                     ->defaultValue('crc32')
                                     ->validate()
                                     ->ifNotInArray(hash_algos())
-                                        ->thenInvalid('Invalid hashing algorithm "%s". Use one of those: ' . implode(', ', hash_algos()))
+                                        ->thenInvalid(
+                                            'Invalid hashing algorithm "%s". Use one of those: ' .
+                                            implode(', ', hash_algos())
+                                        )
                                     ->end()
                                 ->end()
                             ->end()

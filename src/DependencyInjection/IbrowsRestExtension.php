@@ -2,6 +2,8 @@
 
 namespace Ibrows\RestBundle\DependencyInjection;
 
+use Ibrows\RestBundle\Controller\ExceptionController;
+use Ibrows\RestBundle\Listener\ExceptionListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -35,12 +37,10 @@ class IbrowsRestExtension extends Extension
         $loader->load('patch.xml');
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
-        $loader->load('exception_controller.xml');
 
         // ParamConverters are loaded dynamically according to the configuration.
         foreach ($configuration['param_converter'] as $name => $paramConverter) {
-            if (
-                $name !== 'common' &&
+            if ($name !== 'common' &&
                 $paramConverter['enabled']
             ) {
                 $loader->load('param_converter/' . $name . '.xml');
@@ -67,13 +67,15 @@ class IbrowsRestExtension extends Extension
         }
 
         if ($configuration['exception_controller']['enabled']) {
-            $controller = $configuration['exception_controller']['controller'];
-
-            if (
-                $configuration['exception_controller']['force_default'] ||
+            if ($configuration['exception_controller']['force_default'] ||
                 !$container->hasParameter('twig.exception_listener.controller')
             ) {
-                $container->setParameter('twig.exception_listener.controller', $controller);
+                $container->setParameter(
+                    'twig.exception_listener.controller',
+                    $container->getParameter('fos_rest.exception_listener.controller')
+                );
+                $container->setParameter('fos_rest.controller.exception.class', ExceptionController::class);
+                $container->setParameter('fos_rest.exception_listener.class', ExceptionListener::class);
             }
         }
     }

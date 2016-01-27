@@ -13,20 +13,13 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * @package Ibrows\RestBundle\Patch\Operation
  * @ExclusionPolicy("all")
  */
-class Change extends Operation
+class Change extends ValueOperation
 {
-    /**
-     * @var mixed
-     * @Expose
-     * @Type("string")
-     */
-    private $value;
-
     /**
      * {@inheritdoc}
      */
     public function apply($object, PropertyMetadata $property)
     {
-        $property->setValue($object, $this->value);
+        $property->setValue($object, $this->getValue());
     }
 }

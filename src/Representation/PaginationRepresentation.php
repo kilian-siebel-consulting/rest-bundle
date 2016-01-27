@@ -8,14 +8,12 @@
 
 namespace Ibrows\RestBundle\Representation;
 
-
 use Hateoas\Configuration\Annotation as Hateoas;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Relation;
-use Hateoas\Representation\PaginatedRepresentation;
 use Hateoas\Configuration\Route;
+use Hateoas\Representation\PaginatedRepresentation;
 use JMS\Serializer\Annotation as Serializer;
-use Hateoas\Representation\AbstractSegmentedRepresentation;
 use Symfony\Component\Validator\Mapping\ClassMetadataInterface;
 
 /**
@@ -31,8 +29,22 @@ class PaginationRepresentation extends PaginatedRepresentation
      */
     private $exclusion;
 
-    public function __construct($inline, $route, array $parameters = array(), $page, $limit, $pages, $pageParameterName = null, $limitParameterName = null, $absolute = false,$total = null, Exclusion $exclusion = null)
-    {
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(
+        $inline,
+        $route,
+        array $parameters,
+        $page,
+        $limit,
+        $pages,
+        $pageParameterName = null,
+        $limitParameterName = null,
+        $absolute = false,
+        $total = null,
+        Exclusion $exclusion = null
+    ) {
         if ($exclusion === null) {
             $exclusion = new Exclusion(
                 [
@@ -41,7 +53,18 @@ class PaginationRepresentation extends PaginatedRepresentation
             );
         }
 
-        parent::__construct($inline, $route, $parameters, $page, $limit, $pages, $pageParameterName, $limitParameterName, $absolute, $total);
+        parent::__construct(
+            $inline,
+            $route,
+            $parameters,
+            $page,
+            $limit,
+            $pages,
+            $pageParameterName,
+            $limitParameterName,
+            $absolute,
+            $total
+        );
 
         $this->exclusion = $exclusion;
     }
@@ -120,5 +143,4 @@ class PaginationRepresentation extends PaginatedRepresentation
             ),
         ];
     }
-
 }

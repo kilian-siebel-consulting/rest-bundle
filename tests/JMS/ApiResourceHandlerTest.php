@@ -3,6 +3,7 @@ namespace Ibrows\RestBundle\Tests\JMS;
 
 use Ibrows\RestBundle\JMS\ApiResourceHandler;
 use Ibrows\RestBundle\Transformer\TransformerInterface;
+use InvalidArgumentException;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\VisitorInterface;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -59,6 +60,24 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
         $this->transformer
             ->method('getResourceProxy')
             ->willReturn(null);
+
+        $result = $handler->deserialize(
+            $this->visitor,
+            'something else',
+            [],
+            $this->context
+        );
+
+        $this->assertEquals('something else', $result);
+    }
+
+    public function testHandlerWithInvalidResource()
+    {
+        $handler = $this->getHandler();
+
+        $this->transformer
+            ->method('getResourceProxy')
+            ->willThrowException(new InvalidArgumentException());
 
         $result = $handler->deserialize(
             $this->visitor,

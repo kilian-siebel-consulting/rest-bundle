@@ -20,11 +20,11 @@ class LinkParamConverter extends AbstractLinkParamConverter
         /** @var Collection $collection */
         $collection = $object->{'get' . ucfirst($link->getRelation())}();
 
-        if(!$entityToLink) {
+        if (!$entityToLink) {
             throw new NotFoundHttpException;
         }
 
-        if($collection->contains($entityToLink)) {
+        if ($collection->contains($entityToLink)) {
             throw new ConflictHttpException('Entity is already linked to ' . $entityToLink->getId());
         }
 

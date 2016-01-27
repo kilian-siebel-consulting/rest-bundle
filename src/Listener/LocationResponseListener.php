@@ -25,7 +25,7 @@ class LocationResponseListener
      * @param RouterInterface $router
      * @param $evaluator
      */
-    public function __construct(RouterInterface $router,ExpressionEvaluator $evaluator)
+    public function __construct(RouterInterface $router, ExpressionEvaluator $evaluator)
     {
         $this->router = $router;
         $this->evaluator = $evaluator;
@@ -42,7 +42,7 @@ class LocationResponseListener
         /** @var View $configuration */
         $view = $request->attributes->get('_view');
 
-        if(!$view instanceof View || !$view->getLocation()) {
+        if (!$view instanceof View || !$view->getLocation()) {
             return;
         }
 
@@ -61,13 +61,13 @@ class LocationResponseListener
      * @param $context
      * @return mixed
      */
-    protected function prepareRouteParameters(array $params, array $context){
+    protected function prepareRouteParameters(array $params, array $context)
+    {
         $newParams = $params;
-        foreach($params as $key => $val){
+        foreach ($params as $key => $val) {
             $newParams[$key] = $this->evaluator->evaluate($val, $context);
         }
 
         return $newParams;
     }
-
 }

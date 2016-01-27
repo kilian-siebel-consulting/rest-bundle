@@ -30,8 +30,7 @@ class OffsetDecorator implements DecoratorInterface
      */
     public function decorate(ParameterBag $params, $collection)
     {
-        if (
-            !$collection instanceof CollectionRepresentation ||
+        if (!$collection instanceof CollectionRepresentation ||
             !$params->has('paramFetcher') ||
             !$params->has('_route')
         ) {

@@ -30,8 +30,7 @@ class PaginatedDecorator implements DecoratorInterface
      */
     public function decorate(ParameterBag $params, $collection)
     {
-        if (
-            !$collection instanceof CollectionRepresentation ||
+        if (!$collection instanceof CollectionRepresentation ||
             !$params->has('paramFetcher') ||
             !$params->has('_route')
         ) {
@@ -39,8 +38,7 @@ class PaginatedDecorator implements DecoratorInterface
         }
 
         try {
-            if (
-                $params->get('paramFetcher')->get($this->limitParameterName) === null ||
+            if ($params->get('paramFetcher')->get($this->limitParameterName) === null ||
                 $params->get('paramFetcher')->get($this->pageParameterName) === null
             ) {
                 return $collection;

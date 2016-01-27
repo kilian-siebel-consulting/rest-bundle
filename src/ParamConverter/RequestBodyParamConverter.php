@@ -46,8 +46,7 @@ class RequestBodyParamConverter implements ParamConverterInterface
 
         $validationErrors = $request->attributes->get($this->validationErrorsArgument);
 
-        if (
-            $this->failOnValidationError &&
+        if ($this->failOnValidationError &&
             count($validationErrors) > 0
         ) {
             throw new BadRequestConstraintException($validationErrors);

@@ -1,12 +1,12 @@
 <?php
 namespace Ibrows\RestBundle\Representation;
 
+use Hateoas\Configuration\Annotation as Hateoas;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Representation\OffsetRepresentation as BaseOffsetRepresentation;
-use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * Class OffsetRepresentation
@@ -28,7 +28,7 @@ class OffsetRepresentation extends BaseOffsetRepresentation
     public function __construct(
         $inline,
         $route,
-        array $parameters = [],
+        array $parameters,
         $offset,
         $limit,
         $total = null,
@@ -61,6 +61,26 @@ class OffsetRepresentation extends BaseOffsetRepresentation
     }
 
     /**
+     * @return int
+     * @codeCoverageIgnore
+     */
+    public function getLastPage()
+    {
+        return ($this->getTotal() - 1) - (($this->getTotal() - 1) % $this->getLimit());
+    }
+
+    /**
+     * @return int
+     * @codeCoverageIgnore
+     */
+    public function getPreviousPage()
+    {
+        return ($this->getOffset() > $this->getLimit())
+            ? $this->getOffset() - $this->getLimit()
+            : 0;
+    }
+
+    /**
      * @param OffsetRepresentation   $object
      * @param ClassMetadataInterface $classMetadata
      * @return Relation[]
@@ -84,7 +104,7 @@ class OffsetRepresentation extends BaseOffsetRepresentation
                 'last',
                 new Route(
                     'expr(object.getRoute())',
-                    'expr(object.getParameters((object.getTotal() - 1) - (object.getTotal() - 1) % object.getLimit()))',
+                    'expr(object.getParameters(object.getLastPage())',
                     'expr(object.isAbsolute())'
                 ),
                 null,
@@ -118,7 +138,7 @@ class OffsetRepresentation extends BaseOffsetRepresentation
                 'previous',
                 new Route(
                     'expr(object.getRoute())',
-                    'expr(object.getParameters((object.getOffset() > object.getLimit()) ? object.getOffset() - object.getLimit() : 0))',
+                    'expr(object.getParameters(object.getPreviousPage())',
                     'expr(object.isAbsolute())'
                 ),
                 null,

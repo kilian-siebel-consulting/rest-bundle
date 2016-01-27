@@ -43,13 +43,11 @@ class ResourceDeserializationListener implements EventSubscriberInterface
      */
     public function onPreDeserialize(PreDeserializeEvent $event)
     {
-        if (
-            is_string($event->getData()) &&
+        if (is_string($event->getData()) &&
             $this->transformer->isResource($event->getType()['name'])
         ) {
             $event->setType(self::TYPE_NAME);
-        } elseif (
-            is_string($event->getData()) &&
+        } elseif (is_string($event->getData()) &&
             isset($event->getType()['params'][0]['name']) &&
             $this->transformer->isResource($event->getType()['params'][0]['name'])
         ) {

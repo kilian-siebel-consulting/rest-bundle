@@ -45,8 +45,7 @@ class DebugResponseListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (
-            $this->profilerListener !== null &&
+        if ($this->profilerListener !== null &&
             $this->isSuitableEvent($event)
         ) {
             $this->appendDebugInformation($event);
@@ -161,8 +160,7 @@ class DebugResponseListener
         array_walk(
             $matchingConverters,
             function (ConverterInterface $converter) use ($collector, & $debugInformation) {
-                if (
-                $data = $converter->convert($collector)
+                if ($data = $converter->convert($collector)
                 ) {
                     $debugInformation[$converter->getName()] = $data;
                 }
