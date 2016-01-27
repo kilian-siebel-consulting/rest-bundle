@@ -29,12 +29,12 @@ class ChangeTest extends PHPUnit_Framework_TestCase
 
         $reflectionProperty = new \ReflectionProperty(ValueOperation::class, 'value');
         $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($change, 'bar');
+        $reflectionProperty->setValue($change, new \DateTime());
 
         $object = new Something();
         
         $propertyMetadata = new PropertyMetadata($object, 'property');
-        $propertyMetadata->setType(\DateTime::class);
+        $propertyMetadata->setType(Something::class);
         
         $change->apply($object, $propertyMetadata);
         $this->assertEquals('bar', $object->property);        
