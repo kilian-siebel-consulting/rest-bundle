@@ -4,13 +4,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
         <parameter key="ibrows_rest.listener.resource_deserialization.class">Ibrows\RestBundle\Listener\ResourceDeserializationListener</parameter>
+        <parameter key="ibrows_rest.listener.resource_deserialization.type_name_strict">ibrows_rest_resource_strict</parameter>
     </parameters>
     <services>
         <service id="ibrows_rest.listener.resource_deserialization" class="%ibrows_rest.listener.resource_deserialization.class%">
             <argument type="service" id="ibrows_rest.resource_transformer"/>
-            <tag name="jms_serializer.event_subscriber"/>
+            <argument type="string" >ibrows_rest_resource_strict</argument>
+            <argument type="service" id="ibrows_rest.resource_transformer"/>
+            <tag name="jms_serializer.event_listener" event="serializer.pre_deserialize"  format="json" direction="deserialization"  />
+            <tag name="jms_serializer.handler" type="%ibrows_rest.listener.resource_deserialization.type_name_strict%" direction="deserialization" format="json" method="deserializeStrict" />
         </service>
     </services>
+
+
+
 </container>
 
 

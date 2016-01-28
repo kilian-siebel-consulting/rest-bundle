@@ -10,7 +10,7 @@ abstract class ValueOperation extends Operation
     /**
      * @var mixed
      * @Expose
-     * @Type("ibrows_rest_resource")
+     * @Type("ibrows_rest_resource_weak")
      */
     private $value;
 

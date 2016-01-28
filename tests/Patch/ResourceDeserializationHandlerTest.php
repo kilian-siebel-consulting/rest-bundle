@@ -1,7 +1,7 @@
 <?php
 namespace Ibrows\RestBundle\Tests\JMS;
 
-use Ibrows\RestBundle\JMS\ApiResourceHandler;
+use Ibrows\RestBundle\Patch\ResourceDeserializationHandler;
 use Ibrows\RestBundle\Transformer\TransformerInterface;
 use InvalidArgumentException;
 use JMS\Serializer\DeserializationContext;
@@ -9,7 +9,7 @@ use JMS\Serializer\VisitorInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
-class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
+class ResourceDeserializationHandlerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var TransformerInterface|PHPUnit_Framework_MockObject_MockObject
@@ -25,6 +25,8 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
      * @var DeserializationContext
      */
     private $context;
+
+    private $typeName = 'ibrows_rest_resource_weak';
 
     public function setUp()
     {
@@ -43,7 +45,7 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
             ->method('getResourceProxy')
             ->willReturn($resource);
 
-        $result = $handler->deserialize(
+        $result = $handler->deserializeWeak(
             $this->visitor,
             'resource',
             [
@@ -67,7 +69,7 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
             ->method('getResourceProxy')
             ->willReturn($resource);
 
-        $result = $handler->deserialize(
+        $result = $handler->deserializeWeak(
             $this->visitor,
             'resource',
             [
@@ -81,30 +83,6 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($resource, $result);
     }
 
-    public function testHandlerWithNonMatchingResourceType()
-    {
-        $handler = $this->getHandler();
-
-        $resource = new \DateTime();
-
-        $this->transformer
-            ->method('getResourceProxy')
-            ->willReturn($resource);
-
-        $result = $handler->deserialize(
-            $this->visitor,
-            'resource',
-            [
-                'params' => [
-                    'originalType' => \DOMDocument::class
-                ]
-            ],
-            $this->context
-        );
-
-        $this->assertNull($result);
-    }
-
     public function testHandlerWithNonResource()
     {
         $handler = $this->getHandler();
@@ -113,7 +91,7 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
             ->method('getResourceProxy')
             ->willReturn(null);
 
-        $result = $handler->deserialize(
+        $result = $handler->deserializeWeak(
             $this->visitor,
             'something else',
             [],
@@ -131,7 +109,7 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
             ->method('getResourceProxy')
             ->willThrowException(new InvalidArgumentException());
 
-        $result = $handler->deserialize(
+        $result = $handler->deserializeWeak(
             $this->visitor,
             'something else',
             [],
@@ -141,13 +119,12 @@ class ApiResourceHandlerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('something else', $result);
     }
 
-    /**
-     * @return ApiResourceHandler
-     */
     private function getHandler()
     {
-        return new ApiResourceHandler(
-            $this->transformer
+        return new ResourceDeserializationHandler(
+            $this->transformer,
+            $this->typeName
+
         );
     }
 }

@@ -39,9 +39,9 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
                 return $className === 'a_class';
             }));
 
-        $listener->onPreDeserialize($event);
+        $listener->onSerializerPreDeserialize($event);
 
-        $this->assertEquals(ResourceDeserializationListener::TYPE_NAME, $event->getType()['name']);
+        $this->assertEquals('rest_resource', $event->getType()['name']);
     }
 
     public function testWithResourceArray()
@@ -67,14 +67,17 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
                 return $className === 'a_class';
             }));
 
-        $listener->onPreDeserialize($event);
+        $listener->onSerializerPreDeserialize($event);
 
         $this->assertEquals(
             [
                 'name'   => 'array',
                 'params' => [
                     [
-                        'name' => ResourceDeserializationListener::TYPE_NAME,
+                        'name' => 'rest_resource',
+                        'params' => [
+                                'originalType' => 'a_class'
+                        ]
                     ]
                 ],
             ],
@@ -101,9 +104,10 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
                 return $className === 'a_class';
             }));
 
-        $listener->onPreDeserialize($event);
+        $listener->onSerializerPreDeserialize($event);
 
-        $this->assertNotEquals(ResourceDeserializationListener::TYPE_NAME, $event->getType()['name']);
+        $this->assertNotEquals('rest_resource', $event->getType()['name']);
+        $this->assertEquals('b_class', $event->getType()['name']);
     }
 
     /**
@@ -112,7 +116,7 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
     private function getListener()
     {
         return new ResourceDeserializationListener(
-            $this->transformer
+            $this->transformer,'rest_resource'
         );
     }
 }

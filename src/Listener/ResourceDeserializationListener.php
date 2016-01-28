@@ -2,12 +2,19 @@
 namespace Ibrows\RestBundle\Listener;
 
 use Ibrows\RestBundle\Transformer\TransformerInterface;
-use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
+use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
+use JMS\Serializer\VisitorInterface;
 
-class ResourceDeserializationListener implements EventSubscriberInterface
+class ResourceDeserializationListener
 {
-    const TYPE_NAME = 'ibrows_rest_resource';
+
+    private $originalTypeParamName = 'originalType';
+
+    /**
+     * @var string
+     */
+    private $typeNameStrict;
 
     /**
      * @var TransformerInterface
@@ -15,52 +22,71 @@ class ResourceDeserializationListener implements EventSubscriberInterface
     private $transformer;
 
     /**
-     * EntityDeserializationListener constructor.
      * @param TransformerInterface $transformer
+     * @param string               $typeNameStrict
      */
-    public function __construct(
-        TransformerInterface $transformer
-    ) {
+    public function __construct(TransformerInterface $transformer, $typeNameStrict)
+    {
+        $this->typeNameStrict = $typeNameStrict;
         $this->transformer = $transformer;
     }
 
+
     /**
-     * {@inheritdoc}
-     * @codeCoverageIgnore
+     * @param VisitorInterface $visitor
+     * @param                  $data
+     * @param array            $type
+     * @param Context          $context
+     * @return \Ibrows\RestBundle\Model\ApiListableInterface|null
      */
-    public static function getSubscribedEvents()
+    public function deserializeStrict(VisitorInterface $visitor, $data, array $type, Context $context)
     {
-        return [
-            [
-                'event'  => 'serializer.pre_deserialize',
-                'method' => 'onPreDeserialize'
-            ],
-        ];
+        $className = $this->getValidOriginalClassname($type);
+        try {
+            $resource = $this->transformer->getResourceProxy($data);
+            if (is_object($resource) && $resource instanceof $className) {
+                return $resource;
+            }
+        } catch (\InvalidArgumentException $e) {
+            // Data may be invalid, nothing should happen
+        }
+        return null;
+
     }
+
+
+    /**
+     * @param array $type
+     * @return null|string className
+     */
+    private function getValidOriginalClassname(array $type)
+    {
+        if (!isset($type['params'][$this->originalTypeParamName])) {
+            return null;
+        }
+        $class = $type['params'][$this->originalTypeParamName];
+        if (class_exists($class) || interface_exists($class)) {
+            return $class;
+        }
+
+        return null;
+    }
+
 
     /**
      * @param PreDeserializeEvent $event
      */
-    public function onPreDeserialize(PreDeserializeEvent $event)
+    public function onSerializerPreDeserialize(PreDeserializeEvent $event)
     {
-        if (is_string($event->getData()) &&
-            $this->transformer->isResource($event->getType()['name'])
-        ) {
-            $event->setType(self::TYPE_NAME, [
-                'originalType' => $event->getType()['name'],
-            ]);
-        } elseif (is_string($event->getData()) &&
-            isset($event->getType()['params'][0]['name']) &&
-            $this->transformer->isResource($event->getType()['params'][0]['name'])
-        ) {
-            $event->setType(
-                'array',
-                [
-                    [
-                        'name' => self::TYPE_NAME,
-                    ],
-                ]
-            );
+
+        if ($this->transformer->isResource($event->getType()['name'])) {
+            $event->setType($this->typeNameStrict, [$this->originalTypeParamName => $event->getType()['name']]);
+            return;
         }
+        //  @JMS\Type("array<CLASSNAME>")
+        if (isset($event->getType()['params'][0]['name']) && $this->transformer->isResource($event->getType()['params'][0]['name'])) {
+            $event->setType($event->getType()['name'], [['name' => $this->typeNameStrict, 'params' => [$this->originalTypeParamName => $event->getType()['params'][0]['name']]]]);
+        }
+
     }
 }
