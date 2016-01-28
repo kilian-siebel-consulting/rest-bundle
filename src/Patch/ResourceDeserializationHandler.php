@@ -47,6 +47,4 @@ class ResourceDeserializationHandler
         }
         return $data;
     }
-
-
 }

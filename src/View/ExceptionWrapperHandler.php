@@ -2,7 +2,6 @@
 
 namespace Ibrows\RestBundle\View;
 
-
 use FOS\RestBundle\View\ExceptionWrapperHandlerInterface;
 
 use Ibrows\RestBundle\Util\ExceptionWrapper as IbrowsExceptionWrapper;
