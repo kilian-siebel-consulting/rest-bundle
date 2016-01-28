@@ -75,6 +75,8 @@ class IbrowsRestExtension extends Extension
                 );
                 $container->setParameter('fos_rest.controller.exception.class', ExceptionController::class);
                 $container->setParameter('fos_rest.exception_listener.class', ExceptionListener::class);
+
+                $loader->load('exception_controller.xml');
             }
         }
     }
