@@ -5,6 +5,9 @@ namespace Ibrows\RestBundle\View;
 
 use FOS\RestBundle\View\ExceptionWrapperHandlerInterface;
 
+use Ibrows\RestBundle\Util\ExceptionWrapper as IbrowsExceptionWrapper;
+use FOS\RestBundle\Util\ExceptionWrapper as FOSExceptionWrapper;
+
 class ExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
 {
     /**
@@ -26,9 +29,9 @@ class ExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
     public function wrap($data)
     {
         if ($this->debug) {
-            return new \Ibrows\RestBundle\Util\ExceptionWrapper($data);
+            return new IbrowsExceptionWrapper($data);
         }
         
-        return new \FOS\RestBundle\Util\ExceptionWrapper($data);
+        return new FOSExceptionWrapper($data);
     }
 }
