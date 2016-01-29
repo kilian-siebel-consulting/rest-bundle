@@ -13,6 +13,7 @@ class CacheHeaderListener
 {
     const TYPE_PRIVATE = 'private';
     const TYPE_PUBLIC = 'public';
+    const TYPE_NO_CACHE = 'no-cache';
 
     /**
      * @var array[]
@@ -50,11 +51,15 @@ class CacheHeaderListener
             return;
         }
 
-        $config = array(
-            'max_age' => $policy['max_age']
-        );
+        $config = array();
 
-        if($policy['type'] == self::TYPE_PUBLIC){
+        if(isset($policy['max_age'])) {
+            $config['max_age'] = $policy['max_age'];
+        }
+
+        if ($policy['type'] == self::TYPE_NO_CACHE) {
+
+        }elseif ($policy['type'] == self::TYPE_PUBLIC) {
             $config['public'] = true;
         }elseif($policy['type'] == self::TYPE_PRIVATE){
             $config['private'] = true;
