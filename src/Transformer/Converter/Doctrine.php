@@ -34,7 +34,7 @@ class Doctrine implements ConverterInterface
      */
     public function getResourceProxy($className, $identifier)
     {
-        if($this->objectManager instanceof EntityManagerInterface) {
+        if ($this->objectManager instanceof EntityManagerInterface) {
             return $this->objectManager->getReference($className, $identifier);
         }
         return $this->getResource($className, $identifier);

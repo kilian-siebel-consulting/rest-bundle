@@ -6,6 +6,7 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Metadata\PropertyMetadata;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class Change
@@ -13,20 +14,23 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * @package Ibrows\RestBundle\Patch\Operation
  * @ExclusionPolicy("all")
  */
-class Change extends Operation
+class Change extends ValueOperation
 {
-    /**
-     * @var mixed
-     * @Expose
-     * @Type("string")
-     */
-    private $value;
-
     /**
      * {@inheritdoc}
      */
     public function apply($object, PropertyMetadata $property)
     {
-        $property->setValue($object, $this->value);
+        $typeName = isset($property->type['name']) ? $property->type['name'] : null;
+        
+        if (null !== $typeName
+            && is_object($this->getValue())
+            && (class_exists($typeName) || interface_exists($typeName))
+            && !$this->getValue() instanceof $typeName) {
+            
+            throw new BadRequestHttpException("Invalid change value for " . $property->name);
+        }
+        
+        $property->setValue($object, $this->getValue());
     }
 }

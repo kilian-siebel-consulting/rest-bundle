@@ -26,15 +26,15 @@ class ParamConvertersCompilerPass implements CompilerPassInterface
             'request.param_converter'
         );
 
-        foreach($ids as $id) {
-            if(!$container->has($id)) {
+        foreach ($ids as $id) {
+            if (!$container->has($id)) {
                 continue;
             }
             $definition = $container->getDefinition($id);
 
             foreach ($taggedServices as $id => $tags) {
-                foreach($tags as $tag) {
-                    if(!isset($tag['converter'])) {
+                foreach ($tags as $tag) {
+                    if (!isset($tag['converter'])) {
                         continue;
                     }
                     $definition->addMethodCall(

@@ -2,10 +2,12 @@
 
 namespace Ibrows\RestBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Ibrows\RestBundle\Controller\ExceptionController;
+use Ibrows\RestBundle\Listener\ExceptionListener;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
  * This is the class that loads and manages your bundle configuration.
@@ -31,16 +33,13 @@ class IbrowsRestExtension extends Extension
         $loader = new XmlFileLoader($container, $fileLocator);
         $loader->load('collection_decorator.xml');
         $loader->load('debug_converter.xml');
-        $loader->load('jms.xml');
         $loader->load('patch.xml');
         $loader->load('transformer.xml');
         $loader->load('utils.xml');
-        $loader->load('exception_controller.xml');
 
         // ParamConverters are loaded dynamically according to the configuration.
         foreach ($configuration['param_converter'] as $name => $paramConverter) {
-            if (
-                $name !== 'common' &&
+            if ($name !== 'common' &&
                 $paramConverter['enabled']
             ) {
                 $loader->load('param_converter/' . $name . '.xml');
@@ -53,9 +52,9 @@ class IbrowsRestExtension extends Extension
                 )
             );
         }
-
         // Listeners are loaded dynamically according to the configuration.
         foreach ($configuration['listener'] as $name => $listener) {
+
             if ($listener['enabled']) {
                 $loader->load('listener/' . $name . '.xml');
             }
@@ -67,13 +66,17 @@ class IbrowsRestExtension extends Extension
         }
 
         if ($configuration['exception_controller']['enabled']) {
-            $controller = $configuration['exception_controller']['controller'];
-
-            if (
-                $configuration['exception_controller']['force_default'] ||
+            if ($configuration['exception_controller']['force_default'] ||
                 !$container->hasParameter('twig.exception_listener.controller')
             ) {
-                $container->setParameter('twig.exception_listener.controller', $controller);
+                $container->setParameter(
+                    'twig.exception_listener.controller',
+                    $container->getParameter('fos_rest.exception_listener.controller')
+                );
+                $container->setParameter('fos_rest.controller.exception.class', ExceptionController::class);
+                $container->setParameter('fos_rest.exception_listener.class', ExceptionListener::class);
+
+                $loader->load('exception_controller.xml');
             }
         }
     }

@@ -3,7 +3,6 @@
 
 namespace Ibrows\RestBundle\Listener;
 
-
 use Ibrows\RestBundle\Annotation\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,14 +39,14 @@ class CacheHeaderListener
         /** @var View $view */
         $view = $request->attributes->get('_view');
 
-        if(!$view instanceof View || $view->getCachePolicyName() === null) {
+        if (!$view instanceof View || $view->getCachePolicyName() === null) {
             return;
         }
 
         $name = $view->getCachePolicyName();
         $policy = $this->getPolicyByName($name);
 
-        if(!$policy){
+        if (!$policy) {
             return;
         }
 
@@ -61,9 +60,9 @@ class CacheHeaderListener
 
         }elseif ($policy['type'] == self::TYPE_PUBLIC) {
             $config['public'] = true;
-        }elseif($policy['type'] == self::TYPE_PRIVATE){
+        } elseif ($policy['type'] == self::TYPE_PRIVATE) {
             $config['private'] = true;
-        }else{
+        } else {
             throw new \InvalidArgumentException('Type '.$policy['type'].' not allowed');
         }
 
@@ -75,11 +74,11 @@ class CacheHeaderListener
      * @param $name
      * @return array|null
      */
-    private function getPolicyByName($name){
-        if(isset($this->caches[$name])){
+    private function getPolicyByName($name)
+    {
+        if (isset($this->caches[$name])) {
             return $this->caches[$name];
         }
         return null;
     }
-
 }

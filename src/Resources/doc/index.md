@@ -58,6 +58,9 @@ file of your project:
 - `RequestBodyParamConverter` - [Read Documentation](param_converter/request_body_param_converter.md)
 - `UnlinkParamConverter` - [Read Documentation](param_converter/unlink_param_converter.md)
  
+## Controllers
+- `ExceptionController`  - [Read Documentation](controller/exception_controller.md)
+ 
 ## Patch
 
 The patching system is used to apply patches to an object in the `PatchParamConverter`. It can also be used standalone.
@@ -120,6 +123,10 @@ The patching system is used to apply patches to an object in the `PatchParamConv
                 enabled: false  
             resource_deserialization:
                 enabled: false  
+        exception_controller:
+            enabled: true
+            force_default: false
+            controller: 'ibrows_rest.controller.exception:showAction'                
 ```
 
 

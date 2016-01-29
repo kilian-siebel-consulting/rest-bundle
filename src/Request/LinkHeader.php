@@ -79,7 +79,7 @@ class LinkHeader
      */
     private function parseValue()
     {
-        if(preg_match('/^\s*<([^>]*)>/', $this->getOriginalHeader(), $valueParts)) {
+        if (preg_match('/^\s*<([^>]*)>/', $this->getOriginalHeader(), $valueParts)) {
             $this->setValue($valueParts[1]);
         }
 
@@ -93,8 +93,8 @@ class LinkHeader
      */
     private function parseMetadata()
     {
-        if(preg_match_all('/;\s*([a-zA-Z0-9]+)="([^"]+)"/', $this->getOriginalHeader(), $metaParts) > 0) {
-            for($i = 0; $i < count($metaParts[0]); $i++) {
+        if (preg_match_all('/;\s*([a-zA-Z0-9]+)="([^"]+)"/', $this->getOriginalHeader(), $metaParts) > 0) {
+            for ($i = 0; $i < count($metaParts[0]); $i++) {
                 $this->applyMetadata($metaParts[1][$i], $metaParts[2][$i]);
             }
         }
@@ -112,7 +112,7 @@ class LinkHeader
      */
     private function applyMetadata($key, $value)
     {
-        switch($key) {
+        switch ($key) {
             case 'rel':
                 $this->setRelation($value);
                 break;
