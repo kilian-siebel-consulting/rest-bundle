@@ -2,7 +2,6 @@
 
 namespace Ibrows\RestBundle\Tests\Unit\View;
 
-
 use Ibrows\RestBundle\Exception\FlattenException;
 use Ibrows\RestBundle\View\ExceptionWrapperHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -27,12 +26,12 @@ class ExceptionWrapperHandlerTest extends \PHPUnit_Framework_TestCase
         ];
     }
     
-    private function getDataWithoutException() 
+    private function getDataWithoutException()
     {
         return [
             'status_code' => 201,
             'message' => 'Created',
-        ];        
+        ];
     }
 
     public function testInDebugModeWithoutException()

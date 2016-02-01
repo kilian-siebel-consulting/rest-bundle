@@ -33,7 +33,7 @@ class PatchParamConverterTest extends PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('execute')
             ->with($subject, $patch)
-            ->will($this->returnCallback(function(TestClass $subject, array $patch) {
+            ->will($this->returnCallback(function (TestClass $subject, array $patch) {
                 $subject->setPatched();
             }));
 

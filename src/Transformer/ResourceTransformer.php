@@ -162,16 +162,15 @@ class ResourceTransformer implements TransformerInterface
      */
     public function isResourcePath($path)
     {
-        if(!is_string($path)){
+        if (!is_string($path)) {
             return false;
         }
 
         $matches = preg_match('(^\/.*\/\d*)', $path);
-        if($matches === 0){
+        if ($matches === 0) {
             return false;
         }
 
         return true;
     }
-
 }

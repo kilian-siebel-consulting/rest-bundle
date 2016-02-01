@@ -60,9 +60,14 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
             ->willThrowException(new \InvalidArgumentException("Param not defined"));
 
         $request = new Request(
-            [], [], [
-                '_view'        => $this->getView(false, []),
-                'paramFetcher' => $paramFetcher
+            [],
+            [],
+            [
+            '_view'        => $this->getView(
+                false,
+                []
+            ),
+            'paramFetcher' => $paramFetcher
             ]
         );
 
@@ -81,8 +86,13 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
         $listener = $this->getListener('_expolicy');
 
         $request = new Request(
-            [], [], [
-                '_view' => $this->getView(false, []),
+            [],
+            [],
+            [
+            '_view' => $this->getView(
+                false,
+                []
+            ),
             ]
         );
 
@@ -106,8 +116,10 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
             ->method('get');
 
         $request = new Request(
-            [], [], [
-                'paramFetcher' => $paramFetcher
+            [],
+            [],
+            [
+            'paramFetcher' => $paramFetcher
             ]
         );
 
@@ -150,9 +162,11 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
         $paramFetcher = $this->getParamFetcher($enabled, $paramName, $paramValue, $defaultValue);
 
         $request = new Request(
-            $query, [], [
-                '_view'        => $view,
-                'paramFetcher' => $paramFetcher
+            $query,
+            [],
+            [
+            '_view'        => $view,
+            'paramFetcher' => $paramFetcher
             ]
         );
 

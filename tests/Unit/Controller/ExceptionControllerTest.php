@@ -2,7 +2,6 @@
 
 namespace Ibrows\RestBundle\Tests\Unit\Controller;
 
-
 use FOS\RestBundle\Util\ExceptionWrapper;
 use FOS\RestBundle\Util\MediaTypeNegotiatorInterface;
 use FOS\RestBundle\View\ExceptionWrapperHandler;
@@ -30,7 +29,7 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
         $serializer = $this->getMockForAbstractClass(SerializerInterface::class);
         $serializer
             ->method('serialize')
-            ->willReturnCallback(function($object, $format, $context = null) {
+            ->willReturnCallback(function ($object, $format, $context = null) {
                 return json_encode($object);
             });
         
@@ -41,7 +40,7 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return Request
      */
-    public function getRequest() 
+    public function getRequest()
     {
         $request = new Request([], [], [ '_format' => 'json']);
         // believe it or not, if we don't set this it will cause
@@ -87,7 +86,7 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
         
         $viewHandler
             ->method('handle')
-            ->willReturnCallback(function(View $view, Request $request = null) {
+            ->willReturnCallback(function (View $view, Request $request = null) {
                 /** @var ExceptionWrapper $wrapped */
                 $wrapped = $view->getData();
                 $vars = [
@@ -102,23 +101,23 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
         
         $container
             ->method('get')
-            ->willReturnCallback(function($serviceId) use($forFormatNegotiator, $viewHandler, $kernel, $wrapper) {
-                if($serviceId === 'fos_rest.exception_format_negotiator') {
+            ->willReturnCallback(function ($serviceId) use ($forFormatNegotiator, $viewHandler, $kernel, $wrapper) {
+                if ($serviceId === 'fos_rest.exception_format_negotiator') {
                     return $forFormatNegotiator;
-                } elseif($serviceId === 'fos_rest.view_handler') {
+                } elseif ($serviceId === 'fos_rest.view_handler') {
                     return $viewHandler;
-                } elseif($serviceId === 'kernel') {
+                } elseif ($serviceId === 'kernel') {
                     return $kernel;
-                } elseif($serviceId === 'fos_rest.exception_handler') {
+                } elseif ($serviceId === 'fos_rest.exception_handler') {
                     return $wrapper;
                 }
                 return null;
-        });
+            });
         
         $container
             ->method('getParameter')
-            ->willReturnCallback(function($parameterName) {
-                if($parameterName === 'fos_rest.exception.codes' ||
+            ->willReturnCallback(function ($parameterName) {
+                if ($parameterName === 'fos_rest.exception.codes' ||
                     $parameterName === 'fos_rest.exception.messages') {
                     return [];
                 }
@@ -157,10 +156,10 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
             'property_path' => 'getPropertyPath'
         ];
 
-        foreach($violations as $violation) {
+        foreach ($violations as $violation) {
             $violationItem = $this->getMockForAbstractClass(ConstraintViolationInterface::class);
 
-            foreach($props as $key => $propName) {
+            foreach ($props as $key => $propName) {
                 $violationItem
                     ->method($propName)
                     ->willReturn($violation[$key]);
@@ -212,7 +211,7 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('123', $data['errors']['violations'][0]['code']);
         $this->assertEquals('This value should not be null.', $data['errors']['violations'][0]['message']);
-        $this->assertEquals('/user', $data['errors']['violations'][0]['property_path']);        
+        $this->assertEquals('/user', $data['errors']['violations'][0]['property_path']);
         
     }
 }

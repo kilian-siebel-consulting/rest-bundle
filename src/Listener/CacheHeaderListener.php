@@ -52,13 +52,13 @@ class CacheHeaderListener
 
         $config = array();
 
-        if(isset($policy['max_age'])) {
+        if (isset($policy['max_age'])) {
             $config['max_age'] = $policy['max_age'];
         }
 
         if ($policy['type'] == self::TYPE_NO_CACHE) {
 
-        }elseif ($policy['type'] == self::TYPE_PUBLIC) {
+        } elseif ($policy['type'] == self::TYPE_PUBLIC) {
             $config['public'] = true;
         } elseif ($policy['type'] == self::TYPE_PRIVATE) {
             $config['private'] = true;

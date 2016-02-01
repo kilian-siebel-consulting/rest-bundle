@@ -43,7 +43,7 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
             'source' => 'car',
         ];
         
-        if(!$emptyRelation) {
+        if (!$emptyRelation) {
             $configArray['relations'] = $relations;
         }
         
@@ -81,8 +81,8 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(4, $car->getWheels());
         $this->assertCount(2, $car->getDoors());
         
-        $this->assertInstanceOf(Wheel::class,$car->getWheels()[0]);
-        $this->assertInstanceOf(Door::class,$car->getDoors()[0]);
+        $this->assertInstanceOf(Wheel::class, $car->getWheels()[0]);
+        $this->assertInstanceOf(Door::class, $car->getDoors()[0]);
     }
 
     /**
@@ -257,7 +257,7 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
         $carConverter
             ->expects($this->any())
             ->method('apply')
-            ->willReturnCallback(function(Request $request, ParamConverter $configuration) use($car) {
+            ->willReturnCallback(function (Request $request, ParamConverter $configuration) use ($car) {
                 $request->attributes->set('car', $car);
             });
         

@@ -124,7 +124,6 @@ class ResourceDeserializationHandlerTest extends PHPUnit_Framework_TestCase
         return new ResourceDeserializationHandler(
             $this->transformer,
             $this->typeName
-
         );
     }
 }

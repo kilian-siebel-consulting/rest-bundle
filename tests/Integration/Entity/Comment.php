@@ -67,5 +67,4 @@ class Comment
     {
         return $this->message;
     }
-
 }

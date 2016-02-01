@@ -175,7 +175,8 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testCollectionResponse () {
+    public function testCollectionResponse()
+    {
 
         $this->decorator
             ->expects($this->once())

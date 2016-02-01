@@ -8,7 +8,6 @@
 
 namespace Ibrows\RestBundle\Tests\Unit\Listener;
 
-
 use Ibrows\RestBundle\Annotation\Route;
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;

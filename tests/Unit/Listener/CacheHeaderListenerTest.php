@@ -3,8 +3,6 @@
 
 namespace Ibrows\RestBundle\Tests\Unit\Listener;
 
-
-
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\Expression\ExpressionEvaluator;
 use Ibrows\RestBundle\Listener\CacheHeaderListener;
@@ -183,7 +181,4 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         }
         return new FilterResponseEvent($this->kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
     }
-
-
-
 }

@@ -2,7 +2,6 @@
 
 namespace Ibrows\RestBundle\Tests\Unit\Listener;
 
-
 use Ibrows\RestBundle\Exception\FlattenException;
 use Ibrows\RestBundle\Listener\ExceptionListener;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +15,13 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return HttpKernelInterface
      */
-    private function getKernel() 
+    private function getKernel()
     {
         $kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
         
         $kernel
             ->method('handle')
-            ->willReturnCallback(function(Request $request) {
+            ->willReturnCallback(function (Request $request) {
                 $this->assertInstanceOf(FlattenException::class, $request->attributes->get('exception'));
                 return new Response("test", 200);
             });

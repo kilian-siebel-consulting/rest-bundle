@@ -37,7 +37,7 @@ class ChangeTest extends PHPUnit_Framework_TestCase
         $propertyMetadata->setType(Something::class);
         
         $change->apply($object, $propertyMetadata);
-        $this->assertEquals('bar', $object->property);        
+        $this->assertEquals('bar', $object->property);
     }
 }
 

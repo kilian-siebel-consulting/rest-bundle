@@ -64,7 +64,7 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
         $this->transformer
             ->method('isResourcePath')
-            ->will($this->returnCallback(function($data) {
+            ->will($this->returnCallback(function ($data) {
                 return (is_array($data) ? false : true);
             }));
 
@@ -98,7 +98,7 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
         $this->transformer
             ->method('isResourcePath')
-            ->will($this->returnCallback(function($data) {
+            ->will($this->returnCallback(function ($data) {
                 return (is_array($data) ? false : true);
             }));
 
@@ -134,7 +134,7 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
         $this->transformer
             ->method('isResource')
-            ->will($this->returnCallback(function($className) {
+            ->will($this->returnCallback(function ($className) {
                 return $className === 'a_class';
             }));
 
@@ -175,7 +175,7 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
         $this->transformer
             ->method('isResource')
-            ->will($this->returnCallback(function($className) {
+            ->will($this->returnCallback(function ($className) {
                 return $className === 'a_class';
             }));
 
@@ -195,7 +195,8 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
     private function getListener()
     {
         return new ResourceDeserializationListener(
-            $this->transformer,'rest_resource'
+            $this->transformer,
+            'rest_resource'
         );
     }
 }

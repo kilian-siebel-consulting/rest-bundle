@@ -100,7 +100,15 @@ class ResourceDeserializationListener
             isset($event->getType()['params'][0]['name']) &&
             $this->transformer->isResource($event->getType()['params'][0]['name'])
         ) {
-            $event->setType($event->getType()['name'], [['name' => $this->typeNameStrict, 'params' => [$this->originalTypeParamName => $event->getType()['params'][0]['name']]]]);
+            $event->setType(
+                $event->getType()['name'],
+                [
+                    [
+                        'name'   => $this->typeNameStrict,
+                        'params' => [$this->originalTypeParamName => $event->getType()['params'][0]['name']]
+                    ]
+                ]
+            );
         }
 
     }

@@ -100,6 +100,4 @@ class Door
     {
         return $this->id;
     }
-
-
 }

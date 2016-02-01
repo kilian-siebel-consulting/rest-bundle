@@ -50,7 +50,7 @@ class UnlinkParamConverterTest extends \PHPUnit_Framework_TestCase
             'source' => 'car',
         ];
 
-        if(!$emptyRelation) {
+        if (!$emptyRelation) {
             $configArray['relations'] = $relations;
         }
 
@@ -88,8 +88,8 @@ class UnlinkParamConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(3, $car->getWheels());
         $this->assertCount(1, $car->getDoors());
         
-        $this->assertInstanceOf(Wheel::class,$car->getWheels()->first());
-        $this->assertInstanceOf(Door::class,$car->getDoors()->first());
+        $this->assertInstanceOf(Wheel::class, $car->getWheels()->first());
+        $this->assertInstanceOf(Door::class, $car->getDoors()->first());
     }
 
 
@@ -158,7 +158,7 @@ class UnlinkParamConverterTest extends \PHPUnit_Framework_TestCase
         $carConverter
             ->expects($this->any())
             ->method('apply')
-            ->willReturnCallback(function(Request $request) use($car) {
+            ->willReturnCallback(function (Request $request) use ($car) {
                 $request->attributes->set('car', $car);
             });
 

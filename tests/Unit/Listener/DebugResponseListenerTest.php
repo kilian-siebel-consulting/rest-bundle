@@ -81,10 +81,15 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
         );
 
         $request = new Request(
-            [], [], [], [], [], [
-                'SERVER_NAME' => 'foobar.test',
-                'SERVER_PORT' => $secure ? 443 : 80,
-                'HTTPS'       => $secure ? 'on' : 'off',
+            [],
+            [],
+            [],
+            [],
+            [],
+            [
+            'SERVER_NAME' => 'foobar.test',
+            'SERVER_PORT' => $secure ? 443 : 80,
+            'HTTPS'       => $secure ? 'on' : 'off',
             ]
         );
 

@@ -21,5 +21,6 @@ class OperationTest extends PHPUnit_Framework_TestCase
 class SomeOperation extends Operation
 {
     public function apply($object, PropertyMetadata $property)
-    {}
+    {
+    }
 }
