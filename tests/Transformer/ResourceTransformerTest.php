@@ -43,6 +43,31 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $transformer->getResourceProxy('/categories/1'));
     }
 
+    public function testResourcePath()
+    {
+        $config = [
+            [
+                'singular_name' => 'car',
+                'plural_name' => 'cars',
+                'converter' => 'test',
+                'class' => CarEntity::class
+            ],
+            [
+                'singular_name' => 'category',
+                'plural_name' => 'categories',
+                'converter' => 'test',
+                'class' => CategoryEntity::class
+            ]
+        ];
+
+        $transformer = new ResourceTransformer($config);
+
+        $this->assertTrue($transformer->isResourcePath('/categories/1'));
+        $this->assertFalse($transformer->isResourcePath('categories/1'));
+        $this->assertFalse($transformer->isResourcePath('/categories'));
+        $this->assertFalse($transformer->isResourcePath(array('foo' => 'bar')));
+    }
+
     public function testInvalidGetResourceProxy()
     {
         $transformer = new ResourceTransformer([]);

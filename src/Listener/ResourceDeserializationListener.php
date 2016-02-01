@@ -78,6 +78,9 @@ class ResourceDeserializationListener
      */
     public function onSerializerPreDeserialize(PreDeserializeEvent $event)
     {
+        if(!$this->transformer->isResourcePath($event->getData())){
+            return;
+        }
 
         if ($this->transformer->isResource($event->getType()['name'])) {
             $event->setType($this->typeNameStrict, [$this->originalTypeParamName => $event->getType()['name']]);

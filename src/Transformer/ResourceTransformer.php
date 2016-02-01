@@ -155,4 +155,27 @@ class ResourceTransformer implements TransformerInterface
     {
         return $this->getConfigByClass($class) !== null;
     }
+
+    /**
+     * @param mixed $data
+     * @return boolean
+     */
+    public function isResourcePath($path)
+    {
+        if(!is_string($path)){
+            return false;
+        }
+
+        $matches = preg_match('(^\/.*\/\w)', $path);
+        if($matches === 0){
+            return false;
+        }
+
+        return true;
+
+
+
+
+
+    }
 }

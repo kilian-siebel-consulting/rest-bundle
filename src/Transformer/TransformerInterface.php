@@ -37,4 +37,10 @@ interface TransformerInterface
      * @return boolean
      */
     public function isResource($class);
+
+    /**
+     * @param mixed $data
+     * @return boolean
+     */
+    public function isResourcePath($path);
 }
