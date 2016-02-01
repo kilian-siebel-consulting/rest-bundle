@@ -31,7 +31,6 @@ class ResourceDeserializationListener
         $this->transformer = $transformer;
     }
 
-
     /**
      * @param VisitorInterface $visitor
      * @param                  $data
@@ -54,7 +53,6 @@ class ResourceDeserializationListener
 
     }
 
-
     /**
      * @param array $type
      * @return null|string className
@@ -72,24 +70,45 @@ class ResourceDeserializationListener
         return null;
     }
 
-
     /**
      * @param PreDeserializeEvent $event
      */
     public function onSerializerPreDeserialize(PreDeserializeEvent $event)
     {
-        if(!$this->transformer->isResourcePath($event->getData())){
-            return;
-        }
 
-        if ($this->transformer->isResource($event->getType()['name'])) {
+        if ($this->transformer->isResourcePath($event->getData())
+            && $this->transformer->isResource($event->getType()['name'])) {
             $event->setType($this->typeNameStrict, [$this->originalTypeParamName => $event->getType()['name']]);
             return;
         }
+
         //  @JMS\Type("array<CLASSNAME>")
-        if (isset($event->getType()['params'][0]['name']) && $this->transformer->isResource($event->getType()['params'][0]['name'])) {
+        if ($this->arrayContainsResources($event->getData())
+            && isset($event->getType()['params'][0]['name'])
+            && $this->transformer->isResource($event->getType()['params'][0]['name'])) {
             $event->setType($event->getType()['name'], [['name' => $this->typeNameStrict, 'params' => [$this->originalTypeParamName => $event->getType()['params'][0]['name']]]]);
         }
 
+    }
+
+    /**
+     * @param mixed $data
+     * @return boolean
+     */
+    public function arrayContainsResources($array)
+    {
+        if(is_array($array)){
+            $filtered = array_filter($array, function( $var ){
+                return $this->transformer->isResourcePath($var);
+            });
+
+            if(count($filtered) > 0){
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
     }
 }

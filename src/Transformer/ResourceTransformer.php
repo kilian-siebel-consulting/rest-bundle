@@ -166,16 +166,12 @@ class ResourceTransformer implements TransformerInterface
             return false;
         }
 
-        $matches = preg_match('(^\/.*\/\w)', $path);
+        $matches = preg_match('(^\/.*\/\d*)', $path);
         if($matches === 0){
             return false;
         }
 
         return true;
-
-
-
-
-
     }
+
 }

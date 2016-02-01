@@ -5,7 +5,7 @@
     <parameters>
         <parameter key="ibrows_rest.param_converter.patch.class">Ibrows\RestBundle\ParamConverter\PatchParamConverter</parameter>
         <parameter key="ibrows_rest.resource_deserialization.class">Ibrows\RestBundle\Patch\ResourceDeserializationHandler</parameter>
-        <parameter key="ibrows_rest.esource_deserialization.type_name_weak">ibrows_rest_resource_weak</parameter>
+        <parameter key="ibrows_rest.resource_deserialization.type_name_weak">ibrows_rest_resource_weak</parameter>
     </parameters>
     <services>
         <service id="ibrows_rest.param_converter.patch" class="%ibrows_rest.param_converter.patch.class%">
@@ -17,10 +17,11 @@
             </call>
             <tag name="request.param_converter" converter="patch"/>
         </service>
-        <service id="ibrows_rest.listener.resource_deserialization" class="%ibrows_rest.listener.resource_deserialization.class%">
+
+        <service id="ibrows_rest.resource_deserialization" class="%ibrows_rest.resource_deserialization.class%">
             <argument type="service" id="ibrows_rest.resource_transformer"/>
-            <argument type="string">ibrows_rest_resource_weak</argument>
-            <tag name="jms_serializer.handler" type="%ibrows_rest.listener.resource_deserialization.type_name_weak%" direction="deserialization" format="json" method="deserializeWeak"/>
+            <argument type="string">%ibrows_rest.resource_deserialization.type_name_weak%</argument>
+            <tag name="jms_serializer.handler" type="%ibrows_rest.resource_deserialization.type_name_weak%" direction="deserialization" format="json" method="deserializeWeak"/>
         </service>
     </services>
 </container>
