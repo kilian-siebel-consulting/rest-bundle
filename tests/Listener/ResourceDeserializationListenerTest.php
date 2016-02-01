@@ -1,7 +1,9 @@
 <?php
 namespace Ibrows\RestBundle\Tests\Listener;
 
+use Ibrows\AppBundle\Entity\User;
 use Ibrows\RestBundle\Listener\ResourceDeserializationListener;
+use Ibrows\RestBundle\Transformer\ResourceTransformer;
 use Ibrows\RestBundle\Transformer\TransformerInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
@@ -22,27 +24,98 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
     public function testWithResource()
     {
-        $listener = $this->getListener();
-
         $event = new PreDeserializeEvent(
             DeserializationContext::create(),
-            'anything',
+            '/user/1',
             [
-                'name'   => 'a_class',
+                'name'   => 'user',
                 'params' => [],
             ]
         );
 
         $this->transformer
+            ->method('isResourcePath')
+            ->willReturn(true);
+
+        $this->transformer
             ->method('isResource')
-            ->will($this->returnCallback(function($className) {
-                return $className === 'a_class';
-            }));
+            ->willReturn(true);
+
+        $listener = $this->getListener();
 
         $listener->onSerializerPreDeserialize($event);
 
         $this->assertEquals('rest_resource', $event->getType()['name']);
     }
+
+    public function testWithArrayResource()
+    {
+        $event = new PreDeserializeEvent(
+            DeserializationContext::create(),
+            ['/user/1'],
+            [
+                'name' => 'user_list',
+                'params' => [
+                    [
+                        'name'   => 'user',
+                        'params' => []
+                    ]
+                ],
+            ]
+        );
+
+        $this->transformer
+            ->method('isResourcePath')
+            ->will($this->returnCallback(function($data) {
+                return (is_array($data) ? false : true);
+            }));
+
+        $this->transformer
+            ->method('isResource')
+            ->willReturn(true);
+
+        $listener = $this->getListener();
+
+        $listener->onSerializerPreDeserialize($event);
+
+        $this->assertEquals('rest_resource', $event->getType()['params'][0]['name']);
+    }
+
+
+    public function testWithCrappyArrayResource()
+    {
+        $event = new PreDeserializeEvent(
+            DeserializationContext::create(),
+            ['foobar'],
+            [
+                'name' => 'user_list',
+                'params' => [
+                    [
+                        'name'   => 'user',
+                        'params' => []
+                    ]
+                ],
+            ]
+        );
+
+        $this->transformer
+            ->method('isResourcePath')
+            ->will($this->returnCallback(function($data) {
+                return (is_array($data) ? false : true);
+            }));
+
+        $this->transformer
+            ->method('isResource')
+            ->willReturn(true);
+
+        $listener = $this->getListener();
+
+        $listener->onSerializerPreDeserialize($event);
+
+        $this->assertEquals('rest_resource', $event->getType()['params'][0]['name']);
+        $this->assertEquals('user_list', $event->getType()['name']);
+    }
+
 
     public function testWithResourceArray()
     {
@@ -50,7 +123,7 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
         $event = new PreDeserializeEvent(
             DeserializationContext::create(),
-            'anything',
+            array('/hello/1'),
             [
                 'name'   => 'array',
                 'params' => [
@@ -66,6 +139,10 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
             ->will($this->returnCallback(function($className) {
                 return $className === 'a_class';
             }));
+
+        $this->transformer
+            ->method('isResourcePath')
+            ->willReturn(true);
 
         $listener->onSerializerPreDeserialize($event);
 
@@ -91,7 +168,7 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
         $event = new PreDeserializeEvent(
             DeserializationContext::create(),
-            'anything',
+            '/foo/1',
             [
                 'name'   => 'b_class',
                 'params' => [],
@@ -103,6 +180,10 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
             ->will($this->returnCallback(function($className) {
                 return $className === 'a_class';
             }));
+
+        $this->transformer
+            ->method('isResourcePath')
+            ->willReturn(true);
 
         $listener->onSerializerPreDeserialize($event);
 
