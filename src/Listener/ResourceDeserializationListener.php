@@ -41,33 +41,44 @@ class ResourceDeserializationListener
     public function deserializeStrict(VisitorInterface $visitor, $data, array $type, Context $context)
     {
         $className = $this->getValidOriginalClassname($type);
-        try {
-            $resource = $this->transformer->getResourceProxy($data);
-            if (is_object($resource) && $resource instanceof $className) {
-                return $resource;
-            }
-        } catch (\InvalidArgumentException $e) {
-            // Data may be invalid, nothing should happen
+
+        $resource = $this->transformer->getResourceProxy($data);
+        if (is_object($resource) && $resource instanceof $className) {
+            return $resource;
         }
+
         return null;
 
     }
 
     /**
      * @param array $type
-     * @return null|string className
+     * @return string className
      */
     private function getValidOriginalClassname(array $type)
     {
         if (!isset($type['params'][$this->originalTypeParamName])) {
-            return null;
-        }
-        $class = $type['params'][$this->originalTypeParamName];
-        if (class_exists($class) || interface_exists($class)) {
-            return $class;
+            throw new \RuntimeException(
+                sprintf(
+                    'The parameter %s has to be defined for %s.',
+                    $this->originalTypeParamName,
+                    $this->typeNameStrict
+                )
+            );
         }
 
-        return null;
+        $class = $type['params'][$this->originalTypeParamName];
+
+        if (!class_exists($class) && !interface_exists($class)) {
+            throw new \RuntimeException(
+                sprintf(
+                    'The class or interface %s does not exist.',
+                    $class
+                )
+            );
+        }
+
+        return $class;
     }
 
     /**
@@ -77,38 +88,36 @@ class ResourceDeserializationListener
     {
 
         if ($this->transformer->isResourcePath($event->getData()) &&
-            $this->transformer->isResource($event->getType()['name'])) {
+            $this->transformer->isResource($event->getType()['name'])
+        ) {
             $event->setType($this->typeNameStrict, [$this->originalTypeParamName => $event->getType()['name']]);
             return;
         }
 
         //  @JMS\Type("array<CLASSNAME>")
-        if ($this->arrayContainsResources($event->getData()) &&
+        if (is_array($event->getData()) &&
+            $this->containsResources($event->getData()) &&
             isset($event->getType()['params'][0]['name']) &&
-            $this->transformer->isResource($event->getType()['params'][0]['name'])) {
+            $this->transformer->isResource($event->getType()['params'][0]['name'])
+        ) {
             $event->setType($event->getType()['name'], [['name' => $this->typeNameStrict, 'params' => [$this->originalTypeParamName => $event->getType()['params'][0]['name']]]]);
         }
 
     }
 
     /**
-     * @param mixed $data
+     * @param array $array
      * @return boolean
      */
-    public function arrayContainsResources($array)
+    public function containsResources(array $array)
     {
-        if(is_array($array)){
-            $filtered = array_filter($array, function( $var ){
-                return $this->transformer->isResourcePath($var);
-            });
-
-            if(count($filtered) > 0){
-                return true;
+        $filtered = array_filter(
+            $array,
+            function ($var) {
+                return !$this->transformer->isResourcePath($var);
             }
+        );
 
-            return false;
-        }
-
-        return false;
+        return count($filtered) === 0;
     }
 }

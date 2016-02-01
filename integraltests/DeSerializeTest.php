@@ -30,9 +30,9 @@ class DeSerializeTest extends WebTestCase
 
     public function testNoDeserialize()
     {
-        $data = json_encode('articles/1');
+        $data = json_encode('foobar');
         $data = $this->JMSDeserialize($data);
-        $this->assertEquals('articles/1', $data);
+        $this->assertEquals('foobar', $data);
     }
 
     public function testDeserialize2()
