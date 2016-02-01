@@ -32,7 +32,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Ibrows\\RestBundle\\IntegralTests\\": "integraltests/",
             "Ibrows\\RestBundle\\Tests\\": "tests/"
         }
     },
