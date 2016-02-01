@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
+     * @var int
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -18,6 +19,7 @@ class Article
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(name="title", type="string", length=8)
      */
     private $title;
@@ -30,7 +32,7 @@ class Article
     private $someDate;
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getId()
     {
@@ -39,7 +41,7 @@ class Article
 
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTitle()
     {
@@ -47,7 +49,7 @@ class Article
     }
 
     /**
-     * @param mixed $title
+     * @param string $title
      */
     public function setTitle($title)
     {
