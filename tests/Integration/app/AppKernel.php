@@ -5,15 +5,18 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 
-/**
- * App Test Kernel for functional tests.
- *
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
- */
 class AppKernel extends Kernel
 {
+    /**
+     * @var string
+     */
     private $rootConfig;
 
+    /**
+     * @param string $rootConfig
+     * @param bool   $environment
+     * @param        $debug
+     */
     public function __construct($rootConfig, $environment, $debug)
     {
         $fs = new Filesystem();
@@ -25,6 +28,9 @@ class AppKernel extends Kernel
         parent::__construct($environment, $debug);
     }
 
+    /**
+     * @return array
+     */
     public function registerBundles()
     {
         return [
@@ -39,31 +45,49 @@ class AppKernel extends Kernel
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getRootDir()
     {
         return __DIR__;
     }
 
+    /**
+     * @return string
+     */
     public function getCacheDir()
     {
         return sys_get_temp_dir() . '/' . Kernel::VERSION . '/cache/' . $this->environment;
     }
 
+    /**
+     * @return string
+     */
     public function getLogDir()
     {
         return sys_get_temp_dir() . '/' . Kernel::VERSION . '/logs';
     }
 
+    /**
+     * @param LoaderInterface $loader
+     */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->rootConfig);
     }
 
+    /**
+     * @return string
+     */
     public function serialize()
     {
         return serialize(array($this->rootConfig, $this->getEnvironment(), $this->isDebug()));
     }
 
+    /**
+     * @param string $str
+     */
     public function unserialize($str)
     {
         $a = unserialize($str);

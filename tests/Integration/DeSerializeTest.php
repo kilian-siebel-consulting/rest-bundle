@@ -18,6 +18,9 @@ class DeSerializeTest extends WebTestCase
     protected static $container = null;
 
 
+    /**
+     *
+     */
     public function testDeserialize()
     {
         $data = json_encode('/articles/1');
@@ -26,6 +29,9 @@ class DeSerializeTest extends WebTestCase
     }
 
 
+    /**
+     *
+     */
     public function testNoDeserialize()
     {
         $data = json_encode('foobar');
@@ -33,6 +39,9 @@ class DeSerializeTest extends WebTestCase
         $this->assertEquals('foobar', $data);
     }
 
+    /**
+     *
+     */
     public function testDeserialize2()
     {
         $data = json_encode(array('article' => '/articles/1', 'message' => 'blah'));
@@ -41,6 +50,10 @@ class DeSerializeTest extends WebTestCase
         $this->assertInstanceOf(Comment::class, $data);
     }
 
+    /**
+     * @param $data
+     * @return mixed
+     */
     private function JMSDeserialize($data)
     {
         $serializer = self::$container->get('jms_serializer');
@@ -48,12 +61,19 @@ class DeSerializeTest extends WebTestCase
     }
 
 
+    /**
+     *
+     */
     protected function setUp()
     {
         static::bootKernel();
         static::$container = static::$kernel->getContainer();
     }
 
+    /**
+     * @param array $options
+     * @return AppKernel
+     */
     protected static function createKernel(array $options = array())
     {
         require_once __DIR__ . '/app/AppKernel.php';
@@ -64,6 +84,9 @@ class DeSerializeTest extends WebTestCase
         );
     }
 
+    /**
+     *
+     */
     protected function tearDown()
     {
 
