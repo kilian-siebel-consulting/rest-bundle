@@ -2,7 +2,10 @@
 namespace Ibrows\RestBundle\Tests\Unit\Listener;
 
 use Ibrows\RestBundle\Listener\ConstraintViolationListener;
+use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\EventDispatcher\PreSerializeEvent;
 use JMS\Serializer\JsonSerializationVisitor;
+use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
@@ -82,8 +85,12 @@ class ConstraintViolationListenerTest extends PHPUnit_Framework_TestCase
     public function testConstraintViolationListener(array $data, array $expectedResult)
     {
         $listener = $this->getListener();
+
+        /** @var JsonSerializationVisitor|PHPUnit_Framework_MockObject_MockObject $visitor */
         $visitor = $this->getMock(JsonSerializationVisitor::class, array(), array(), '', false);
-        $constraintViolation = $this->getMock(ConstraintViolationInterface::class);
+
+        /** @var ConstraintViolationInterface|PHPUnit_Framework_MockObject_MockObject $constraintViolation */
+        $constraintViolation = $this->getMockForAbstractClass(ConstraintViolationInterface::class);
         $constraintViolation->method('getPropertyPath')->willReturn($data['propertyPath']);
         $constraintViolation->method('getMessage')->willReturn($data['message']);
         $constraintViolation->method('getCode')->willReturn($data['code']);
@@ -101,6 +108,22 @@ class ConstraintViolationListenerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResult['value'], $result['value']);
     }
 
+    public function testPreSerialize()
+    {
+        $listener = $this->getListener();
+
+        $event = new PreSerializeEvent(
+            DeserializationContext::create(),
+            'something',
+            ['some type']
+        );
+
+        $listener->onSerializerPreSerialize($event);
+
+        $this->assertArraySubset([
+            'name' => 'ibrows_test',
+        ], $event->getType());
+    }
 
     /**
      * @return ConstraintViolationListener

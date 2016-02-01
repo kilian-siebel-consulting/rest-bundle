@@ -15,9 +15,6 @@
             <tag name="jms_serializer.handler" type="%ibrows_rest.listener.resource_deserialization.type_name_strict%" direction="deserialization" format="json" method="deserializeStrict" />
         </service>
     </services>
-
-
-
 </container>
 
 

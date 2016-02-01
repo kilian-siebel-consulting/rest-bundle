@@ -1,14 +1,18 @@
 <?php
 namespace Ibrows\RestBundle\Listener;
 
+use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Transformer\TransformerInterface;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\PreDeserializeEvent;
 use JMS\Serializer\VisitorInterface;
+use RuntimeException;
 
 class ResourceDeserializationListener
 {
-
+    /**
+     * @var string
+     */
     private $originalTypeParamName = 'originalType';
 
     /**
@@ -36,13 +40,14 @@ class ResourceDeserializationListener
      * @param                  $data
      * @param array            $type
      * @param Context          $context
-     * @return \Ibrows\RestBundle\Model\ApiListableInterface|null
+     * @return ApiListableInterface|null
      */
     public function deserializeStrict(VisitorInterface $visitor, $data, array $type, Context $context)
     {
         $className = $this->getValidOriginalClassname($type);
 
         $resource = $this->transformer->getResourceProxy($data);
+
         if (is_object($resource) && $resource instanceof $className) {
             return $resource;
         }
@@ -58,7 +63,7 @@ class ResourceDeserializationListener
     private function getValidOriginalClassname(array $type)
     {
         if (!isset($type['params'][$this->originalTypeParamName])) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'The parameter %s has to be defined for %s.',
                     $this->originalTypeParamName,
@@ -70,7 +75,7 @@ class ResourceDeserializationListener
         $class = $type['params'][$this->originalTypeParamName];
 
         if (!class_exists($class) && !interface_exists($class)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'The class or interface %s does not exist.',
                     $class
