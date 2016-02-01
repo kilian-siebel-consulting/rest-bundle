@@ -18,43 +18,43 @@ class DeSerializeTest extends WebTestCase
     protected static $container = null;
 
 
-    /**
-     *
-     */
-    public function testDeserialize()
+    public function testWeakDeserialize()
     {
         $data = json_encode('/articles/1');
-        $data = $this->JMSDeserialize($data);
+        $data = $this->deserializeJMSWeak($data);
         $this->assertInstanceOf(Article::class, $data);
     }
 
-
-    /**
-     *
-     */
-    public function testNoDeserialize()
+    public function testWeakNoDeserialize()
     {
         $data = json_encode('foobar');
-        $data = $this->JMSDeserialize($data);
+        $data = $this->deserializeJMSWeak($data);
         $this->assertEquals('foobar', $data);
     }
 
-    /**
-     *
-     */
-    public function testDeserialize2()
+    public function testStrictDeserializeComment()
     {
         $data = json_encode(array('article' => '/articles/1', 'message' => 'blah'));
         $serializer = self::$container->get('jms_serializer');
         $data = $serializer->deserialize($data, Comment::class, 'json');
         $this->assertInstanceOf(Comment::class, $data);
+        $this->assertInstanceOf(Article::class, $data->getArticle());
+    }
+
+    public function testStrictNoDeserializeComment()
+    {
+        $data = json_encode(array('article' => null, 'message' => 'blah'));
+        $serializer = self::$container->get('jms_serializer');
+        $data = $serializer->deserialize($data, Comment::class, 'json');
+        $this->assertInstanceOf(Comment::class, $data);
+        $this->assertNull($data->getArticle());
     }
 
     /**
      * @param $data
      * @return mixed
      */
-    private function JMSDeserialize($data)
+    private function deserializeJMSWeak($data)
     {
         $serializer = self::$container->get('jms_serializer');
         return $serializer->deserialize($data, self::$container->getParameter('ibrows_rest.resource_deserialization.type_name_weak'), 'json');
@@ -62,7 +62,7 @@ class DeSerializeTest extends WebTestCase
 
 
     /**
-     *
+     * {@inheritdoc}
      */
     protected function setUp()
     {
@@ -82,13 +82,5 @@ class DeSerializeTest extends WebTestCase
             'test',
             true
         );
-    }
-
-    /**
-     *
-     */
-    protected function tearDown()
-    {
-
     }
 }

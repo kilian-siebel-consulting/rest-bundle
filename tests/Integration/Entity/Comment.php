@@ -31,8 +31,9 @@ class Comment
     private $message;
 
     /**
-     * @var Article
+     * @var Article|null
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments", cascade="persist")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $article;
 
@@ -40,7 +41,7 @@ class Comment
     /**
      * @param Article $article
      */
-    public function setArticle(Article $article)
+    public function setArticle(Article $article = null)
     {
         $this->article = $article;
     }
