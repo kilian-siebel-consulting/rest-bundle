@@ -25,11 +25,14 @@
     ],
     "autoload": {
         "psr-4": {
-            "Ibrows\\RestBundle\\": "src/"
+            "Ibrows\\RestBundle\\": "src/",
+          "Ibrows\\RestBundle\\IntegralTests\\": "integraltests/",
+          "Ibrows\\RestBundle\\Tests\\": "tests/"
         }
     },
     "autoload-dev": {
         "psr-4": {
+            "Ibrows\\RestBundle\\IntegralTests\\": "integraltests/",
             "Ibrows\\RestBundle\\Tests\\": "tests/"
         }
     },

@@ -76,16 +76,16 @@ class ResourceDeserializationListener
     public function onSerializerPreDeserialize(PreDeserializeEvent $event)
     {
 
-        if ($this->transformer->isResourcePath($event->getData())
-            && $this->transformer->isResource($event->getType()['name'])) {
+        if ($this->transformer->isResourcePath($event->getData()) &&
+            $this->transformer->isResource($event->getType()['name'])) {
             $event->setType($this->typeNameStrict, [$this->originalTypeParamName => $event->getType()['name']]);
             return;
         }
 
         //  @JMS\Type("array<CLASSNAME>")
-        if ($this->arrayContainsResources($event->getData())
-            && isset($event->getType()['params'][0]['name'])
-            && $this->transformer->isResource($event->getType()['params'][0]['name'])) {
+        if ($this->arrayContainsResources($event->getData()) &&
+            isset($event->getType()['params'][0]['name']) &&
+            $this->transformer->isResource($event->getType()['params'][0]['name'])) {
             $event->setType($event->getType()['name'], [['name' => $this->typeNameStrict, 'params' => [$this->originalTypeParamName => $event->getType()['params'][0]['name']]]]);
         }
 

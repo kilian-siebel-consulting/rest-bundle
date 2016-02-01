@@ -13,6 +13,7 @@
     <testsuites>
         <testsuite name="restbundle">
             <directory>tests</directory>
+            <directory>integraltests</directory>
         </testsuite>
     </testsuites>
 
