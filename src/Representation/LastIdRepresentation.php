@@ -15,6 +15,7 @@ use Hateoas\Configuration\Route;
 use Hateoas\Representation\AbstractSegmentedRepresentation;
 use Hateoas\Representation\OffsetRepresentation as BaseOffsetRepresentation;
 use Hateoas\Configuration\Annotation as Hateoas;
+use Ibrows\RestBundle\Model\ApiListableInterface;
 
 /**
  * Class LastIdRepresentation
@@ -60,6 +61,11 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     protected $sortDirParamName;
 
     /**
+     * @var
+     */
+    protected $parameters;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(
@@ -86,6 +92,7 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
             $absolute
         );
 
+        $this->parameters = $parameters;
         $exclusion = null;
         $this->lastId = $lastId;
         $this->lastIdParamName = $lastIdParamName;
@@ -112,14 +119,23 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
      */
     public function getParameters($limit = null, $offsetId = null)
     {
-        $params = array(
+        $params = array();
+
+        $params = array_merge($params, array(
             $this->getLimitParameterName() => $limit ? $limit : $this->getLimit(),
             $this->sortByParamName         => $this->sortBy,
             $this->sortDirParamName        => $this->sortDir,
-        );
+        ));
 
         if ($offsetId !== false) {
             $params[$this->lastIdParamName] = $offsetId ? $offsetId : $this->lastId;
+        }
+
+        foreach($this->parameters as $name => $param)
+        {
+            if($param instanceof ApiListableInterface){
+                $params[$name] = $param->getId();
+            }
         }
 
         return $params;
