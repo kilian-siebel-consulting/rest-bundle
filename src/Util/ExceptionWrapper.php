@@ -14,7 +14,8 @@ class ExceptionWrapper extends BaseExceptionWrapper
     public function __construct(array $data)
     {
         parent::__construct($data);
-        
+
+
         if (isset($data['exception'])) {
             $this->exception = $data['exception'];
         }

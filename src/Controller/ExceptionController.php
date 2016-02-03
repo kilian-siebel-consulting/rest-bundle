@@ -20,12 +20,11 @@ class ExceptionController extends BaseExceptionController
         DebugLoggerInterface $logger = null,
         $format = 'html'
     ) {
+
         $parameters = parent::getParameters($viewHandler, $currentContent, $code, $exception, $logger, $format);
 
-        if ($exception instanceof FlattenException &&
-            $exception->getDisplayableException()
-        ) {
-            $parameters['errors'] = $exception->getDisplayableException()->toArray();
+        if ($exception instanceof FlattenException && $exception->hasErrors()) {
+            $parameters['errors'] = $exception->getErrors();
         }
 
         return $parameters;

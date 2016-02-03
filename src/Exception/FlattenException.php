@@ -6,27 +6,43 @@ use Symfony\Component\Debug\Exception\FlattenException as BaseFlattenException;
 
 class FlattenException extends BaseFlattenException
 {
-    /**
-     * @var DisplayableException
-     */
-    private $displayableException;
 
+    /**
+     * @var array
+     */
+    private $errors;
+
+    /**
+     * @param \Exception $exception
+     * @param null       $statusCode
+     * @param array      $headers
+     * @return static
+     */
     public static function create(\Exception $exception, $statusCode = null, array $headers = array())
     {
-        $resultException =  parent::create($exception, $statusCode, $headers);
+        $resultException = parent::create($exception, $statusCode, $headers);
 
         if ($exception instanceof DisplayableException) {
-            $resultException->displayableException = $exception;
+            $resultException->errors = $exception->toArray();
         }
-            
+
         return $resultException;
     }
 
     /**
-     * @return DisplayableException
+     * @return array
      */
-    public function getDisplayableException()
+    public function getErrors()
     {
-        return $this->displayableException;
+        return $this->errors;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasErrors()
+    {
+        return $this->errors != null;
+    }
+
 }
