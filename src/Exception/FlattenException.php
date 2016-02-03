@@ -44,5 +44,4 @@ class FlattenException extends BaseFlattenException
     {
         return $this->errors != null;
     }
-
 }

@@ -1,20 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: fabs
- * Date: 1/14/16
- * Time: 10:14 AM
- */
 
 namespace Ibrows\RestBundle\Representation;
 
+use Hateoas\Configuration\Annotation as Hateoas;
 use Hateoas\Configuration\Exclusion;
 use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Representation\AbstractSegmentedRepresentation;
-use Hateoas\Representation\OffsetRepresentation as BaseOffsetRepresentation;
-use Hateoas\Configuration\Annotation as Hateoas;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 
 /**
@@ -121,19 +114,21 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     {
         $params = array();
 
-        $params = array_merge($params, array(
-            $this->getLimitParameterName() => $limit ? $limit : $this->getLimit(),
-            $this->sortByParamName         => $this->sortBy,
-            $this->sortDirParamName        => $this->sortDir,
-        ));
+        $params = array_merge(
+            $params,
+            array(
+                $this->getLimitParameterName() => $limit ? $limit : $this->getLimit(),
+                $this->sortByParamName         => $this->sortBy,
+                $this->sortDirParamName        => $this->sortDir,
+            )
+        );
 
         if ($offsetId !== false) {
             $params[$this->lastIdParamName] = $offsetId ? $offsetId : $this->lastId;
         }
 
-        foreach($this->parameters as $name => $param)
-        {
-            if($param instanceof ApiListableInterface){
+        foreach ($this->parameters as $name => $param) {
+            if ($param instanceof ApiListableInterface) {
                 $params[$name] = $param->getId();
             }
         }
