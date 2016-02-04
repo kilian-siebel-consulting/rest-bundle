@@ -16,8 +16,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @Discriminator(
  *     field="op",
  *     map = {
- *         "change" = "Ibrows\RestBundle\Patch\Operation\Change",
- *         "clear" = "Ibrows\RestBundle\Patch\Operation\Clear",
+ *         "replace" = "Ibrows\RestBundle\Patch\Operation\Replace",
+ *         "remove" = "Ibrows\RestBundle\Patch\Operation\Remove",
  *     },
  * )
  * @ExclusionPolicy("all")
