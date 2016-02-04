@@ -11,7 +11,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
  * @package Ibrows\RestBundle\Patch\Operation
  * @ExclusionPolicy("all")
  */
-class Clear extends Operation
+class Remove extends Operation
 {
     /**
      * {@inheritdoc}

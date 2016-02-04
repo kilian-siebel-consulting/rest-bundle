@@ -1,15 +1,15 @@
 <?php
 namespace Ibrows\RestBundle\Tests\Unit\Patch\Operation;
 
-use Ibrows\RestBundle\Patch\Operation\Clear;
+use Ibrows\RestBundle\Patch\Operation\Remove;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use PHPUnit_Framework_TestCase;
 
-class ClearTest extends PHPUnit_Framework_TestCase
+class RemoveTest extends PHPUnit_Framework_TestCase
 {
     public function testApply()
     {
-        $change = new Clear();
+        $change = new Remove();
 
         $object = new SomethingElse();
         $change->apply($object, new PropertyMetadata($object, 'property'));

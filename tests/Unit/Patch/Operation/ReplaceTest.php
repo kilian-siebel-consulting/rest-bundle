@@ -1,16 +1,16 @@
 <?php
 namespace Ibrows\RestBundle\Tests\Unit\Patch\Operation;
 
-use Ibrows\RestBundle\Patch\Operation\Change;
+use Ibrows\RestBundle\Patch\Operation\Replace;
 use Ibrows\RestBundle\Patch\Operation\ValueOperation;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use PHPUnit_Framework_TestCase;
 
-class ChangeTest extends PHPUnit_Framework_TestCase
+class ReplaceTest extends PHPUnit_Framework_TestCase
 {
     public function testApply()
     {
-        $change = new Change();
+        $change = new Replace();
         $reflectionProperty = new \ReflectionProperty(ValueOperation::class, 'value');
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($change, 'bar');
@@ -25,7 +25,7 @@ class ChangeTest extends PHPUnit_Framework_TestCase
      */
     public function testInvalidApply()
     {
-        $change = new Change();
+        $change = new Replace();
 
         $reflectionProperty = new \ReflectionProperty(ValueOperation::class, 'value');
         $reflectionProperty->setAccessible(true);

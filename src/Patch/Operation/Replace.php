@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * @package Ibrows\RestBundle\Patch\Operation
  * @ExclusionPolicy("all")
  */
-class Change extends ValueOperation
+class Replace extends ValueOperation
 {
     /**
      * {@inheritdoc}

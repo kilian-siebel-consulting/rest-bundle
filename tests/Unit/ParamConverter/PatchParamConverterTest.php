@@ -3,7 +3,7 @@ namespace Ibrows\RestBundle\Tests\Unit\ParamConverter;
 
 use Ibrows\RestBundle\ParamConverter\PatchParamConverter;
 use Ibrows\RestBundle\Patch\Executioner;
-use Ibrows\RestBundle\Patch\Operation\Change;
+use Ibrows\RestBundle\Patch\Operation\Replace;
 use JMS\Serializer\SerializerInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
@@ -18,7 +18,7 @@ class PatchParamConverterTest extends PHPUnit_Framework_TestCase
     {
         $subject = new TestClass();
         $patch = [
-            new Change(),
+            new Replace(),
         ];
 
         /** @var SerializerInterface|PHPUnit_Framework_MockObject_MockObject $serializer */
@@ -86,7 +86,7 @@ class PatchParamConverterTest extends PHPUnit_Framework_TestCase
     {
         $subject = new TestClass();
         $patch = [
-            new Change(),
+            new Replace(),
         ];
 
         /** @var SerializerInterface|PHPUnit_Framework_MockObject_MockObject $serializer */
