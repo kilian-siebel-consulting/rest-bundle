@@ -50,6 +50,7 @@ file of your project:
 - If-None-Match Response Listener - [Read Documentation](listener/if_none_match_response_listener.md)
 - Link Header Listener - [Read Documentation](listener/link_header_listener.md)
 - Resource Deserialization Listener - [Read Documentation](listener/resource_deserialization_listener.md)
+- Vary Header Listener - [Read Documentation](listener/vary_header_listener.md)
 
 ## Param Converters
 - `abstract ManipulateParamConverter` - [Read Documentation](param_converter/manipulate_param_converter.md)
@@ -123,6 +124,9 @@ The patching system is used to apply patches to an object in the `PatchParamConv
                 enabled: false  
             resource_deserialization:
                 enabled: false  
+            vary_header:
+                enabled: false
+                header: []
         exception_controller:
             enabled: true
             force_default: false
