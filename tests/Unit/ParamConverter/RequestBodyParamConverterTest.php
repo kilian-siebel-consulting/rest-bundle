@@ -96,7 +96,6 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
         $converter->apply($request, $configuration);
 
         $this->assertTrue($request->attributes->has('testValidationErrors'));
-        $this->assertEmpty($request->attributes->get('testValidationErrors'));
     }
 
     /**
