@@ -1,86 +1,103 @@
 <?php
 namespace Ibrows\RestBundle\Patch;
 
-use Ibrows\RestBundle\Exception\NotImplementedException;
-use Ibrows\RestBundle\Patch\Operation as Operation;
-use JMS\Serializer\Metadata\PropertyMetadata;
-use Metadata\ClassMetadata;
-use Metadata\MetadataFactoryInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Ibrows\RestBundle\Patch\Exception\InvalidPathException;
+use Ibrows\RestBundle\Patch\Exception\OperationInvalidException;
 
-class Executioner
+class Executioner implements ExecutionerInterface
 {
     /**
-     * @var MetadataFactoryInterface
+     * @var ValueConverterInterface|null
      */
-    private $metadataFactory;
+    private $valueConverter = null;
 
     /**
-     * Executioner constructor.
-     *
-     * @param MetadataFactoryInterface $metadataFactory
+     * @var OperationApplierInterface[][]|int[][]
      */
-    public function __construct(MetadataFactoryInterface $metadataFactory)
-    {
-        $this->metadataFactory = $metadataFactory;
-    }
+    private $operationAppliers = [];
 
     /**
-     * @param object               $object
-     * @param OperationInterface[] $patch
-     * @throws NotImplementedException
+     * {@inheritdoc}
      */
-    public function execute($object, array $patch)
+    public function execute(array $operations, $object, array $options = [])
     {
         array_walk(
-            $patch,
-            function (OperationInterface $operation) use ($object) {
-                $property = $this->getProperty($object, $operation->getPath());
-                if (!$property) {
-                    throw new BadRequestHttpException(
-                        sprintf(
-                            'Property %s does not exist or is not writable.',
-                            $operation->getPath()
-                        )
-                    );
+            $operations,
+            function (OperationInterface $operation) use (& $object, $options) {
+                $operationApplier = $this->getOperationApplier($operation->operation());
+                $pathValue = $operation->pathPointer()->resolve($object, $options);
+
+                $fromValue = null;
+                if ($operation->fromPointer() !== null) {
+                    $fromValue = $operation->fromPointer()->resolve($object, $options);
                 }
-                $operation->apply($object, $property);
+
+                $value = $this->convertValue($operation->value(), $pathValue);
+
+                $operationApplier->apply($pathValue, $fromValue, $value, $operation->parameters());
             }
         );
+
+        return $object;
     }
 
     /**
-     * @param object $object
-     * @param string $propertyPath
-     *
-     * @return PropertyMetadata
+     * @param string                    $operation
+     * @param OperationApplierInterface $operationApplier
+     * @param int                       $priority
      */
-    private function getProperty($object, $propertyPath)
+    public function addOperationApplier($operation, OperationApplierInterface $operationApplier, $priority)
     {
-        $metadata = $this->getMetadata($object);
-
-        $propertyPath = substr($propertyPath, 1);
-
-        $properties = array_filter(
-            $metadata->propertyMetadata,
-            function (PropertyMetadata $propertyMetadata) use ($propertyPath) {
-                $name = $propertyMetadata->serializedName !== null
-                    ? $propertyMetadata->serializedName
-                    : $propertyMetadata->name;
-                return $name === $propertyPath &&
-                $propertyMetadata->readOnly === false;
-            }
-        );
-        return array_shift($properties);
+        if (!array_key_exists($operation, $this->operationAppliers) ||
+            $this->operationAppliers[$operation]['priority'] < $priority
+        ) {
+            $this->operationAppliers[$operation] = [
+                'operationApplier' => $operationApplier,
+                'priority'         => (int)$priority,
+            ];
+        }
     }
 
     /**
-     * @param $object
-     *
-     * @return ClassMetadata
+     * @param ValueConverterInterface $valueConverter
      */
-    private function getMetadata($object)
+    public function setValueConverter($valueConverter)
     {
-        return $this->metadataFactory->getMetadataForClass(get_class($object)); 
+        $this->valueConverter = $valueConverter;
+    }
+
+    /**
+     * @param mixed|null     $value
+     * @param ValueInterface $pathValue
+     * @return mixed
+     * @throws InvalidPathException
+     */
+    private function convertValue($value, ValueInterface $pathValue)
+    {
+        if ($value === null ||
+            $this->valueConverter === null
+        ) {
+            return $value;
+        }
+
+        return $this->valueConverter->convert($value, $pathValue);
+    }
+
+    /**
+     * @param string $operation
+     * @return OperationApplierInterface
+     * @throws OperationInvalidException
+     */
+    private function getOperationApplier($operation)
+    {
+        if (!array_key_exists($operation, $this->operationAppliers)) {
+            throw new OperationInvalidException(
+                sprintf(
+                    OperationInvalidException::INVALID_OPERATION,
+                    $operation
+                )
+            );
+        }
+        return $this->operationAppliers[$operation]['operationApplier'];
     }
 }

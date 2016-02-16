@@ -1,20 +1,30 @@
 <?php
 namespace Ibrows\RestBundle\Patch;
 
-use JMS\Serializer\Metadata\PropertyMetadata;
-
 interface OperationInterface
 {
     /**
-     * Apply the Operation to the given Property of given object
-     *
-     * @param object           $object
-     * @param PropertyMetadata $property
-     */
-    public function apply($object, PropertyMetadata $property);
-
-    /**
      * @return string
      */
-    public function getPath();
+    public function operation();
+
+    /**
+     * @return PointerInterface
+     */
+    public function pathPointer();
+
+    /**
+     * @return PointerInterface|null
+     */
+    public function fromPointer();
+
+    /**
+     * @return mixed|null
+     */
+    public function value();
+
+    /**
+     * @return mixed[]
+     */
+    public function parameters();
 }

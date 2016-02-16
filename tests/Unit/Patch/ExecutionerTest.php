@@ -2,95 +2,62 @@
 namespace Ibrows\RestBundle\Tests\Unit\Patch;
 
 use Ibrows\RestBundle\Patch\Executioner;
-use Ibrows\RestBundle\Patch\Operation;
+use Ibrows\RestBundle\Patch\OperationApplierInterface;
 use Ibrows\RestBundle\Patch\OperationInterface;
-use JMS\Serializer\Metadata\ClassMetadata;
-use JMS\Serializer\Metadata\PropertyMetadata;
-use Metadata\Driver\DriverInterface;
-use Metadata\MetadataFactoryInterface;
+use Ibrows\RestBundle\Patch\PointerInterface;
+use Ibrows\RestBundle\Patch\ValueInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
-class ExecutionerListener extends PHPUnit_Framework_TestCase
+class ExecutionerTest extends PHPUnit_Framework_TestCase
 {
-    public function testExecution()
+    public function testApplierWeight()
     {
-        /** @var DriverInterface|PHPUnit_Framework_MockObject_MockObject $driver */
-        $driver = $this->getMockForAbstractClass(MetadataFactoryInterface::class);
+        $executioner = new Executioner();
 
-        /** @var ClassMetadata|PHPUnit_Framework_MockObject_MockObject $classMetadata */
-        $classMetadata = $this->getMockBuilder(ClassMetadata::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $driver->method('getMetadataForClass')->willReturn($classMetadata);
+        /** @var OperationApplierInterface|PHPUnit_Framework_MockObject_MockObject $rightOperationApplier */
+        $rightOperationApplier = $this->getMockForAbstractClass(OperationApplierInterface::class);
+        /** @var OperationApplierInterface|PHPUnit_Framework_MockObject_MockObject $wrongOperationApplier */
+        $wrongOperationApplier = $this->getMockForAbstractClass(OperationApplierInterface::class);
 
-        $propertyMetadata = new PropertyMetadata(TestObject::class, 'property');
+        $executioner->addOperationApplier('test', $wrongOperationApplier, 5);
+        $executioner->addOperationApplier('test', $rightOperationApplier, 10);
+        $executioner->addOperationApplier('test', $wrongOperationApplier, 5);
 
-        $classMetadata->propertyMetadata = [
-            $propertyMetadata,
-        ];
+        $rightOperationApplier
+            ->expects(static::once())
+            ->method('apply');
 
-        $object = new TestObject();
+        $wrongOperationApplier
+            ->expects(static::never())
+            ->method('apply');
 
-        /** @var Operation|PHPUnit_Framework_MockObject_MockObject $operation */
+        /** @var ValueInterface|PHPUnit_Framework_MockObject_MockObject $value */
+        $value = $this->getMockForAbstractClass(ValueInterface::class);
+
+        /** @var PointerInterface|PHPUnit_Framework_MockObject_MockObject $pointer */
+        $pointer = $this->getMockForAbstractClass(PointerInterface::class);
+        $pointer
+            ->method('resolve')
+            ->willReturn($value);
+
+        /** @var OperationInterface|PHPUnit_Framework_MockObject_MockObject $operation */
         $operation = $this->getMockForAbstractClass(OperationInterface::class);
         $operation
-            ->method('getPath')
-                ->willReturn('/property')
-        ;
+            ->method('operation')
+            ->willReturn('test');
         $operation
-            ->expects($this->once())
-            ->method('apply')
-            ->with($object, $propertyMetadata)
-        ;
-
-        $executioner = new Executioner($driver);
-        $executioner->execute($object, [
-            $operation,
-        ]);
-    }
-
-    /**
-     * @expectedException Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-     * @expectedExceptionMessage Property /invalid does not exist or is not writable.
-     */
-    public function testInvalidPath()
-    {
-        /** @var DriverInterface|PHPUnit_Framework_MockObject_MockObject $driver */
-        $driver = $this->getMockForAbstractClass(MetadataFactoryInterface::class);
-
-        /** @var ClassMetadata|PHPUnit_Framework_MockObject_MockObject $classMetadata */
-        $classMetadata = $this->getMockBuilder(ClassMetadata::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $driver->method('getMetadataForClass')->willReturn($classMetadata);
-
-        $object = new TestObject();
-
-        /** @var Operation|PHPUnit_Framework_MockObject_MockObject $operation */
-        $operation = $this->getMockForAbstractClass(OperationInterface::class);
+            ->method('pathPointer')
+            ->willReturn($pointer);
         $operation
-            ->method('getPath')
-            ->willReturn('/invalid')
-        ;
+            ->method('fromPointer')
+            ->willReturn(null);
         $operation
-            ->expects($this->never())
-            ->method('apply')
-        ;
+            ->method('parameters')
+            ->willReturn([]);
 
-        $executioner = new Executioner($driver);
-        $executioner->execute($object, [
-            $operation,
-        ]);
-    }
-}
+        $subject = [];
 
-class TestObject
-{
-    private $property;
-
-    public function getProperty()
-    {
-        return $this->property;
+        $executioner->execute([$operation], $subject);
     }
 }

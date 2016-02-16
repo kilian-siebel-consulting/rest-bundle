@@ -1,32 +1,16 @@
-# Patching System
+# Patch
 
-To see how the patching system works with the Annotation, please read [this article](param_converter/patch_param_converter.md).
+The patching system is able to apply JSON Patches to arrays & objects. 
 
-The patching system is built to execute [RFC](https://tools.ietf.org/html/rfc6902) compliant patches on an object.
+# Custom Address
 
-## Service
-The service of the Patch Execution class is `ibrows_rest.patch.executioner`.
+To support custom types, implement `\Ibrows\RestBundle\Patch\AddressResolverInterface` and tag your service with the tag `ibrows_rest.patch.address_resolver`.
+The address resolver has to return a `\Ibrows\RestBundle\Patch\AddressInterface`.
 
-## Usage
-```php
-    <?php
-    use Ibrows\RestBundle\Patch\OperationInterface;
+# Custom Operation
 
-    $executioner = $container->get('ibrows_rest.patch.executioner');
-    $operations = [
-        new SubClassOfOperationInterface(),
-    ];
-        
-    $executioner->execute($object, $executioner);
-```
+To add a custom operation, implement `\Ibrows\RestBundle\Patch\OperationApplierInterface` and tag your service with the tag `ibrows_rest.patch.operation_applier`.
 
-## JMS Serializer
-To get an Operation Collection, simply decode the PATCH request body using JMS.
-
-To add new PatchTypes, the discriminator of `Ibrows\RestBundle\Patch\Operation` has to be overridden.
-
-## Ibrows\RestBundle\Patch\OperationInterface explained
-
-The OperationInterface only requires you to provide two functions:
-- `getPath(): string` - Provide the path of the Operation. This is automatically provided if you use the abstract class `Ibrows\RestBundle\Patch\Operation`.
-- `apply(object, JMS\Serializer\Metadata\PropertyMetadata\PropertyMetadata): void` - Apply the operation on the given object.
+Tag Attributes:
+ - `operation` - The name of the operation to support.
+ - `priority` - The priority of your implementation.
