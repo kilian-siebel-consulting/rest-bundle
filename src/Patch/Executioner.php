@@ -45,7 +45,6 @@ class Executioner
                         )
                     );
                 }
-
                 $operation->apply($object, $property);
             }
         );

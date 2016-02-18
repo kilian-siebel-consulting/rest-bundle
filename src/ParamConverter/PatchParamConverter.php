@@ -80,4 +80,5 @@ class PatchParamConverter extends ManipulationParamConverter
 
         return $request->attributes->get('operations');
     }
+
 }

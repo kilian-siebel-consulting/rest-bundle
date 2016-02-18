@@ -153,7 +153,7 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
         $props = [
             'code' => 'getCode',
             'message' => 'getMessage',
-            'property_path' => 'getPropertyPath'
+            'propertyPath' => 'getPropertyPath'
         ];
 
         foreach ($violations as $violation) {
@@ -183,7 +183,7 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
                 [
                     'code'          => '123',
                     'message'       => 'This value should not be null.',
-                    'property_path' => 'user',
+                    'propertyPath' => 'user',
                 ]
 
             ]
@@ -207,11 +207,11 @@ class ExceptionControllerTest extends \PHPUnit_Framework_TestCase
         
         $this->assertArrayHasKey('code', $data['errors']['violations'][0]);
         $this->assertArrayHasKey('message', $data['errors']['violations'][0]);
-        $this->assertArrayHasKey('property_path', $data['errors']['violations'][0]);
+        $this->assertArrayHasKey('propertyPath', $data['errors']['violations'][0]);
 
         $this->assertEquals('123', $data['errors']['violations'][0]['code']);
         $this->assertEquals('This value should not be null.', $data['errors']['violations'][0]['message']);
-        $this->assertEquals('/user', $data['errors']['violations'][0]['property_path']);
+        $this->assertEquals('/user', $data['errors']['violations'][0]['propertyPath']);
         
     }
 }

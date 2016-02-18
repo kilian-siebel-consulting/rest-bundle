@@ -51,7 +51,7 @@ class BadRequestConstraintException extends BadRequestHttpException implements D
             $violations[] = [
                 'code' => $violation->getCode(),
                 'message' => $violation->getMessage(),
-                'property_path' => $this->mapPropertyPath($violation->getPropertyPath()),
+                'propertyPath' => $this->mapPropertyPath($violation->getPropertyPath()),
             ];
         }
         
