@@ -5,25 +5,24 @@ use Ibrows\RestBundle\Exception\NotImplementedException;
 use Ibrows\RestBundle\Patch\Operation as Operation;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\ClassMetadata;
-use Metadata\Driver\DriverInterface;
-use ReflectionClass;
+use Metadata\MetadataFactoryInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class Executioner
 {
     /**
-     * @var DriverInterface
+     * @var MetadataFactoryInterface
      */
-    private $driver;
+    private $metadataFactory;
 
     /**
      * Executioner constructor.
      *
-     * @param DriverInterface $driver
+     * @param MetadataFactoryInterface $metadataFactory
      */
-    public function __construct(DriverInterface $driver)
+    public function __construct(MetadataFactoryInterface $metadataFactory)
     {
-        $this->driver = $driver;
+        $this->metadataFactory = $metadataFactory;
     }
 
     /**
@@ -82,8 +81,6 @@ class Executioner
      */
     private function getMetadata($object)
     {
-        $class = new ReflectionClass($object);
-
-        return $this->driver->loadMetadataForClass($class);
+        return $this->metadataFactory->getMetadataForClass(get_class($object)); 
     }
 }

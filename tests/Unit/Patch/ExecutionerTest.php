@@ -7,6 +7,7 @@ use Ibrows\RestBundle\Patch\OperationInterface;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\PropertyMetadata;
 use Metadata\Driver\DriverInterface;
+use Metadata\MetadataFactoryInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
@@ -15,13 +16,13 @@ class ExecutionerListener extends PHPUnit_Framework_TestCase
     public function testExecution()
     {
         /** @var DriverInterface|PHPUnit_Framework_MockObject_MockObject $driver */
-        $driver = $this->getMockForAbstractClass(DriverInterface::class);
+        $driver = $this->getMockForAbstractClass(MetadataFactoryInterface::class);
 
         /** @var ClassMetadata|PHPUnit_Framework_MockObject_MockObject $classMetadata */
         $classMetadata = $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $driver->method('loadMetadataForClass')->willReturn($classMetadata);
+        $driver->method('getMetadataForClass')->willReturn($classMetadata);
 
         $propertyMetadata = new PropertyMetadata(TestObject::class, 'property');
 
@@ -56,13 +57,13 @@ class ExecutionerListener extends PHPUnit_Framework_TestCase
     public function testInvalidPath()
     {
         /** @var DriverInterface|PHPUnit_Framework_MockObject_MockObject $driver */
-        $driver = $this->getMockForAbstractClass(DriverInterface::class);
+        $driver = $this->getMockForAbstractClass(MetadataFactoryInterface::class);
 
         /** @var ClassMetadata|PHPUnit_Framework_MockObject_MockObject $classMetadata */
         $classMetadata = $this->getMockBuilder(ClassMetadata::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $driver->method('loadMetadataForClass')->willReturn($classMetadata);
+        $driver->method('getMetadataForClass')->willReturn($classMetadata);
 
         $object = new TestObject();
 

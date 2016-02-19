@@ -8,7 +8,7 @@
     </parameters>
     <services>
         <service id="ibrows_rest.patch.executioner" class="%ibrows_rest.patch.executioner.class%">
-            <argument type="service" id="jms_serializer.metadata_driver" />
+            <argument type="service" id="jms_serializer.metadata_factory" />
         </service>
     </services>
 </container>
