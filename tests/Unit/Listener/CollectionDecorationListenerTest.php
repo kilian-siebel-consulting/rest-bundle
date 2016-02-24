@@ -80,22 +80,29 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param mixed $data
-     *
      * @dataProvider getInvalidData
      */
-    public function testInvalidData($data)
+    public function testInvalidData($data = null)
     {
-        $newData = $data;
-        if (is_object($data)) {
-            $newData = clone $data;
-        }
+        $event = $this->getEvent($data);
 
-        $event = $this->getEvent($newData);
+        $this->decorator
+            ->method('decorate')
+            ->will(
+                $this->returnCallback(
+                    function (ParameterBag $params, $collection) {
+                        return [
+                            $collection,
+                        ];
+                    }
+                )
+            );
 
         $this->getListener()->onKernelView($event);
 
-        $this->assertEquals($data, $event->getControllerResult());
+        $result = $event->getControllerResult();
+
+        $this->assertEquals($data, $result);
     }
 
     public function getInvalidData()
@@ -110,18 +117,31 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
                     ]
                 )
             ],
-            [[]],
+            [],
         ];
     }
 
-    public function testValidData()
+    public function getValidData()
     {
-        $data = [
-            new TestResource(),
-            new TestResource(),
-            new TestResource(),
+        return [
+            [
+                [
+                    new TestResource(),
+                    new TestResource(),
+                    new TestResource()
+                ],
+                []
+            ]
         ];
+    }
 
+    /**
+     * @param $data
+     * @throws \Exception
+     * @dataProvider getValidData
+     */
+    public function testValidData($data)
+    {
         $event = $this->getEvent($data);
 
         $this->decorator
@@ -154,6 +174,7 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
     public function testSerializationGroups()
     {
         $data = [
+            new TestResource(),
             new TestResource(),
         ];
 

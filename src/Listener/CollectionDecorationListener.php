@@ -42,6 +42,7 @@ class CollectionDecorationListener
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         if ($this->validateCollection($event->getControllerResult())) {
+
             $this->wrapCollection($event);
 
             $this->decorateView($event);
@@ -59,8 +60,7 @@ class CollectionDecorationListener
         if ((
                 !$data instanceof Collection &&
                 !is_array($data)
-            ) ||
-            count($data) === 0
+            )
         ) {
             return false;
         }
@@ -86,12 +86,17 @@ class CollectionDecorationListener
         }
 
         $element = reset($data);
-        $resourceConfig = $this->resourceTransformer->getResourceConfig($element);
+        $name  = null;
+
+        if($element) {
+            $resourceConfig = $this->resourceTransformer->getResourceConfig($element);
+            $name = $resourceConfig['plural_name'];
+        }
 
         $event->setControllerResult(
             new CollectionRepresentation(
                 $event->getControllerResult(),
-                $resourceConfig ? $resourceConfig['plural_name'] : null
+                $name
             )
         );
     }
@@ -145,4 +150,14 @@ class CollectionDecorationListener
     {
         $this->decorators[] = $decorator;
     }
+
+    /**
+     * @param TransformerInterface $resourceTransformer
+     */
+    public function setResourceTransformer($resourceTransformer)
+    {
+        $this->resourceTransformer = $resourceTransformer;
+    }
+
+
 }

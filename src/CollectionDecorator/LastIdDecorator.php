@@ -42,6 +42,7 @@ class LastIdDecorator implements DecoratorInterface
      */
     public function decorate(ParameterBag $params, $collection)
     {
+
         if (!$collection instanceof CollectionRepresentation ||
             !$params->has('paramFetcher') ||
             !$params->has('_route')
@@ -49,10 +50,13 @@ class LastIdDecorator implements DecoratorInterface
             return $collection;
         }
 
-        try {
-            $resources = $collection->getResources();
-            $lastElement = end($resources);
+        $resources = $collection->getResources();
+        $lastElement = end($resources);
+        if(!$lastElement) {
+            return $collection;
+        }
 
+        try {
             return new LastIdRepresentation(
                 $collection,
                 $params->get('_route'),
