@@ -1,0 +1,5 @@
+test:
+    resource: "../../Controller/CommentController.php"
+    type: annotation
+    defaults:
+        _format: json

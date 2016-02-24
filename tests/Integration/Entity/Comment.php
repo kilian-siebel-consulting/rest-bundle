@@ -5,6 +5,7 @@ namespace Ibrows\RestBundle\Tests\Integration\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ReadOnly;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Until;
 
 /**
  * @ORM\Entity
@@ -23,6 +24,7 @@ class Comment
     /**
      * @var string
      * @ORM\Column(length=128)
+     * @Until("6")
      */
     private $subject;
 

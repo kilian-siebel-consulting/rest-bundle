@@ -3,7 +3,6 @@ namespace Ibrows\RestBundle\Patch;
 
 use Ibrows\RestBundle\Patch\Exception\InvalidPathException;
 use Ibrows\RestBundle\Patch\Exception\OperationInvalidException;
-use Ibrows\RestBundle\Patch\Exception\OperationNotApplicableException;
 
 interface ExecutionerInterface
 {
@@ -12,7 +11,6 @@ interface ExecutionerInterface
      * @param mixed                $object
      * @param mixed[]              $options
      * @return mixed
-     * @throws OperationNotApplicableException
      * @throws OperationInvalidException
      * @throws InvalidPathException
      */
