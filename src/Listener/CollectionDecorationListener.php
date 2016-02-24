@@ -150,14 +150,4 @@ class CollectionDecorationListener
     {
         $this->decorators[] = $decorator;
     }
-
-    /**
-     * @param TransformerInterface $resourceTransformer
-     */
-    public function setResourceTransformer($resourceTransformer)
-    {
-        $this->resourceTransformer = $resourceTransformer;
-    }
-
-
 }
