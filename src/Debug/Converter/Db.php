@@ -13,10 +13,10 @@ class Db implements ConverterInterface
     public function convert(DataCollectorInterface $dataCollector)
     {
         return [
-            'mapping_errors' => $dataCollector->getMappingErrors(),
-            'invalid_entities' => $dataCollector->getInvalidEntityCount(),
-            'query_count' => $dataCollector->getQueryCount(),
-            'query_time' => round($dataCollector->getTime()) . ' ms',
+            'mappingErrors' => $dataCollector->getMappingErrors(),
+            'invalidEntities' => $dataCollector->getInvalidEntityCount(),
+            'queryCount' => $dataCollector->getQueryCount(),
+            'queryTime' => round($dataCollector->getTime()) . ' ms',
         ];
     }
 
