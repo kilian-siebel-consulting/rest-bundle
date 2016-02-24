@@ -1,6 +1,8 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\OffsetRepresentation;
 use InvalidArgumentException;
@@ -18,11 +20,18 @@ class OffsetDecorator implements DecoratorInterface
      */
     private $limitParameterName;
 
+    /**
+     * @var ParamFetcherInterface
+     */
+    protected $paramFetcher;
+
     public function __construct(
-        array $configuration
+        array $configuration,
+        ParamFetcherInterface $paramFetcher
     ) {
         $this->offsetParameterName = $configuration['offset_parameter_name'];
         $this->limitParameterName = $configuration['limit_parameter_name'];
+        $this->paramFetcher = $paramFetcher;
     }
 
     /**
@@ -31,19 +40,19 @@ class OffsetDecorator implements DecoratorInterface
     public function decorate(ParameterBag $params, $collection)
     {
         if (!$collection instanceof CollectionRepresentation ||
-            !$params->has('paramFetcher') ||
             !$params->has('_route')
         ) {
             return $collection;
         }
+
 
         try {
             return new OffsetRepresentation(
                 $collection,
                 $params->get('_route'),
                 $params->all(),
-                $params->get('paramFetcher')->get($this->offsetParameterName),
-                $params->get('paramFetcher')->get($this->limitParameterName),
+                $this->paramFetcher->get($this->offsetParameterName),
+                $this->paramFetcher->get($this->limitParameterName),
                 null,
                 $this->offsetParameterName,
                 $this->limitParameterName

@@ -1,6 +1,8 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use InvalidArgumentException;
@@ -28,13 +30,20 @@ class LastIdDecorator implements DecoratorInterface
      */
     private $limitParameterName;
 
+    /**
+     * @var ParamFetcherInterface
+     */
+    protected $paramFetcher;
+
     public function __construct(
-        array $configuration
+        array $configuration,
+        ParamFetcherInterface $paramFetcher
     ) {
         $this->sortByParameterName = $configuration['sort_by_parameter_name'];
         $this->sortDirectionParameterName = $configuration['sort_direction_parameter_name'];
         $this->offsetIdParameterName = $configuration['offset_id_parameter_name'];
         $this->limitParameterName = $configuration['limit_parameter_name'];
+        $this->paramFetcher = $paramFetcher;
     }
 
     /**
@@ -42,33 +51,35 @@ class LastIdDecorator implements DecoratorInterface
      */
     public function decorate(ParameterBag $params, $collection)
     {
-
         if (!$collection instanceof CollectionRepresentation ||
-            !$params->has('paramFetcher') ||
             !$params->has('_route')
         ) {
             return $collection;
         }
 
+
         $resources = $collection->getResources();
         $lastElement = end($resources);
         $offsetId = null;
+
         if( $lastElement ) {
             $offsetId = $lastElement->getid();
         }
+
+        $fetcher = $this->paramFetcher;
 
         try {
             return new LastIdRepresentation(
                 $collection,
                 $params->get('_route'),
                 $params->all(),
-                $params->get('paramFetcher')->get($this->limitParameterName),
+                $fetcher ->get($this->limitParameterName),
                 $this->limitParameterName,
                 $offsetId,
                 $this->offsetIdParameterName,
-                $params->get('paramFetcher')->get($this->sortByParameterName),
+                $fetcher ->get($this->sortByParameterName),
                 $this->sortByParameterName,
-                $params->get('paramFetcher')->get($this->sortDirectionParameterName),
+                $fetcher ->get($this->sortDirectionParameterName),
                 $this->sortDirectionParameterName
             );
         } catch (InvalidArgumentException $exception) {

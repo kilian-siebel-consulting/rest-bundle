@@ -173,7 +173,6 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
                 [],
                 $this->exclusion
             ),
-
         ];
     }
 }

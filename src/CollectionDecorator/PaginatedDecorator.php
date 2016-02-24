@@ -1,6 +1,8 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use InvalidArgumentException;
@@ -18,11 +20,19 @@ class PaginatedDecorator implements DecoratorInterface
      */
     private $limitParameterName;
 
+    /**
+     * @var ParamFetcherInterface
+     */
+    private $paramFetcher;
+
     public function __construct(
-        array $configuration
+        array $configuration,
+        ParamFetcherInterface $paramFetcher
     ) {
         $this->pageParameterName = $configuration['page_parameter_name'];
         $this->limitParameterName = $configuration['limit_parameter_name'];
+
+        $this->paramFetcher = $paramFetcher;
     }
 
     /**
@@ -31,15 +41,14 @@ class PaginatedDecorator implements DecoratorInterface
     public function decorate(ParameterBag $params, $collection)
     {
         if (!$collection instanceof CollectionRepresentation ||
-            !$params->has('paramFetcher') ||
             !$params->has('_route')
         ) {
             return $collection;
         }
 
         try {
-            if ($params->get('paramFetcher')->get($this->limitParameterName) === null ||
-                $params->get('paramFetcher')->get($this->pageParameterName) === null
+            if ($this->paramFetcher->get($this->limitParameterName) === null ||
+                $this->paramFetcher->get($this->pageParameterName) === null
             ) {
                 return $collection;
             }
@@ -48,8 +57,8 @@ class PaginatedDecorator implements DecoratorInterface
                 $collection,
                 $params->get('_route'),
                 $params->all(),
-                $params->get('paramFetcher')->get($this->pageParameterName),
-                $params->get('paramFetcher')->get($this->limitParameterName),
+                $this->paramFetcher->get($this->pageParameterName),
+                $this->paramFetcher->get($this->limitParameterName),
                 null,
                 $this->pageParameterName,
                 $this->limitParameterName,

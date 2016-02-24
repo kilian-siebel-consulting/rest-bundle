@@ -32,7 +32,8 @@ class PaginatedDecoratorTest extends PHPUnit_Framework_TestCase
             [
                 'page_parameter_name'  => 'page',
                 'limit_parameter_name' => 'limit',
-            ]
+            ],
+            $this->paramFetcher
         );
     }
 

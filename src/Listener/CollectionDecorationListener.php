@@ -41,12 +41,11 @@ class CollectionDecorationListener
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
+
+
         if ($this->validateCollection($event->getControllerResult())) {
-
             $this->wrapCollection($event);
-
             $this->decorateView($event);
-
             $this->addListGroup($event);
         }
     }
@@ -107,7 +106,6 @@ class CollectionDecorationListener
     protected function decorateView(GetResponseForControllerResultEvent $event)
     {
         $params = $event->getRequest()->attributes;
-
         array_walk(
             $this->decorators,
             function (DecoratorInterface $decorator) use ($event, $params) {

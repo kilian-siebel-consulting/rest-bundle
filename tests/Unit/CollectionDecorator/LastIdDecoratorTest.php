@@ -28,13 +28,15 @@ class LastIdDecoratorTest extends PHPUnit_Framework_TestCase
      */
     protected function getDecorator()
     {
+
         return new LastIdDecorator(
             [
                 'sort_by_parameter_name'        => 'sortBy',
                 'sort_direction_parameter_name' => 'sortDir',
                 'offset_id_parameter_name'      => 'offsetId',
                 'limit_parameter_name'          => 'limit',
-            ]
+            ],
+            $this->paramFetcher
         );
     }
 
