@@ -52,8 +52,9 @@ class LastIdDecorator implements DecoratorInterface
 
         $resources = $collection->getResources();
         $lastElement = end($resources);
-        if(!$lastElement) {
-            return $collection;
+        $offsetId = null;
+        if( $lastElement ) {
+            $offsetId = $lastElement->getid();
         }
 
         try {
@@ -61,10 +62,10 @@ class LastIdDecorator implements DecoratorInterface
                 $collection,
                 $params->get('_route'),
                 $params->all(),
-                $lastElement->getId(),
-                $this->offsetIdParameterName,
                 $params->get('paramFetcher')->get($this->limitParameterName),
                 $this->limitParameterName,
+                $offsetId,
+                $this->offsetIdParameterName,
                 $params->get('paramFetcher')->get($this->sortByParameterName),
                 $this->sortByParameterName,
                 $params->get('paramFetcher')->get($this->sortDirectionParameterName),

@@ -116,6 +116,29 @@ class LastIdDecoratorTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(LastIdRepresentation::class, $result);
         $this->assertEquals($data, $result->getInline());
     }
+
+
+    public function testCollectionResponseWithoutLastid()
+    {
+        $data = new CollectionRepresentation(
+            [
+                new LastIdTestClass(),
+            ]
+        );
+
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
+
+        $this->assertInstanceOf(LastIdRepresentation::class, $result);
+        $this->assertEquals($data, $result->getInline());
+    }
 }
 
 class LastIdTestClass implements ApiListableInterface

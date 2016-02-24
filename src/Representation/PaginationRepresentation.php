@@ -111,7 +111,7 @@ class PaginationRepresentation extends PaginatedRepresentation
                 'next',
                 new Route(
                     'expr(object.getRoute())',
-                    'xpr(object.getParameters(object.getPage() + 1))',
+                    'expr(object.getParameters(object.getPage() + 1))',
                     'expr(object.isAbsolute())'
                 ),
                 null,
@@ -128,7 +128,7 @@ class PaginationRepresentation extends PaginatedRepresentation
                 'previous',
                 new Route(
                     'expr(object.getRoute())',
-                    'xpr(object.getParameters(object.getPage() - 1))',
+                    'expr(object.getParameters(object.getPage() - 1))',
                     'expr(object.isAbsolute())'
                 ),
                 null,

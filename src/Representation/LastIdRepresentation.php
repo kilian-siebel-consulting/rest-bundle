@@ -65,10 +65,10 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         $inline,
         $route,
         array $parameters,
-        $lastId,
-        $lastIdParamName,
         $limit,
         $limitParameterName = null,
+        $lastId = null,
+        $lastIdParamName = null,
         $sortBy = null,
         $sortByParameterName = null,
         $sortDir = null,
@@ -112,19 +112,26 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
      */
     public function getParameters($limit = null, $offsetId = null)
     {
-        $params = array();
+        $params = [];
 
-        $params = array_merge(
-            $params,
-            array(
-                $this->getLimitParameterName() => $limit ? $limit : $this->getLimit(),
-                $this->sortByParamName         => $this->sortBy,
-                $this->sortDirParamName        => $this->sortDir,
-            )
-        );
+        if($this->sortByParamName){
+            $params[$this->sortByParamName] = $this->sortBy;
+        }
 
-        if ($offsetId !== false) {
-            $params[$this->lastIdParamName] = $offsetId ? $offsetId : $this->lastId;
+        if($this->sortDirParamName){
+            $params[$this->sortDirParamName] = $this->sortDir;
+        }
+
+        if($this->getLimitParameterName()){
+            $params[$this->getLimitParameterName()] = $limit ? $limit : $this->getLimit();
+        }
+
+        if (($offsetId === false || $offsetId === null ) && $this->lastId !== null) {
+            $offsetId = $this->lastId;
+        }
+
+        if($this->lastIdParamName && $offsetId !== null) {
+            $params[$this->lastIdParamName] = $offsetId;
         }
 
         foreach ($this->parameters as $name => $param) {
