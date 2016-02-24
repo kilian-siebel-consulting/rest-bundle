@@ -69,7 +69,6 @@ class PaginationRepresentation extends PaginatedRepresentation
         $this->exclusion = $exclusion;
     }
 
-
     /**
      * @param OffsetRepresentation   $object
      * @param ClassMetadataInterface $classMetadata
@@ -79,6 +78,7 @@ class PaginationRepresentation extends PaginatedRepresentation
     public function getRelations($object, ClassMetadataInterface $classMetadata)
     {
         return [
+
             new Relation(
                 'first',
                 new Route(
@@ -141,6 +141,7 @@ class PaginationRepresentation extends PaginatedRepresentation
                     'expr((object.getPage() - 1) < 1)'
                 )
             ),
+
         ];
     }
 }

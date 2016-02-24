@@ -52,7 +52,8 @@ class PaginatedDecorator implements DecoratorInterface
                 $params->get('paramFetcher')->get($this->limitParameterName),
                 null,
                 $this->pageParameterName,
-                $this->limitParameterName
+                $this->limitParameterName,
+                false
             );
         } catch (InvalidArgumentException $exception) {
             return $collection;

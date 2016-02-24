@@ -143,6 +143,7 @@ class PaginatedDecoratorTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(PaginationRepresentation::class, $result);
         $this->assertEquals($data, $result->getInline());
     }
+
 }
 
 class PaginatedTestClass implements ApiListableInterface

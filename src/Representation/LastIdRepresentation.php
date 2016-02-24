@@ -106,8 +106,8 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     }
 
     /**
-     * @param null $limit
-     * @param null $offsetId
+     * @param null|int $limit
+     * @param null|false|int $offsetId
      * @return array
      */
     public function getParameters($limit = null, $offsetId = null)
@@ -126,7 +126,7 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
             $params[$this->getLimitParameterName()] = $limit ? $limit : $this->getLimit();
         }
 
-        if (($offsetId === false || $offsetId === null ) && $this->lastId !== null) {
+        if ($offsetId === null && $this->lastId !== null) {
             $offsetId = $this->lastId;
         }
 
