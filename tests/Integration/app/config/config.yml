@@ -8,9 +8,19 @@ framework:
         storage_id:     session.storage.mock_file
     templating:
         engines: ['php']
+    request:
+        formats:
+            json:
+                -   'application/json'
+                -   'application/json-patch+json'
 
 services:
-    logger: { class: Psr\Log\NullLogger }
+    logger: { class: Ibrows\RestBundle\Tests\Integration\Logger\NullLogger }
+    param_converter.comment:
+        class: Ibrows\RestBundle\Tests\Integration\ParamConverter\CommentParamConverter
+        tags:
+            -   name: request.param_converter
+                converter: "test.comment"
 
 doctrine:
     dbal:
@@ -82,6 +92,8 @@ ibrows_rest:
     param_converter:
         common:
             validation_errors_argument: "%fos_rest.converter.request_body.validation_errors_argument%"
+        patch:
+            enabled: true
     exception_controller:
         enabled: true
         force_default: true

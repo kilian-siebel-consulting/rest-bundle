@@ -3,6 +3,9 @@
 namespace Ibrows\RestBundle\Tests\Integration\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ReadOnly;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Until;
 
 /**
  * @ORM\Entity
@@ -21,6 +24,7 @@ class Comment
     /**
      * @var string
      * @ORM\Column(length=128)
+     * @Until("6")
      */
     private $subject;
 
@@ -29,6 +33,20 @@ class Comment
      * @ORM\Column(type="text")
      */
     private $message;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     * @ReadOnly
+     */
+    private $hidden;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     * @SerializedName("fakeName")
+     */
+    private $overriddenName;
 
     /**
      * @var Article|null

@@ -17,9 +17,9 @@ class ParamConvertersCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $ids = [
-            'ibrows_rest.param_converter.patch',
             'ibrows_rest.param_converter.link',
             'ibrows_rest.param_converter.unlink',
+            'ibrows_rest.param_converter.patch',
         ];
 
         $taggedServices = $container->findTaggedServiceIds(

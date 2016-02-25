@@ -2,25 +2,35 @@
 namespace Ibrows\RestBundle\Tests\Unit\Patch;
 
 use Ibrows\RestBundle\Patch\Operation;
-use JMS\Serializer\Metadata\PropertyMetadata;
+use Ibrows\RestBundle\Patch\PointerInterface;
 use PHPUnit_Framework_TestCase;
 
 class OperationTest extends PHPUnit_Framework_TestCase
 {
-    public function testGetPath()
+    public function testPublicInterface()
     {
-        $operation = new SomeOperation();
-        $reflectionProperty = new \ReflectionProperty(Operation::class, 'path');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($operation, 'foo');
+        /** @var PointerInterface $pointer */
+        $pointer = $this->getMockForAbstractClass(PointerInterface::class);
+        $operation = new Operation(
+            'name',
+            $pointer,
+            null,
+            'value',
+            [
+                'param' => 'value',
+            ]
+        );
 
-        $this->assertEquals('foo', $operation->getPath());
-    }
-}
-
-class SomeOperation extends Operation
-{
-    public function apply($object, PropertyMetadata $property)
-    {
+        $this->assertEquals('name', $operation->operation());
+        // Prevent This test performed an assertion on a test double
+        $this->assertTrue($pointer === $operation->pathPointer());
+        $this->assertNull($operation->fromPointer());
+        $this->assertEquals('value', $operation->value());
+        $this->assertEquals(
+            [
+                'param' => 'value',
+            ],
+            $operation->parameters()
+        );
     }
 }

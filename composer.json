@@ -46,6 +46,7 @@
         "doctrine/doctrine-bundle": "^1.6",
         "symfony/security-bundle": "^3.0",
         "symfony/validator": "^3.0",
+        "symfony/symfony": "^3.0",
         "doctrine/orm": "^2.5"
     },
     "suggest": {

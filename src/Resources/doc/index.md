@@ -62,12 +62,6 @@ file of your project:
 ## Controllers
 - `ExceptionController`  - [Read Documentation](controller/exception_controller.md)
  
-## Patch
-
-The patching system is used to apply patches to an object in the `PatchParamConverter`. It can also be used standalone.
-
-[Read Documentation](patch.md)
- 
 ## Transformer
 [Read Documentation](transformer.md)
 
@@ -87,10 +81,6 @@ The patching system is used to apply patches to an object in the `PatchParamConv
                 fail_on_validation_error: true
                 validation_errors_argument: null
             link:
-                enabled: true
-                fail_on_validation_error: true
-                validation_errors_argument: null
-            patch:
                 enabled: true
                 fail_on_validation_error: true
                 validation_errors_argument: null
