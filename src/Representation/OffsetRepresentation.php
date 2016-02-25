@@ -93,7 +93,7 @@ class OffsetRepresentation extends BaseOffsetRepresentation
                 'first',
                 new Route(
                     'expr(object.getRoute())',
-                    'expr(object.getParameters(0))',
+                    'expr(object.getParameters(1))',
                     'expr(object.isAbsolute())'
                 ),
                 null,

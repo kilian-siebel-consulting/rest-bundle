@@ -47,6 +47,6 @@ class TimeTest extends PHPUnit_Framework_TestCase
 
     public function testGetName()
     {
-        $this->assertEquals('time_elapsed', (new Time())->getName());
+        $this->assertEquals('timeElapsed', (new Time())->getName());
     }
 }
