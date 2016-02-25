@@ -4,6 +4,7 @@ namespace Ibrows\RestBundle\Patch\Address;
 use Ibrows\RestBundle\Patch\AddressInterface;
 use Ibrows\RestBundle\Patch\Exception\InvalidPathException;
 use Ibrows\RestBundle\Patch\Exception\OverridePathException;
+use Ibrows\RestBundle\Patch\Exception\PropertyNullPathException;
 use Ibrows\RestBundle\Patch\Exception\ResolvePathException;
 use Ibrows\RestBundle\Patch\JMSObjectAddressInterface;
 use Ibrows\RestBundle\Patch\PointerInterface;
@@ -83,10 +84,11 @@ class ObjectAddress extends AbstractAddress implements JMSObjectAddressInterface
     public function modifyElement(PointerInterface $pointer, $value)
     {
         $property = $this->getProperty($pointer);
-        if ($property === null ||
-            $property->getValue($this->value()) === null
-        ) {
+        if ($property === null) {
             throw new ResolvePathException($this, $pointer);
+        }
+        if ($property->getValue($this->value())  === null) {
+            throw new PropertyNullPathException($this, $pointer);
         }
 
         $property->setValue($this->value(), $value);
@@ -98,10 +100,11 @@ class ObjectAddress extends AbstractAddress implements JMSObjectAddressInterface
     public function removeElement(PointerInterface $pointer)
     {
         $property = $this->getProperty($pointer);
-        if ($property === null ||
-            $property->getValue($this->value()) === null
-        ) {
+        if ($property === null) {
             throw new ResolvePathException($this, $pointer);
+        }
+        if ($property->getValue($this->value())  === null) {
+            throw new PropertyNullPathException($this, $pointer);
         }
 
         $property->setValue($this->value(), null);
