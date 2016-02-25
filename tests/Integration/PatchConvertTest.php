@@ -540,6 +540,55 @@ class PatchConvertTest extends WebTestCase
     }
 
     /**
+     * @expectedException \Ibrows\RestBundle\Patch\Exception\PropertyNullPathException
+     * @expectedExceptionMessage Could not change on path "subject" because value is null ( exists not ).
+     */
+    public function testInvalidNullRemoveOnObject()
+    {
+        $comment = new Comment();
+        $comment->setSubject(null);
+        $operations = $this->getPatchConverter()->convert(
+            [
+                [
+                    'op'   => 'remove',
+                    'path' => '/subject',
+                ],
+            ]
+        );
+
+        $this->getExecutioner()->execute(
+            $operations,
+            $comment
+
+        );
+    }
+
+    /**
+     * @expectedException \Ibrows\RestBundle\Patch\Exception\PropertyNullPathException
+     * @expectedExceptionMessage Could not change on path "subject" because value is null ( exists not ).
+     */
+    public function testInvalidNullReplaceOnObject()
+    {
+        $comment = new Comment();
+        $comment->setSubject(null);
+        $operations = $this->getPatchConverter()->convert(
+            [
+                [
+                    'op'   => 'replace',
+                    'path' => '/subject',
+                    'value' => 'new'
+                ],
+            ]
+        );
+
+        $this->getExecutioner()->execute(
+            $operations,
+            $comment
+
+        );
+    }
+
+    /**
      * @expectedException \Ibrows\RestBundle\Patch\Exception\OverridePathException
      * @expectedExceptionMessage Could not add on path "subject" because it already exists.
      */
