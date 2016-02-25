@@ -8,7 +8,6 @@
         <parameter key="ibrows_rest.patch.token_unescaper.class">Ibrows\RestBundle\Patch\TokenEscaper</parameter>
         <parameter key="ibrows_rest.patch.pointer_factory.class">Ibrows\RestBundle\Patch\PointerFactory</parameter>
         <parameter key="ibrows_rest.patch.operation_factory.class">Ibrows\RestBundle\Patch\OperationFactory</parameter>
-        <parameter key="ibrows_rest.patch.operation_checker.class">Ibrows\RestBundle\Patch\OperationChecker</parameter>
         <parameter key="ibrows_rest.patch.patch_converter.class">Ibrows\RestBundle\Patch\PatchConverter</parameter>
         <parameter key="ibrows_rest.patch.executioner.class">Ibrows\RestBundle\Patch\Executioner</parameter>
         <parameter key="ibrows_rest.patch.value_converter.jms.class">Ibrows\RestBundle\Patch\JMSValueConverter</parameter>
@@ -39,22 +38,19 @@
         <service id="ibrows_rest.patch.value_factory" class="%ibrows_rest.patch.value_factory.class%"/>
 
         <service id="ibrows_rest.patch.address_lookup" class="%ibrows_rest.patch.address_lookup.class%">
+            <argument type="service" id="ibrows_rest.patch.pointer_factory"/>
             <argument type="service" id="ibrows_rest.patch.value_factory"/>
         </service>
 
         <service id="ibrows_rest.patch.token_unescaper" class="%ibrows_rest.patch.token_unescaper.class%"/>
 
         <service id="ibrows_rest.patch.pointer_factory" class="%ibrows_rest.patch.pointer_factory.class%">
-            <argument type="service" id="ibrows_rest.patch.address_lookup"/>
             <argument type="service" id="ibrows_rest.patch.token_unescaper"/>
         </service>
-
-        <service id="ibrows_rest.patch.operation_checker" class="%ibrows_rest.patch.operation_checker.class%"/>
 
         <service id="ibrows_rest.patch.operation_factory" class="%ibrows_rest.patch.operation_factory.class%"/>
 
         <service id="ibrows_rest.patch.patch_converter" class="%ibrows_rest.patch.patch_converter.class%">
-            <argument type="service" id="ibrows_rest.patch.operation_checker"/>
             <argument type="service" id="ibrows_rest.patch.pointer_factory"/>
             <argument type="service" id="ibrows_rest.patch.operation_factory"/>
         </service>
@@ -78,7 +74,9 @@
             <tag name="ibrows_rest.patch.operation_applier" operation="test" priority="1" />
         </service>
 
-        <service id="ibrows_rest.patch.executioner.plain" class="%ibrows_rest.patch.executioner.class%" />
+        <service id="ibrows_rest.patch.executioner.plain" class="%ibrows_rest.patch.executioner.class%">
+            <argument type="service" id="ibrows_rest.patch.address_lookup" />
+        </service>
 
         <service id="ibrows_rest.patch.value_converter.jms" class="%ibrows_rest.patch.value_converter.jms.class%">
             <argument type="service" id="jms_serializer" />

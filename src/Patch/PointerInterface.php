@@ -18,14 +18,6 @@ interface PointerInterface
     public function lastToken();
 
     /**
-     * @param mixed   $object
-     * @param mixed[] $options
-     * @return ValueInterface
-     * @throws InvalidPathException
-     */
-    public function resolve(& $object, array $options = []);
-
-    /**
      * @return string
      */
     public function path();

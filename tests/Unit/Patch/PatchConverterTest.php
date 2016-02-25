@@ -3,7 +3,6 @@ namespace Ibrows\RestBundle\Tests\Unit\Patch;
 
 use Countable;
 use Ibrows\RestBundle\Patch\Exception\OperationInvalidException;
-use Ibrows\RestBundle\Patch\OperationCheckerInterface;
 use Ibrows\RestBundle\Patch\OperationFactoryInterface;
 use Ibrows\RestBundle\Patch\OperationInterface;
 use Ibrows\RestBundle\Patch\PatchConverter;
@@ -16,11 +15,6 @@ use Traversable;
 class PatchConverterTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var OperationCheckerInterface|PHPUnit_Framework_MockObject_MockObject
-     */
-    private $operationChecker;
-
-    /**
      * @var PointerFactoryInterface|PHPUnit_Framework_MockObject_MockObject
      */
     private $pointerFactory;
@@ -32,7 +26,6 @@ class PatchConverterTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->operationChecker = $this->getMockForAbstractClass(OperationCheckerInterface::class);
         $this->pointerFactory = $this->getMockForAbstractClass(PointerFactoryInterface::class);
         $this->operationFactory = $this->getMockForAbstractClass(OperationFactoryInterface::class);
     }
@@ -42,10 +35,6 @@ class PatchConverterTest extends PHPUnit_Framework_TestCase
      */
     public function testThrowsOperationInvalidException()
     {
-        $this->operationChecker
-            ->method('validate')
-            ->willThrowException(new OperationInvalidException());
-
         $converter = $this->getInstance();
 
         $converter->convert(
@@ -67,11 +56,6 @@ class PatchConverterTest extends PHPUnit_Framework_TestCase
 
         $pointer = $this->getMockForAbstractClass(PointerInterface::class);
         $operation = $this->getMockForAbstractClass(OperationInterface::class);
-
-        $this->operationChecker
-            ->expects($this->atLeastOnce())
-            ->method('validate')
-            ->with($rawPatch);
 
         $this->pointerFactory
             ->expects($this->atLeastOnce())
@@ -123,11 +107,6 @@ class PatchConverterTest extends PHPUnit_Framework_TestCase
         $pointer = $this->getMockForAbstractClass(PointerInterface::class);
         $operation = $this->getMockForAbstractClass(OperationInterface::class);
 
-        $this->operationChecker
-            ->expects($this->atLeastOnce())
-            ->method('validate')
-            ->with($rawPatch);
-
         $this->pointerFactory
             ->expects($this->atLeastOnce())
             ->method('createFromPath')
@@ -172,7 +151,6 @@ class PatchConverterTest extends PHPUnit_Framework_TestCase
     private function getInstance()
     {
         return new PatchConverter(
-            $this->operationChecker,
             $this->pointerFactory,
             $this->operationFactory
         );

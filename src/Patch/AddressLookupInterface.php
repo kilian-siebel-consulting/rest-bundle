@@ -10,7 +10,6 @@ interface AddressLookupInterface
 {
     /** @noinspection MoreThanThreeArgumentsInspection */
     /**
-     * @param PointerFactoryInterface $pointerFactory
      * @param PointerInterface        $pointer
      * @param mixed                   $object
      * @param mixed[]                 $options
@@ -21,7 +20,6 @@ interface AddressLookupInterface
      * @throws InvalidArgumentException
      */
     public function lookup(
-        PointerFactoryInterface $pointerFactory,
         PointerInterface $pointer,
         & $object,
         array $options = []

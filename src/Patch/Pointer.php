@@ -1,7 +1,6 @@
 <?php
 namespace Ibrows\RestBundle\Patch;
 
-use Closure;
 use Ibrows\RestBundle\Patch\Exception\InvalidPathException;
 
 class Pointer implements PointerInterface
@@ -17,50 +16,40 @@ class Pointer implements PointerInterface
     private $tokens;
 
     /**
-     * @var Closure
-     */
-    private $addressLookup;
-
-    /**
      * @var TokenEscapeInterface
      */
     private $escaper;
 
     /**
      * Pointer constructor.
-     * @param Closure              $addressLookup
      * @param TokenEscapeInterface $escaper
      */
     private function __construct(
-        Closure $addressLookup,
         TokenEscapeInterface $escaper
     ) {
-        $this->addressLookup = $addressLookup;
         $this->escaper = $escaper;
     }
 
     /**
      * @param string               $path
-     * @param Closure              $addressLookup
      * @param TokenEscapeInterface $tokenEscaper
      * @return Pointer
      */
-    public static function fromPath($path, Closure $addressLookup, TokenEscapeInterface $tokenEscaper)
+    public static function fromPath($path, TokenEscapeInterface $tokenEscaper)
     {
-        $pointer = new Pointer($addressLookup, $tokenEscaper);
+        $pointer = new Pointer($tokenEscaper);
         $pointer->path = (string)$path;
         return $pointer;
     }
 
     /**
      * @param string[]             $tokens
-     * @param Closure              $addressLookup
      * @param TokenEscapeInterface $tokenEscaper
      * @return Pointer
      */
-    public static function fromTokens(array $tokens, Closure $addressLookup, TokenEscapeInterface $tokenEscaper)
+    public static function fromTokens(array $tokens, TokenEscapeInterface $tokenEscaper)
     {
-        $pointer = new Pointer($addressLookup, $tokenEscaper);
+        $pointer = new Pointer($tokenEscaper);
         $pointer->tokens = $tokens;
         return $pointer;
     }
@@ -85,15 +74,6 @@ class Pointer implements PointerInterface
             $this->sliceTokens();
         }
         return end($this->tokens);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resolve(& $object, array $options = [])
-    {
-        $lookup = $this->addressLookup;
-        return $lookup($this, $object, $options);
     }
 
     /**

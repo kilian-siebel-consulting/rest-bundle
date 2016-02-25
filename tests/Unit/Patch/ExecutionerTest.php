@@ -1,6 +1,7 @@
 <?php
 namespace Ibrows\RestBundle\Tests\Unit\Patch;
 
+use Ibrows\RestBundle\Patch\AddressLookupInterface;
 use Ibrows\RestBundle\Patch\Executioner;
 use Ibrows\RestBundle\Patch\OperationApplierInterface;
 use Ibrows\RestBundle\Patch\OperationInterface;
@@ -13,7 +14,10 @@ class ExecutionerTest extends PHPUnit_Framework_TestCase
 {
     public function testApplierWeight()
     {
-        $executioner = new Executioner();
+        /** @var AddressLookupInterface|PHPUnit_Framework_MockObject_MockObject $addressLookup */
+        $addressLookup = $this->getMockForAbstractClass(AddressLookupInterface::class);
+
+        $executioner = new Executioner($addressLookup);
 
         /** @var OperationApplierInterface|PHPUnit_Framework_MockObject_MockObject $rightOperationApplier */
         $rightOperationApplier = $this->getMockForAbstractClass(OperationApplierInterface::class);
@@ -37,8 +41,10 @@ class ExecutionerTest extends PHPUnit_Framework_TestCase
 
         /** @var PointerInterface|PHPUnit_Framework_MockObject_MockObject $pointer */
         $pointer = $this->getMockForAbstractClass(PointerInterface::class);
-        $pointer
-            ->method('resolve')
+
+
+        $addressLookup
+            ->method('lookup')
             ->willReturn($value);
 
         /** @var OperationInterface|PHPUnit_Framework_MockObject_MockObject $operation */

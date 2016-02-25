@@ -7,6 +7,11 @@ use Ibrows\RestBundle\Patch\Exception\OperationInvalidException;
 class Executioner implements ExecutionerInterface
 {
     /**
+     * @var AddressLookupInterface
+     */
+    private $addressLookup;
+
+    /**
      * @var ValueConverterInterface|null
      */
     private $valueConverter = null;
@@ -17,6 +22,16 @@ class Executioner implements ExecutionerInterface
     private $operationAppliers = [];
 
     /**
+     * Executioner constructor.
+     * @param AddressLookupInterface $addressLookup
+     */
+    public function __construct(
+        AddressLookupInterface $addressLookup
+    ) {
+        $this->addressLookup = $addressLookup;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function execute(array $operations, $object, array $options = [])
@@ -25,11 +40,20 @@ class Executioner implements ExecutionerInterface
             $operations,
             function (OperationInterface $operation) use (& $object, $options) {
                 $operationApplier = $this->getOperationApplier($operation->operation());
-                $pathValue = $operation->pathPointer()->resolve($object, $options);
+
+                $pathValue = $this->addressLookup->lookup(
+                    $operation->pathPointer(),
+                    $object,
+                    $options
+                );
 
                 $fromValue = null;
                 if ($operation->fromPointer() !== null) {
-                    $fromValue = $operation->fromPointer()->resolve($object, $options);
+                    $fromValue = $this->addressLookup->lookup(
+                        $operation->fromPointer(),
+                        $object,
+                        $options
+                    );
                 }
 
                 $value = $this->convertValue($operation->value(), $pathValue);

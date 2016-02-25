@@ -75,8 +75,8 @@ class PatchConvertTest extends WebTestCase
                 ],
                 [
                     'op'   => 'move',
-                    'from' => '/small~1list/2',
                     'path' => '/small~1list/1',
+                    'from' => '/small~1list/2',
                 ],
                 [
                     'op'    => 'replace',
@@ -214,6 +214,26 @@ class PatchConvertTest extends WebTestCase
                 [
                     'op'    => 'replace',
                     'path'  => '/7/77',
+                    'value' => 'something else',
+                ],
+            ]
+        );
+        $this->getExecutioner()->execute(
+            $operations,
+            []
+        );
+    }
+
+    /**
+     * @expectedException \Ibrows\RestBundle\Patch\Exception\OperationInvalidException
+     * @expectedExceptionMessage The property "path" must be provided for every operation.
+     */
+    public function testMissingPath()
+    {
+        $operations = $this->getPatchConverter()->convert(
+            [
+                [
+                    'op'    => 'replace',
                     'value' => 'something else',
                 ],
             ]
@@ -628,9 +648,16 @@ class PatchConvertTest extends WebTestCase
         /** @var OperationInterface $operation */
         $operation = array_shift($operations);
 
-        static::assertEquals('/subject', $operation->pathPointer()->resolve(new Comment())->pointer()->path());
-        static::assertInstanceOf(ObjectAddress::class, $operation->pathPointer()->resolve(new Comment())->parent());
-        static::assertNull($operation->pathPointer()->resolve(new Comment())->parent()->parent());
+        $comment = new Comment();
+
+        $value = $this->getContainer()->get('ibrows_rest.patch.address_lookup')->lookup(
+            $operation->pathPointer(),
+            $comment
+        );
+
+        static::assertEquals('/subject', $value->pointer()->path());
+        static::assertInstanceOf(ObjectAddress::class, $value->parent());
+        static::assertNull($value->parent()->parent());
     }
 
     /**

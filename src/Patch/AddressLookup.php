@@ -9,6 +9,11 @@ use InvalidArgumentException;
 class AddressLookup implements AddressLookupInterface
 {
     /**
+     * @var PointerFactoryInterface
+     */
+    private $pointerFactory;
+
+    /**
      * @var ValueFactoryInterface
      */
     private $valueFactory;
@@ -20,11 +25,14 @@ class AddressLookup implements AddressLookupInterface
 
     /**
      * AddressLookup constructor.
+     * @param PointerFactoryInterface $pointerFactory
      * @param ValueFactoryInterface $valueFactory
      */
     public function __construct(
+        PointerFactoryInterface $pointerFactory,
         ValueFactoryInterface $valueFactory
     ) {
+        $this->pointerFactory = $pointerFactory;
         $this->valueFactory = $valueFactory;
     }
 
@@ -34,20 +42,19 @@ class AddressLookup implements AddressLookupInterface
      * {@inheritdoc}
      */
     public function lookup(
-        PointerFactoryInterface $pointerFactory,
         PointerInterface $pointer,
         & $object,
         array $options = []
     ) {
         $tokens = $pointer->tokens();
 
-        $firstPointer = $pointerFactory->createFromTokens(
+        $firstPointer = $this->pointerFactory->createFromTokens(
             [reset($tokens)]
         );
 
         $rootAddress = $this->rootAddress($object, $firstPointer, $options);
 
-        return $this->lookupTokens($pointerFactory, $tokens, $rootAddress, $options);
+        return $this->lookupTokens($tokens, $rootAddress, $options);
     }
 
     /**
@@ -69,7 +76,6 @@ class AddressLookup implements AddressLookupInterface
 
     /** @noinspection MoreThanThreeArgumentsInspection */
     /**
-     * @param PointerFactoryInterface $pointerFactory
      * @param string[]                $tokens
      * @param AddressInterface        $address
      * @param mixed[]                 $options
@@ -80,15 +86,14 @@ class AddressLookup implements AddressLookupInterface
      * @throws RootResolveException
      */
     private function lookupTokens(
-        PointerFactoryInterface $pointerFactory,
         array $tokens,
         AddressInterface $address,
         array $options = []
     ) {
-        $pointer = $pointerFactory->createFromTokens(
+        $pointer = $this->pointerFactory->createFromTokens(
             array_merge($address->pointer()->tokens(), [array_shift($tokens)])
         );
-        $valuePointer = $pointerFactory->createFromTokens(
+        $valuePointer = $this->pointerFactory->createFromTokens(
             array_merge($pointer->tokens(), [reset($tokens)])
         );
 
@@ -102,7 +107,7 @@ class AddressLookup implements AddressLookupInterface
         $resolver = $this->findResolver($value, $valuePointer, $address);
         $resolvedAddress = $resolver->resolve($value, $pointer, $address, $options);
 
-        return $this->lookupTokens($pointerFactory, $tokens, $resolvedAddress);
+        return $this->lookupTokens($tokens, $resolvedAddress, $options);
     }
 
     /**

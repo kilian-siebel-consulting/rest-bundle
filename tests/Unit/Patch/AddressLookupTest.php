@@ -43,11 +43,14 @@ class AddressLookupTest extends PHPUnit_Framework_TestCase
      */
     public function testMissingRootResolver()
     {
-        $lookup = new AddressLookup($this->valueFactory);
+        $lookup = new AddressLookup(
+            $this->pointerFactory,
+            $this->valueFactory
+        );
 
         $object = [];
 
-        $lookup->lookup($this->pointerFactory, RootPointer::create(), $object);
+        $lookup->lookup(RootPointer::create(), $object);
     }
 
     /**
@@ -56,7 +59,10 @@ class AddressLookupTest extends PHPUnit_Framework_TestCase
      */
     public function testMissingResolver()
     {
-        $lookup = new AddressLookup($this->valueFactory);
+        $lookup = new AddressLookup(
+            $this->pointerFactory,
+            $this->valueFactory
+        );
 
         $address = $this->getMockForAbstractClass(AddressInterface::class);
         $address
@@ -98,6 +104,6 @@ class AddressLookupTest extends PHPUnit_Framework_TestCase
                 ]
             );
 
-        $lookup->lookup($this->pointerFactory, $childPointer, $object);
+        $lookup->lookup($childPointer, $object);
     }
 }

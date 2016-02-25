@@ -1,13 +1,10 @@
 <?php
 namespace Ibrows\RestBundle\Patch;
 
+use Ibrows\RestBundle\Patch\Exception\OperationInvalidException;
+
 class PatchConverter implements PatchConverterInterface
 {
-    /**
-     * @var OperationCheckerInterface
-     */
-    private $operationChecker;
-
     /**
      * @var PointerFactoryInterface
      */
@@ -20,16 +17,13 @@ class PatchConverter implements PatchConverterInterface
 
     /**
      * PatchConverter constructor.
-     * @param OperationCheckerInterface $operationChecker
      * @param PointerFactoryInterface   $pointerFactory
      * @param OperationFactoryInterface $operationFactory
      */
     public function __construct(
-        OperationCheckerInterface $operationChecker,
         PointerFactoryInterface $pointerFactory,
         OperationFactoryInterface $operationFactory
     ) {
-        $this->operationChecker = $operationChecker;
         $this->pointerFactory = $pointerFactory;
         $this->operationFactory = $operationFactory;
     }
@@ -42,7 +36,7 @@ class PatchConverter implements PatchConverterInterface
         $patch = [];
 
         while($rawOperation = array_shift($rawPatch)) {
-            $this->operationChecker->validate($rawOperation);
+            $this->validateOperation($rawOperation);
 
             $pointer = $this->pointerFactory->createFromPath($rawOperation['path']);
 
@@ -74,5 +68,29 @@ class PatchConverter implements PatchConverterInterface
         }
 
         return $patch;
+    }
+
+    /**
+     * @param array $rawOperation
+     * @throws OperationInvalidException
+     */
+    private function validateOperation($rawOperation)
+    {
+        if (!array_key_exists('op', $rawOperation)) {
+            throw new OperationInvalidException(
+                sprintf(
+                    OperationInvalidException::MISSING_PROPERTY_MESSAGE,
+                    'op'
+                )
+            );
+        }
+        if (!array_key_exists('path', $rawOperation)) {
+            throw new OperationInvalidException(
+                sprintf(
+                    OperationInvalidException::MISSING_PROPERTY_MESSAGE,
+                    'path'
+                )
+            );
+        }
     }
 }

@@ -73,24 +73,6 @@ class PointerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('token', $pointer->lastToken());
     }
 
-    public function testResolve()
-    {
-        $object = new stdClass();
-
-        $pointer = $this->getInstanceFromPath('path');
-
-        $this->addressLookup
-            ->expects($this->atLeastOnce())
-            ->method('lookup')
-            ->with($this->pointerFactory, $pointer, $object)
-            ->willReturn($this->getMockForAbstractClass(AddressInterface::class));
-
-        $address = $pointer->resolve($object);
-
-        // assertInstance doesn't work on mocks "This test performed an assertion on a test double"
-        $this->assertTrue($address instanceof AddressInterface);
-    }
-
     public function testPath()
     {
         $pointer = $this->getInstanceFromTokens(
@@ -116,13 +98,6 @@ class PointerTest extends PHPUnit_Framework_TestCase
     {
         return Pointer::fromPath(
             $path,
-            function (PointerInterface $pointer, $object) {
-                return $this->addressLookup->lookup(
-                    $this->pointerFactory,
-                    $pointer,
-                    $object
-                );
-            },
             $this->tokenUnescaper
         );
     }
@@ -135,13 +110,6 @@ class PointerTest extends PHPUnit_Framework_TestCase
     {
         return Pointer::fromTokens(
             $tokens,
-            function (PointerInterface $pointer, $object) {
-                return $this->addressLookup->lookup(
-                    $this->pointerFactory,
-                    $pointer,
-                    $object
-                );
-            },
             $this->tokenUnescaper
         );
     }
