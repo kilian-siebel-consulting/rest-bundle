@@ -579,7 +579,6 @@ class PatchConvertTest extends WebTestCase
         $this->getExecutioner()->execute(
             $operations,
             $comment
-
         );
     }
 
@@ -604,7 +603,6 @@ class PatchConvertTest extends WebTestCase
         $this->getExecutioner()->execute(
             $operations,
             $comment
-
         );
     }
 

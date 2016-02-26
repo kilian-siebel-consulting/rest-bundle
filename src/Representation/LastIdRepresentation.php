@@ -114,15 +114,15 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     {
         $params = [];
 
-        if($this->sortByParamName){
+        if ($this->sortByParamName) {
             $params[$this->sortByParamName] = $this->sortBy;
         }
 
-        if($this->sortDirParamName){
+        if ($this->sortDirParamName) {
             $params[$this->sortDirParamName] = $this->sortDir;
         }
 
-        if($this->getLimitParameterName()){
+        if ($this->getLimitParameterName()) {
             $params[$this->getLimitParameterName()] = $limit ? $limit : $this->getLimit();
         }
 
@@ -130,7 +130,7 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
             $offsetId = $this->lastId;
         }
 
-        if($this->lastIdParamName && $offsetId !== null) {
+        if ($this->lastIdParamName && $offsetId !== null) {
             $params[$this->lastIdParamName] = $offsetId;
         }
 

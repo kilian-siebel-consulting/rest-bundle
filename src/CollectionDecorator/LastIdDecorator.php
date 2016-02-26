@@ -62,7 +62,7 @@ class LastIdDecorator implements DecoratorInterface
         $lastElement = end($resources);
         $offsetId = null;
 
-        if( $lastElement ) {
+        if ($lastElement) {
             $offsetId = $lastElement->getid();
         }
 

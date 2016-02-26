@@ -35,7 +35,7 @@ class PatchConverter implements PatchConverterInterface
     {
         $patch = [];
 
-        while($rawOperation = array_shift($rawPatch)) {
+        while ($rawOperation = array_shift($rawPatch)) {
             $this->validateOperation($rawOperation);
 
             $pointer = $this->pointerFactory->createFromPath($rawOperation['path']);
