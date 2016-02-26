@@ -1,32 +1,58 @@
 <?php
 namespace Ibrows\RestBundle\Transformer;
 
+use FOS\RestBundle\Util\Inflector\InflectorInterface;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use InvalidArgumentException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouterInterface;
 
 class ResourceTransformer implements TransformerInterface
 {
     /**
-     * @var array<array<string, mixed>>
+     * @var RouterInterface
      */
-    private $configuration;
+    private $router;
 
     /**
      * @var ConverterInterface[]
      */
     private $converters;
+    
+    /** 
+     * @var InflectorInterface 
+     */
+    private $inflector;
 
     /**
      * ResourceTransformer constructor.
      *
-     * @param array $configuration
+     * @param RouterInterface $router
      */
     public function __construct(
-        array $configuration
+        RouterInterface $router,
+        InflectorInterface $inflector
     ) {
-        $this->configuration = $configuration;
+        $this->router = $router;
+        $this->inflector = $inflector;
         $this->converters = [];
+    }
+
+    /**
+     * @param string $path
+     * @return array|null
+     */
+    private function findResourceInformation($path)
+    {
+        $rawPath = $this->extractResourcePathFromUrl($path);
+
+        if (null !== ($resourceInfo = $this->findResourceInformationFromRouter($rawPath))) {
+            return $resourceInfo;
+        }
+
+        return null;
     }
 
     /**
@@ -34,12 +60,13 @@ class ResourceTransformer implements TransformerInterface
      */
     public function getResourceProxy($path)
     {
-        list($resourceName, $id) = $this->parse($path);
+        $resourceInfo = $this->findResourceInformation($path);
 
-        $resourceConfig = $this->getConfigByName($resourceName);
-        if ($resourceConfig) {
-            return $this->converters[$resourceConfig['converter']]->getResourceProxy(
-                $resourceConfig['class'],
+        if (null !== $resourceInfo) {
+            list($entityClass, $id, $converter) = $resourceInfo;
+
+            return $this->converters[$converter]->getResourceProxy(
+                $entityClass,
                 $id
             );
         }
@@ -52,12 +79,13 @@ class ResourceTransformer implements TransformerInterface
      */
     public function getResource($path)
     {
-        list($resourceName, $id) = $this->parse($path);
+        $resourceInfo = $this->findResourceInformation($path);
 
-        $resourceConfig = $this->getConfigByName($resourceName);
-        if ($resourceConfig) {
-            return $this->converters[$resourceConfig['converter']]->getResource(
-                $resourceConfig['class'],
+        if (null !== $resourceInfo) {
+            list($entityClass, $id, $converter) = $resourceInfo;
+
+            return $this->converters[$converter]->getResource(
+                $entityClass,
                 $id
             );
         }
@@ -65,16 +93,45 @@ class ResourceTransformer implements TransformerInterface
         return null;
     }
 
+    private function convertRouteToConfig(Route $route)
+    {
+        $className = $route->getOption(self::RESOURCE_ENTITY_CLASS_OPTION);
+        
+        $converter = self::RESOURCE_DEFAULT_CONVERTER;
+        if ($route->hasOption(self::RESOURCE_CONVERTER_OPTION)) {
+            $converter = $route->getOption(self::RESOURCE_CONVERTER_OPTION);
+        }
+        
+        if ($route->hasOption(self::RESOURCE_SINGULAR_NAME)) {
+            $singular = $route->getOption(self::RESOURCE_SINGULAR_NAME);
+        } else {
+            $classNameParts = explode('\\', $className);
+            end($classNameParts);
+            $singular = strtolower(current($classNameParts));
+        }
+
+        if ($route->hasOption(self::RESOURCE_PLURAL_NAME)) {
+            $plural = $route->getOption(self::RESOURCE_PLURAL_NAME);
+        } else {
+            $plural = $this->inflector->pluralize($singular);
+        }
+        
+        return [
+            'route' => $route->getDefault('_route'),
+            'class' => $className,
+            'converter' => $converter,
+            'singular_name' => $singular,
+            'plural_name' => $plural
+        ];
+    }
+    
     /**
      * {@inheritdoc}
      */
     public function getResourceConfig(ApiListableInterface $object)
     {
-        $className = get_class($object);
-
-
-        if ($config = $this->getConfigByClass($className)) {
-            return $config;
+        if (null !== ($route = $this->getResourceRoute($object))) {
+            return $this->convertRouteToConfig($route);
         }
         return null;
     }
@@ -84,61 +141,143 @@ class ResourceTransformer implements TransformerInterface
      */
     public function getResourcePath(ApiListableInterface $object)
     {
-        $className = get_class($object);
-
-        if ($this->getConfigByClass($className)) {
-            return '/' . $this->getConfigByClass($className)['plural_name'] . '/' . $object->getId();
+        if (null !== ($route = $this->getResourceRoute($object))) {
+            $id = $object->getId();
+            $idname = $route->getOption(self::RESOURCE_ENTITY_ID_OPTION);
+            
+            return $this->router->generate($route->getDefault('_route'), [
+                $idname => $id
+            ]);
         }
         return null;
     }
 
     /**
-     * @param string $path
-     * @return array
+     * @param string $className
+     * @param Route $route
+     * @return bool
      */
-    private function parse($path)
+    private function isRouteResponsibleForEntity($className, Route $route)
     {
-        $parts = explode('/', $path);
-        $parts = array_filter($parts);
-        if (count($parts) !== 2) {
-            throw new InvalidArgumentException('Path has to consist of exactly two parts.');
-        }
-        return array_values($parts);
+        $routeClassName = $route->getOption(self::RESOURCE_ENTITY_CLASS_OPTION);
+        return $className === $routeClassName || is_subclass_of($className, $routeClassName);        
     }
 
     /**
-     * @param $resourceName
-     *
-     * @return array<string, mixed>
+     * @param ApiListableInterface $object
+     * @return null|Route
      */
-    private function getConfigByName($resourceName)
+    private function getResourceRoute(ApiListableInterface $object)
     {
-        $matchingConfiguration = array_filter(
-            $this->configuration,
-            function ($resourceConfiguration) use ($resourceName) {
-                return $resourceConfiguration['plural_name'] === $resourceName;
-            }
-        );
-        return array_shift($matchingConfiguration);
+        return $this->getResourceRouteByClassName(get_class($object));
     }
 
     /**
      * @param string $className
-     *
-     * @return array<string, mixed>
+     * @return null|Route
      */
-    private function getConfigByClass($className)
+    private function getResourceRouteByClassName($className)
     {
-        $matchingConfiguration = array_filter(
-            $this->configuration,
-            function ($resourceConfiguration) use ($className) {
-                return $className === $resourceConfiguration['class'] ||
-                is_subclass_of($className, $resourceConfiguration['class']);
+        foreach($this->router->getRouteCollection() as $route) {
+            if ($route->hasOption(self::RESOURCE_ENTITY_CLASS_OPTION) &&
+                $this->isRouteResponsibleForEntity($className, $route)) {
+                return $route;
             }
-        );
-        return array_shift($matchingConfiguration);
+        }
+
+        return null;
     }
 
+    /**
+     * @param string $url
+     * @return string
+     */
+    private function extractResourcePathFromUrl($url)
+    {
+        $components = parse_url($url);
+
+        if (false === $components) {
+            throw new InvalidArgumentException('The given path "' . $url . '" does not look like an URL');
+        }
+
+        if (!isset($components['path'])) {
+            throw new InvalidArgumentException('URL has no path component');
+        }
+
+        $rawPath = $components['path'];
+
+        $pathInfoPrefixes = [
+            '/api/app_dev.php',
+            '/api',
+        ];
+        
+        $isValidUrl = false;
+        foreach($pathInfoPrefixes as $pathInfoPrefix) {
+            if (strpos($rawPath, $pathInfoPrefix) === 0) {
+                $rawPath = substr($rawPath, strlen($pathInfoPrefix));
+                $isValidUrl = true;
+            }
+        }
+        
+        if (count($pathInfoPrefixes) > 0 && !$isValidUrl) {
+            throw new InvalidArgumentException('The given path "' . $url . '" does not have a required prefix (one of "'
+                . implode('", "', $pathInfoPrefixes) . '")');
+        }
+        
+        return $rawPath;
+    }
+
+    
+    const RESOURCE_ENTITY_CLASS_OPTION = 'resourceEntity';
+    const RESOURCE_ENTITY_ID_OPTION = 'resourceIdAttribute';
+    const RESOURCE_CONVERTER_OPTION = 'resourceConverter';
+    const RESOURCE_SINGULAR_NAME = 'resourceSingularName';
+    const RESOURCE_PLURAL_NAME = 'resourcePluralName';
+    const RESOURCE_DEFAULT_CONVERTER = 'ibrows_rest.resource_transformer.converter.doctrine';
+    
+    /**
+     * @param $path
+     * @return array|null
+     */
+    private function findResourceInformationFromRouter($path)
+    {
+        try {
+            $parameters = $this->router->match($path);
+        } catch(ResourceNotFoundException $e) {
+            return null;
+        }
+
+        if (!isset($parameters['_route'])) {
+            return null;
+        }
+
+        $route = $this->router->getRouteCollection()->get($parameters['_route']);
+
+        if (null === $route) {
+            return null;
+        }
+
+        if (!$route->hasOption(self::RESOURCE_ENTITY_CLASS_OPTION) ||
+            !$route->hasOption(self::RESOURCE_ENTITY_ID_OPTION)) {
+            return null;
+        }
+
+        if (!isset($parameters[$route->getOption(self::RESOURCE_ENTITY_ID_OPTION)])) {
+            return null;
+        }
+
+        $converter = self::RESOURCE_DEFAULT_CONVERTER;
+        if ($route->hasOption(self::RESOURCE_CONVERTER_OPTION)) {
+            $converter = $route->getOption(self::RESOURCE_CONVERTER_OPTION);
+        }
+        
+        return [
+            $route->getOption(self::RESOURCE_ENTITY_CLASS_OPTION),
+            $parameters[$route->getOption(self::RESOURCE_ENTITY_ID_OPTION)],
+            $converter,
+        ];
+    }
+    
     /**
      * @param string             $name
      * @param ConverterInterface $converter
@@ -154,11 +293,11 @@ class ResourceTransformer implements TransformerInterface
      */
     public function isResource($class)
     {
-        return $this->getConfigByClass($class) !== null;
+        return null !== $this->getResourceRouteByClassName($class);
     }
 
     /**
-     * @param mixed $data
+     * @param mixed $path
      * @return boolean
      */
     public function isResourcePath($path)
@@ -167,11 +306,12 @@ class ResourceTransformer implements TransformerInterface
             return false;
         }
 
-        $matches = preg_match('(^\/.*\/\d*)', $path);
-        if ($matches === 0) {
+        try {
+            $this->extractResourcePathFromUrl($path);
+        } catch(InvalidArgumentException $e) {
             return false;
         }
-
+        
         return true;
     }
 }

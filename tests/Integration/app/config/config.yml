@@ -118,3 +118,7 @@ ibrows_rest:
             enabled: true
         resource_deserialization:
             enabled: true
+parameters:
+    current_version: 1
+    locale: en_US
+    

@@ -1,0 +1,24 @@
+categories:
+    path:     /categories/{id}
+    defaults: { _controller: AcmeDemoBundle:Main:contact }
+    requirements:
+        id: \d+
+    options:
+        resourceEntity: Ibrows\RestBundle\Tests\Integration\Transformer\IntCategoryEntity
+        resourceIdAttribute: id
+        resourceConverter: testConverter
+
+articles:
+    path:     /articles/{id}
+    defaults: { _controller: AcmeDemoBundle:Main:contact }
+    requirements:
+        id: \d+
+    options:
+        resourceEntity: Ibrows\RestBundle\Tests\Integration\Entity\Article
+        resourceIdAttribute: id
+
+test:
+    resource: "../../Controller/CommentController.php"
+    type: annotation
+    defaults:
+        _format: json
