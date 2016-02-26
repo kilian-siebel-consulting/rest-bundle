@@ -41,11 +41,11 @@ class CollectionDecorationListener
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
+
+
         if ($this->validateCollection($event->getControllerResult())) {
             $this->wrapCollection($event);
-
             $this->decorateView($event);
-
             $this->addListGroup($event);
         }
     }
@@ -59,8 +59,7 @@ class CollectionDecorationListener
         if ((
                 !$data instanceof Collection &&
                 !is_array($data)
-            ) ||
-            count($data) === 0
+            )
         ) {
             return false;
         }
@@ -86,12 +85,17 @@ class CollectionDecorationListener
         }
 
         $element = reset($data);
-        $resourceConfig = $this->resourceTransformer->getResourceConfig($element);
+        $name  = null;
+
+        if ($element) {
+            $resourceConfig = $this->resourceTransformer->getResourceConfig($element);
+            $name = $resourceConfig['plural_name'];
+        }
 
         $event->setControllerResult(
             new CollectionRepresentation(
                 $event->getControllerResult(),
-                $resourceConfig ? $resourceConfig['plural_name'] : null
+                $name
             )
         );
     }
@@ -102,7 +106,6 @@ class CollectionDecorationListener
     protected function decorateView(GetResponseForControllerResultEvent $event)
     {
         $params = $event->getRequest()->attributes;
-
         array_walk(
             $this->decorators,
             function (DecoratorInterface $decorator) use ($event, $params) {

@@ -72,8 +72,9 @@ class ResourceTransformer implements TransformerInterface
     {
         $className = get_class($object);
 
-        if ($this->getConfigByClass($className)) {
-            return $this->getConfigByClass($className);
+
+        if ($config = $this->getConfigByClass($className)) {
+            return $config;
         }
         return null;
     }

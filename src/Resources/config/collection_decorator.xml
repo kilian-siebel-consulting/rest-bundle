@@ -10,14 +10,17 @@
     <services>
         <service id="ibrows_rest.collection_decorator.last_id" class="%ibrows_rest.collection_decorator.last_id.class%">
             <argument>%ibrows_rest.config.decorator.last_id%</argument>
+            <argument type="service" id="fos_rest.request.param_fetcher"/>
             <tag name="ibrows_rest.collection_decorator"/>
         </service>
         <service id="ibrows_rest.collection_decorator.offset" class="%ibrows_rest.collection_decorator.offset.class%">
             <argument>%ibrows_rest.config.decorator.offset%</argument>
+            <argument type="service" id="fos_rest.request.param_fetcher"/>
             <tag name="ibrows_rest.collection_decorator"/>
         </service>
         <service id="ibrows_rest.collection_decorator.paginated" class="%ibrows_rest.collection_decorator.paginated.class%">
             <argument>%ibrows_rest.config.decorator.paginated%</argument>
+            <argument type="service" id="fos_rest.request.param_fetcher"/>
             <tag name="ibrows_rest.collection_decorator"/>
         </service>
     </services>

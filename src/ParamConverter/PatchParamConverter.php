@@ -127,12 +127,12 @@ class PatchParamConverter extends ManipulationParamConverter
     {
         try {
             return $this->patchExecutioner->execute($operations, $subject, $options);
-        } catch(InvalidPathException $exception) {
+        } catch (InvalidPathException $exception) {
             throw new BadRequestHttpException(
                 $exception->getMessage(),
                 $exception
             );
-        } catch(OperationInvalidException $exception) {
+        } catch (OperationInvalidException $exception) {
             throw new BadRequestHttpException(
                 $exception->getMessage(),
                 $exception

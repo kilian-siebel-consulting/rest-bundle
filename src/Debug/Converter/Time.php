@@ -28,6 +28,6 @@ class Time implements ConverterInterface
      */
     public function getName()
     {
-        return 'time_elapsed';
+        return 'timeElapsed';
     }
 }

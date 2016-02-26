@@ -28,13 +28,15 @@ class LastIdDecoratorTest extends PHPUnit_Framework_TestCase
      */
     protected function getDecorator()
     {
+
         return new LastIdDecorator(
             [
                 'sort_by_parameter_name'        => 'sortBy',
                 'sort_direction_parameter_name' => 'sortDir',
                 'offset_id_parameter_name'      => 'offsetId',
                 'limit_parameter_name'          => 'limit',
-            ]
+            ],
+            $this->paramFetcher
         );
     }
 
@@ -96,6 +98,29 @@ class LastIdDecoratorTest extends PHPUnit_Framework_TestCase
     }
 
     public function testCollectionResponse()
+    {
+        $data = new CollectionRepresentation(
+            [
+                new LastIdTestClass(),
+            ]
+        );
+
+        $result = $this->getDecorator()->decorate(
+            new ParameterBag(
+                [
+                    'paramFetcher' => $this->paramFetcher,
+                    '_route'       => true,
+                ]
+            ),
+            $data
+        );
+
+        $this->assertInstanceOf(LastIdRepresentation::class, $result);
+        $this->assertEquals($data, $result->getInline());
+    }
+
+
+    public function testCollectionResponseWithoutLastid()
     {
         $data = new CollectionRepresentation(
             [

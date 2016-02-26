@@ -34,12 +34,12 @@ class DbTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                'mapping_errors' => [
+                'mappingErrors' => [
                     'error'
                 ],
-                'invalid_entities' => 7,
-                'query_count' => 42,
-                'query_time' => '0 ms',
+                'invalidEntities' => 7,
+                'queryCount' => 42,
+                'queryTime' => '0 ms',
             ],
             (new Db())->convert($collector)
         );

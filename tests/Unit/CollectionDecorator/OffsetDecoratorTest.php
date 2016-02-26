@@ -32,7 +32,8 @@ class OffsetDecoratorTest extends PHPUnit_Framework_TestCase
             [
                 'offset_parameter_name' => 'offset',
                 'limit_parameter_name'  => 'limit',
-            ]
+            ],
+            $this->paramFetcher
         );
     }
 
