@@ -3,6 +3,7 @@ namespace Ibrows\RestBundle\CollectionDecorator;
 
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use InvalidArgumentException;
@@ -62,8 +63,8 @@ class LastIdDecorator implements DecoratorInterface
         $lastElement = end($resources);
         $offsetId = null;
 
-        if ($lastElement) {
-            $offsetId = $lastElement->getid();
+        if ($lastElement instanceof ApiListableInterface) {
+            $offsetId = $lastElement->getId();
         }
 
         $fetcher = $this->paramFetcher;
