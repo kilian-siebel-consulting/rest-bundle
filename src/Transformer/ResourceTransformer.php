@@ -188,6 +188,7 @@ class ResourceTransformer implements TransformerInterface
     private function getResourceRouteByClassName($className)
     {
         foreach($this->router->getRouteCollection() as $route) {
+            /** @var $route Route */
             if ($route->hasOption(self::RESOURCE_ENTITY_CLASS_OPTION) &&
                 $this->isRouteResponsibleForEntity($className, $route)) {
                 return $route;
@@ -237,7 +238,6 @@ class ResourceTransformer implements TransformerInterface
     const RESOURCE_CONVERTER_OPTION = 'resourceConverter';
     const RESOURCE_SINGULAR_NAME = 'resourceSingularName';
     const RESOURCE_PLURAL_NAME = 'resourcePluralName';
-    const RESOURCE_DEFAULT_CONVERTER = 'ibrows_rest.resource_transformer.converter.doctrine';
 
     /**
      * @return string

@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue(['ibrows_rest.resource_transformer.converter.doctrine'])
                             ->prototype('scalar')->end()
                         ->end()
+                         ->scalar('default_converter')->defaultValue(['ibrows_rest.resource_transformer.converter.doctrine'])->end()
                     ->end()
                 ->end()
                 ->arrayNode('caches')

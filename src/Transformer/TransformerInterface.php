@@ -24,7 +24,7 @@ interface TransformerInterface
      * @param ApiListableInterface $object
      * @return array<string, mixed>|null
      */
-    public function getResourceConfig(ApiListableInterface $object);
+    public function getResourcePluralName(ApiListableInterface $object);
 
     /**
      * @param ApiListableInterface $object

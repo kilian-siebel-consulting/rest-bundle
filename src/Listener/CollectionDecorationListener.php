@@ -88,8 +88,7 @@ class CollectionDecorationListener
         $name  = null;
 
         if ($element) {
-            $resourceConfig = $this->resourceTransformer->getResourceConfig($element);
-            $name = $resourceConfig['plural_name'];
+            $name = $this->resourceTransformer->getResourcePluralName($element);
         }
 
         $event->setControllerResult(
