@@ -81,14 +81,9 @@ fos_rest:
 
 ibrows_rest:
     resources:
-        -   singular_name: article
-            plural_name: articles
-            converter: ibrows_rest.resource_transformer.converter.doctrine
-            class: Ibrows\RestBundle\Tests\Integration\Entity\Article
-        -   singular_name: comment
-            plural_name: comments
-            converter: ibrows_rest.resource_transformer.converter.doctrine
-            class: Ibrows\RestBundle\Tests\Integration\Entity\Comment
+        path_prefixes:
+            - /api/app_dev.php
+            - /api
     param_converter:
         common:
             validation_errors_argument: "%fos_rest.converter.request_body.validation_errors_argument%"

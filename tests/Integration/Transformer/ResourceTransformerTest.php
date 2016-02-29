@@ -34,7 +34,10 @@ class ResourceTransformerTest extends WebTestCase
         /** @var RouterInterface $router */
         $router = static::$kernel->getContainer()->get('router');
         $inflector = static::$kernel->getContainer()->get('fos_rest.inflector.doctrine');
-        return new ResourceTransformer($router, $inflector);
+        return new ResourceTransformer($router, $inflector, [
+            '/api/app_dev.php',
+            '/api',
+        ]);
     }
     
     

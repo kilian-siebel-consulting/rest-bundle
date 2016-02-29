@@ -29,17 +29,24 @@ class ResourceTransformer implements TransformerInterface
     private $inflector;
 
     /**
+     * @var array
+     */
+    private $urlPrefixes;
+
+    /**
      * ResourceTransformer constructor.
      *
      * @param RouterInterface $router
      */
     public function __construct(
         RouterInterface $router,
-        InflectorInterface $inflector
+        InflectorInterface $inflector,
+        array $urlPrefixes = []
     ) {
         $this->router = $router;
         $this->inflector = $inflector;
         $this->converters = [];
+        $this->urlPrefixes = $urlPrefixes;
     }
 
     /**
@@ -208,22 +215,17 @@ class ResourceTransformer implements TransformerInterface
 
         $rawPath = $components['path'];
 
-        $pathInfoPrefixes = [
-            '/api/app_dev.php',
-            '/api',
-        ];
-        
         $isValidUrl = false;
-        foreach($pathInfoPrefixes as $pathInfoPrefix) {
+        foreach($this->urlPrefixes as $pathInfoPrefix) {
             if (strpos($rawPath, $pathInfoPrefix) === 0) {
                 $rawPath = substr($rawPath, strlen($pathInfoPrefix));
                 $isValidUrl = true;
             }
         }
         
-        if (count($pathInfoPrefixes) > 0 && !$isValidUrl) {
+        if (count($this->urlPrefixes) > 0 && !$isValidUrl) {
             throw new InvalidArgumentException('The given path "' . $url . '" does not have a required prefix (one of "'
-                . implode('", "', $pathInfoPrefixes) . '")');
+                . implode('", "', $this->urlPrefixes) . '")');
         }
         
         return $rawPath;
