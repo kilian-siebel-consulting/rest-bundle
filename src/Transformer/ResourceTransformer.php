@@ -5,6 +5,8 @@ use FOS\RestBundle\Util\Inflector\InflectorInterface;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use InvalidArgumentException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
@@ -234,6 +236,30 @@ class ResourceTransformer implements TransformerInterface
     const RESOURCE_SINGULAR_NAME = 'resourceSingularName';
     const RESOURCE_PLURAL_NAME = 'resourcePluralName';
     const RESOURCE_DEFAULT_CONVERTER = 'ibrows_rest.resource_transformer.converter.doctrine';
+
+    /**
+     * @return string
+     */
+    private function getRequestMethod()
+    {
+        if ($this->router->getContext()) {
+            $requestMethod = $this->router->getContext()->getMethod();
+        } else {
+            $requestMethod = Request::METHOD_GET;
+        }
+        
+        return $requestMethod;
+    }
+
+    /**
+     * @param string $method
+     */
+    private function setRequestMethod($method)
+    {
+        if ($this->router->getContext()) {
+            $this->router->getContext()->setMethod($method);
+        }
+    }
     
     /**
      * @param $path
@@ -241,11 +267,21 @@ class ResourceTransformer implements TransformerInterface
      */
     private function findResourceInformationFromRouter($path)
     {
+        // store and reset the request method
+        $requestMethod = $this->getRequestMethod();
+        $this->setRequestMethod(Request::METHOD_GET);
+        
         try {
             $parameters = $this->router->match($path);
+            $this->setRequestMethod($requestMethod);
         } catch(ResourceNotFoundException $e) {
+            $this->setRequestMethod($requestMethod);
+            return null;
+        } catch(MethodNotAllowedException $e) {
+            $this->setRequestMethod($requestMethod);
             return null;
         }
+        
 
         if (!isset($parameters['_route'])) {
             return null;
