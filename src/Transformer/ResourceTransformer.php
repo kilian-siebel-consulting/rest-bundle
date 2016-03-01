@@ -34,19 +34,28 @@ class ResourceTransformer implements TransformerInterface
     private $urlPrefixes;
 
     /**
+     * @var string
+     */
+    private $defaultConverter;
+
+    /**
      * ResourceTransformer constructor.
-     *
      * @param RouterInterface $router
+     * @param InflectorInterface $inflector
+     * @param array $urlPrefixes
+     * @param string $defaultConverter
      */
     public function __construct(
         RouterInterface $router,
         InflectorInterface $inflector,
-        array $urlPrefixes = []
+        array $urlPrefixes = [],
+        $defaultConverter
     ) {
         $this->router = $router;
         $this->inflector = $inflector;
         $this->converters = [];
         $this->urlPrefixes = $urlPrefixes;
+        $this->defaultConverter = $defaultConverter;
     }
 
     /**
@@ -106,7 +115,7 @@ class ResourceTransformer implements TransformerInterface
     {
         $className = $route->getOption(self::RESOURCE_ENTITY_CLASS_OPTION);
         
-        $converter = self::RESOURCE_DEFAULT_CONVERTER;
+        $converter = $this->defaultConverter;
         if ($route->hasOption(self::RESOURCE_CONVERTER_OPTION)) {
             $converter = $route->getOption(self::RESOURCE_CONVERTER_OPTION);
         }
@@ -304,7 +313,7 @@ class ResourceTransformer implements TransformerInterface
             return null;
         }
 
-        $converter = self::RESOURCE_DEFAULT_CONVERTER;
+        $converter = $this->defaultConverter;
         if ($route->hasOption(self::RESOURCE_CONVERTER_OPTION)) {
             $converter = $route->getOption(self::RESOURCE_CONVERTER_OPTION);
         }

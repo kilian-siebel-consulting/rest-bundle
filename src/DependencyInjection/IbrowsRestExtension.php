@@ -27,6 +27,7 @@ class IbrowsRestExtension extends Extension
 
         $container->setParameter('ibrows_rest.config.resource_path_prefixes', $configuration['resources']['path_prefixes']);
         $container->setParameter('ibrows_rest.config.resources_converters', $configuration['resources']['converters']);
+        $container->setParameter('ibrows_rest.config.resource_default_converter', $configuration['resources']['default_converter']);
         $container->setParameter('ibrows_rest.config.caches', $configuration['caches']);
 
         $fileLocator = new FileLocator(__DIR__ . '/../Resources/config');

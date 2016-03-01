@@ -112,7 +112,8 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
         return new ResourceTransformer($routerFaker, new DoctrineInflector(), [
             '/api/app_dev.php',
             '/api'
-        ]);
+        ],
+            'test');
     }
     
     public function testGetResourceProxy()

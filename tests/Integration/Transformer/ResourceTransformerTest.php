@@ -37,7 +37,7 @@ class ResourceTransformerTest extends WebTestCase
         return new ResourceTransformer($router, $inflector, [
             '/api/app_dev.php',
             '/api',
-        ]);
+        ], 'test');
     }
     
     

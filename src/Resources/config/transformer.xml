@@ -12,6 +12,7 @@
             <argument type="service" id="router" />
             <argument type="service" id="fos_rest.inflector.doctrine" />
             <argument>%ibrows_rest.config.resource_path_prefixes%</argument>
+            <argument>%ibrows_rest.config.resource_default_converter%</argument>
         </service>
 
         <service id="ibrows_rest.resource_transformer.converter.doctrine" class="%ibrows_rest.resource_transformer.converter.doctrine.class%">
