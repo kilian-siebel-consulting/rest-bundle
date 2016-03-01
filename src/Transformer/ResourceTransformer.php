@@ -361,4 +361,17 @@ class ResourceTransformer implements TransformerInterface
         
         return true;
     }
+
+    public function getResourcePluralName(ApiListableInterface $object)
+    {
+        $config = $this->getResourceConfig($object);
+        
+        if (null === $config || !isset($config['plural_name'])) {
+            return null;
+        }
+        
+        return $config['plural_name'];
+    }
+
+
 }
