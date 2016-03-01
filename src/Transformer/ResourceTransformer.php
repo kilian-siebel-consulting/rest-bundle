@@ -83,6 +83,10 @@ class ResourceTransformer implements TransformerInterface
         if (null !== $resourceInfo) {
             list($entityClass, $id, $converter) = $resourceInfo;
 
+            if (!is_string($converter) || !isset($this->converters[$converter])) {
+                throw new InvalidArgumentException('Invalid converter "' . $converter . '"');
+            }
+            
             return $this->converters[$converter]->getResourceProxy(
                 $entityClass,
                 $id
@@ -101,6 +105,10 @@ class ResourceTransformer implements TransformerInterface
 
         if (null !== $resourceInfo) {
             list($entityClass, $id, $converter) = $resourceInfo;
+
+            if (!is_string($converter) || !isset($this->converters[$converter])) {
+                throw new InvalidArgumentException('Invalid converter "' . $converter . '"');
+            }
 
             return $this->converters[$converter]->getResource(
                 $entityClass,
