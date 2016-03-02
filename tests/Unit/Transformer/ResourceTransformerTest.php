@@ -140,7 +140,12 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 
     public function testResourcePath()
     {
-        $transformer = $this->createResourceTransformer();
+        $transformer = $this->createResourceTransformer([
+            '@^/v\d/[^/]+/categories/(?P<id>\d+)$@' => [
+                'class' => CategoryEntity::class,
+                'converter' => 'test',
+            ]
+        ]);
 
         $this->assertTrue($transformer->isResourcePath('/api/v1/en_US/categories/1'));
         $this->assertTrue($transformer->isResourcePath('/api/app_dev.php/v1/en_US/categories/1'));
@@ -192,14 +197,11 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('foo', $transformer->getResource('/api/categories/1'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testInvalidPath()
     {
         $transformer = $this->createResourceTransformer();
 
-        $transformer->getResourceProxy('/some/invalid/path');
+        $this->assertNull($transformer->getResourceProxy('/some/invalid/path'));
     }
 
     public function testInvalidGetResourceConfig()

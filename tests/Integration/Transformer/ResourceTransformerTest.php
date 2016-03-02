@@ -62,10 +62,8 @@ class ResourceTransformerTest extends WebTestCase
     public function failingUrlProvider()
     {
         return [
-            ['https://somehost/app_dev.php/v1/en_US/categories/1'], 
             ['https://somehost/v1/en_US/categories/1'], 
             ['/v1/en_US/categories/1'], 
-            ['/categories/1'], 
         ];
     }
 

@@ -147,12 +147,11 @@ class ResourceTransformer implements TransformerInterface
         }
 
         try {
-            $this->extractResourcePathFromUrl($path);
+            $test = $this->findResourceInformation($path);
+            return $test !== null;
         } catch (InvalidArgumentException $e) {
             return false;
         }
-
-        return true;
     }
 
     /**
