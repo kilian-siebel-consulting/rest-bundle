@@ -36,7 +36,7 @@ class PatchParamConverterTest extends WebTestCase
     {
         return [
             [
-                '/comments/1',
+                '/v1/en_US/comments/1',
                 [
                     'CONTENT_TYPE' => 'application/json',
                 ],
@@ -55,7 +55,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1',
+                '/v1/en_US/comments/1',
                 [
                     'CONTENT_TYPE' => 'application/json',
                 ],
@@ -74,7 +74,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1',
+                '/v1/en_US/comments/1',
                 [],
                 json_encode(
                     [
@@ -91,7 +91,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1',
+                '/v1/en_US/comments/1',
                 [
                     [
                         'CONTENT_TYPE' => 'application/something',
@@ -112,7 +112,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1',
+                '/v1/en_US/comments/1',
                 [
                     'CONTENT_TYPE' => 'application/json',
                 ],
@@ -123,7 +123,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1',
+                '/v1/en_US/comments/1',
                 [
                     'CONTENT_TYPE' => 'application/json',
                 ],
@@ -140,7 +140,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1',
+                '/v1/en_US/comments/1',
                 [
                     'CONTENT_TYPE' => 'application/json',
                 ],
@@ -159,7 +159,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1/groups',
+                '/v1/en_US/comments/1/groups',
                 [
                     'CONTENT_TYPE' => 'application/json',
                 ],
@@ -178,7 +178,7 @@ class PatchParamConverterTest extends WebTestCase
                 ],
             ],
             [
-                '/comments/1/version',
+                '/v1/en_US/comments/1/version',
                 [
                     'CONTENT_TYPE' => 'application/json',
                 ],

@@ -21,12 +21,12 @@ class ResourceTransformerCompilerPass implements CompilerPassInterface
 
         $definition = $container->findDefinition('ibrows_rest.resource_transformer');
 
-        foreach ($container->getParameter('ibrows_rest.config.resources') as $resource) {
+        foreach ($container->getParameter('ibrows_rest.config.resources_converters') as $resource) {
             $definition->addMethodCall(
                 'addConverter',
                 [
-                    $resource['converter'],
-                    new Reference($resource['converter'])
+                    $resource,
+                    new Reference($resource)
                 ]
             );
         }

@@ -1,5 +1,9 @@
-test:
-    resource: "../../Controller/CommentController.php"
-    type: annotation
+api:
+    resource: "routing_api.yml"
+    prefix: "/v{_version}/{_locale}"
+    requirements:
+        _version: \d+
+        _locale: "[a-z]{2}_[A-Z]{2}"
     defaults:
-        _format: json
+        _version: "%current_version%"
+        _locale: "%locale%"

@@ -1,33 +1,129 @@
 <?php
 namespace Ibrows\RestBundle\Tests\Unit\Transformer;
 
+use FOS\RestBundle\Util\Inflector\DoctrineInflector;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use Ibrows\RestBundle\Transformer\ResourceTransformer;
 use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\RouterInterface;
 
 class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @param array $config
+     * @return ResourceTransformer
+     */
+    private function createResourceTransformer($routeConfig = []) 
+    {
+        $routerFaker = $this->getMockForAbstractClass(RouterInterface::class);
+
+        if (count($routeConfig) > 0) {
+
+            $routeCollection = new RouteCollection();
+            
+            foreach($routeConfig as $name => $config) {
+                $options = [
+                    ResourceTransformer::RESOURCE_ENTITY_ID_OPTION => 'id',
+                    ResourceTransformer::RESOURCE_ENTITY_CLASS_OPTION => $config['class'],
+                    ResourceTransformer::RESOURCE_CONVERTER_OPTION => isset($config['converter']) ? $config['converter'] : 'test',
+                ];
+
+                if (isset($config['singular_name'])) {
+                    $options[ResourceTransformer::RESOURCE_SINGULAR_NAME] = $config['singular_name'];
+                }
+
+                if (isset($config['plural_name'])) {
+                    $options[ResourceTransformer::RESOURCE_PLURAL_NAME] = $config['plural_name'];
+                }
+                
+                $routeCollection->add($name, new Route($name, ['_route' => $name], [], $options));
+            } 
+                    
+            $routerFaker
+                ->method('match')
+                ->willReturnCallback(function($url) use($routeConfig) {
+                    foreach ($routeConfig as $routePattern => $class) {
+                        if (preg_match($routePattern, $url, $matches)) {
+                            return array_merge([ '_route' => $routePattern ], $matches); 
+                        }
+                    }
+                    
+                    throw new ResourceNotFoundException();
+                });
+            ;
+            
+            $routerFaker
+                ->method('generate')
+                ->willReturnCallback(function($route, $parameters) use($routeConfig, $routeCollection) {
+                    if (!isset($routeConfig[$route])) {
+                        throw new RouteNotFoundException();
+                    }
+                    
+                    if (($routeObject = $routeCollection->get($route)) === null) {
+                        throw new RouteNotFoundException();
+                    }
+                    
+                    $config = $routeConfig[$route];
+                    $route = '/api';
+
+                    $idname = 'id';
+                    if (isset($config['idname'])) {
+                        $idname = $config['idname'];
+                    }
+
+                    if (!isset($config['generator']) && $routeObject->hasOption(ResourceTransformer::RESOURCE_PLURAL_NAME)) {
+                        $generator = sprintf('/%s/%%d', $routeObject->getOption(ResourceTransformer::RESOURCE_PLURAL_NAME));
+                    } else {
+                        $generator = $config['generator']; 
+                    }
+                    
+                    if (is_string($generator)) {
+                        $id = $parameters[$idname];
+                        return $route . sprintf($generator, $id);
+                    } else {
+                        return $route . $generator($parameters); 
+                    }
+                });
+
+            $routerFaker
+                ->method('getRouteCollection')
+                ->willReturn($routeCollection)
+            ;
+        } else {
+            $routerFaker
+                ->expects($this->any())
+                ->method('match')
+                ->willThrowException(new ResourceNotFoundException())
+            ;
+
+            $routerFaker
+                ->method('getRouteCollection')
+                ->willReturn(new RouteCollection())
+            ;
+        }
+        
+        return new ResourceTransformer($routerFaker, new DoctrineInflector(), [
+            '/api/app_dev.php',
+            '/api'
+        ],
+            'test');
+    }
+    
     public function testGetResourceProxy()
     {
-        $config = [
-            [
-                'singular_name' => 'car',
-                'plural_name' => 'cars',
+        $transformer = $this->createResourceTransformer([
+            '@^/categories/(?P<id>\d+)$@' => [
+                'class' => CategoryEntity::class,
                 'converter' => 'test',
-                'class' => CarEntity::class
-            ],
-            [
-                'singular_name' => 'category',
-                'plural_name' => 'categories',
-                'converter' => 'test',
-                'class' => CategoryEntity::class
             ]
-        ];
-
-        $transformer = new ResourceTransformer($config);
+        ]);
 
         /** @var ConverterInterface|PHPUnit_Framework_MockObject_MockObject $converter */
         $converter = $this->getMockForAbstractClass(ConverterInterface::class);
@@ -39,29 +135,21 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 
         $transformer->addConverter('test', $converter);
 
-        $this->assertEquals('foo', $transformer->getResourceProxy('/categories/1'));
+        $this->assertEquals('foo', $transformer->getResourceProxy('/api/categories/1'));
     }
 
     public function testResourcePath()
     {
-        $config = [
-            [
-                'singular_name' => 'car',
-                'plural_name' => 'cars',
+        $transformer = $this->createResourceTransformer([
+            '@^/v\d/[^/]+/categories/(?P<id>\d+)$@' => [
+                'class' => CategoryEntity::class,
                 'converter' => 'test',
-                'class' => CarEntity::class
-            ],
-            [
-                'singular_name' => 'category',
-                'plural_name' => 'categories',
-                'converter' => 'test',
-                'class' => CategoryEntity::class
             ]
-        ];
+        ]);
 
-        $transformer = new ResourceTransformer($config);
-
-        $this->assertTrue($transformer->isResourcePath('/categories/1'));
+        $this->assertTrue($transformer->isResourcePath('/api/v1/en_US/categories/1'));
+        $this->assertTrue($transformer->isResourcePath('/api/app_dev.php/v1/en_US/categories/1'));
+        $this->assertFalse($transformer->isResourcePath('/categories/1'));
         $this->assertFalse($transformer->isResourcePath('categories/1'));
         $this->assertFalse($transformer->isResourcePath('/categories'));
         $this->assertFalse($transformer->isResourcePath(array('foo' => 'bar')));
@@ -69,36 +157,32 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 
     public function testInvalidGetResourceProxy()
     {
-        $transformer = new ResourceTransformer([]);
+        $transformer = $this->createResourceTransformer();
 
-        $this->assertNull($transformer->getResourceProxy('/categories/1'));
+        $this->assertNull($transformer->getResourceProxy('/api/categories/1'));
     }
 
     public function testInvalidGetResource()
     {
-        $transformer = new ResourceTransformer([]);
+        $transformer = $this->createResourceTransformer();
 
-        $this->assertNull($transformer->getResource('/categories/1'));
+        $this->assertNull($transformer->getResource('/api/categories/1'));
     }
 
     public function testGetResource()
     {
-        $config = [
-            [
-                'singular_name' => 'car',
-                'plural_name' => 'cars',
+        $transformer = $this->createResourceTransformer([
+            '@^/categories/(?P<id>\d+)$@' => [
+                'class' => CategoryEntity::class,
                 'converter' => 'test',
-                'class' => CarEntity::class
-            ],
-            [
                 'singular_name' => 'category',
-                'plural_name' => 'categories',
+            ],
+            '@^/car/(?P<id>\d+)$@' => [
+                'class' => CarEntity::class,
                 'converter' => 'test',
-                'class' => CategoryEntity::class
-            ]
-        ];
-
-        $transformer = new ResourceTransformer($config);
+                'singular_name' => 'car',
+            ],
+        ]);
 
         /** @var ConverterInterface|PHPUnit_Framework_MockObject_MockObject $converter */
         $converter = $this->getMockForAbstractClass(ConverterInterface::class);
@@ -110,48 +194,47 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 
         $transformer->addConverter('test', $converter);
 
-        $this->assertEquals('foo', $transformer->getResource('/categories/1'));
+        $this->assertEquals('foo', $transformer->getResource('/api/categories/1'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testInvalidPath()
     {
-        $transformer = new ResourceTransformer([]);
+        $transformer = $this->createResourceTransformer();
 
-        $transformer->getResourceProxy('/some/invalid/path');
+        $this->assertNull($transformer->getResourceProxy('/some/invalid/path'));
     }
 
     public function testInvalidGetResourceConfig()
     {
-        $transformer = new ResourceTransformer([]);
+        $transformer = $this->createResourceTransformer();
 
         $this->assertNull($transformer->getResourceConfig(new CategoryEntity()));
     }
 
     public function testGetResourceConfig()
     {
-        $config = [
-            [
-                'singular_name' => 'car',
-                'plural_name' => 'cars',
-                'class' => CarEntity::class
-            ],
-            [
+        $transformer = $this->createResourceTransformer([
+            '@^/categories/(?P<id>\d+)$@' => [
+                'class' => CategoryEntity::class,
+                'converter' => 'test',
                 'singular_name' => 'category',
-                'plural_name' => 'categories',
-                'class' => CategoryEntity::class
-            ]
-        ];
-
-        $transformer = new ResourceTransformer($config);
+                'generator' => '/categories/%d',
+            ],
+            '@^/cars/(?P<id>\d+)$@' => [
+                'class' => CarEntity::class,
+                'converter' => 'test',
+                'singular_name' => 'car',
+                'generator' => '/cars/%d',
+            ],
+        ]);
 
         $this->assertEquals(
             [
                 'singular_name' => 'category',
                 'plural_name' => 'categories',
-                'class' => CategoryEntity::class
+                'class' => CategoryEntity::class,
+                'route' => '@^/categories/(?P<id>\d+)$@',
+                'converter' => 'test',
             ],
             $transformer->getResourceConfig(new CategoryEntity())
         );
@@ -159,54 +242,51 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
 
     public function testInvalidGetResourcePath()
     {
-        $transformer = new ResourceTransformer([]);
+        $transformer = $this->createResourceTransformer();
 
         $this->assertNull($transformer->getResourcePath(new CategoryEntity()));
     }
 
     public function testGetResourcePath()
     {
-        $config = [
-            [
-                'singular_name' => 'car',
-                'plural_name' => 'cars',
-                'class' => CarEntity::class
-            ],
-            [
+        $transformer = $this->createResourceTransformer([
+            '@^/categories/(?P<id>\d+)$@' => [
+                'class' => CategoryEntity::class,
+                'converter' => 'test',
                 'singular_name' => 'category',
-                'plural_name' => 'categories',
-                'class' => CategoryEntity::class
-            ]
-        ];
+                'generator' => '/categories/%d',
+            ],
+            '@^/car/(?P<id>\d+)$@' => [
+                'class' => CarEntity::class,
+                'converter' => 'test',
+                'singular_name' => 'car',
+            ],
+        ]);
 
-        $transformer = new ResourceTransformer($config);
-
-        $this->assertEquals('/categories/42', $transformer->getResourcePath(new CategoryEntity()));
+        $this->assertEquals('/api/categories/42', $transformer->getResourcePath(new CategoryEntity()));
     }
 
     public function testInvalidIsResource()
     {
-        $transformer = new ResourceTransformer([]);
+        $transformer = $this->createResourceTransformer();
 
         $this->assertFalse($transformer->isResource(CategoryEntity::class));
     }
 
     public function testIsResource()
     {
-        $config = [
-            [
-                'singular_name' => 'car',
-                'plural_name' => 'cars',
-                'class' => CarEntity::class
-            ],
-            [
+        $transformer = $this->createResourceTransformer([
+            '@^/categories/(?P<id>\d+)$@' => [
+                'class' => CategoryEntity::class,
+                'converter' => 'test',
                 'singular_name' => 'category',
-                'plural_name' => 'categories',
-                'class' => CategoryEntity::class
-            ]
-        ];
-
-        $transformer = new ResourceTransformer($config);
+            ],
+            '@^/car/(?P<id>\d+)$@' => [
+                'class' => CarEntity::class,
+                'converter' => 'test',
+                'singular_name' => 'car',
+            ],
+        ]);
 
         $this->assertTrue($transformer->isResource(CategoryEntity::class));
     }

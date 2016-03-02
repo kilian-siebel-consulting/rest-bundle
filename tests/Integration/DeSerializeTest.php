@@ -10,7 +10,7 @@ class DeSerializeTest extends WebTestCase
 {
     public function testStrictDeserializeComment()
     {
-        $data = json_encode(array('article' => '/articles/1', 'message' => 'blah'));
+        $data = json_encode(array('article' => '/api/v1/en_US/articles/1', 'message' => 'blah'));
         $serializer = self::getContainer()->get('jms_serializer');
         $data = $serializer->deserialize($data, Comment::class, 'json');
         $this->assertInstanceOf(Comment::class, $data);
