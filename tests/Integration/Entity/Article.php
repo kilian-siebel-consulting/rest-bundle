@@ -24,12 +24,17 @@ class Article
      */
     private $title;
 
-
     /**
      * @var $someDate \DateTime
      * @ORM\Column(name="some_date", type="datetime", nullable=true)
      */
     private $someDate;
+
+    /**
+     * @var Comment[]
+     * @ORM\OneToMany(targetEntity="Ibrows\RestBundle\Tests\Integration\Entity\Comment", mappedBy="article")
+     */
+    private $comments;
 
     /**
      * @return int
@@ -71,4 +76,22 @@ class Article
     {
         $this->someDate = $someDate;
     }
+
+    /**
+     * @return Comment[]
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Comment[] $comments
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+    }
+
+
 }
