@@ -266,11 +266,14 @@ class ResourceTransformer implements TransformerInterface
      */
     private function getResourceRouteByClassName($className)
     {
-        foreach ($this->router->getRouteCollection() as $route) {
+        foreach ($this->router->getRouteCollection() as $routeName => $route) {
             /** @var $route Route */
             if ($route->hasOption(self::RESOURCE_ENTITY_CLASS_OPTION) &&
                 $this->isRouteResponsibleForEntity($className, $route)
             ) {
+                if (!$route->hasDefault('_route')) {
+                    $route->setDefault('_route', $routeName);
+                }
                 return $route;
             }
         }
