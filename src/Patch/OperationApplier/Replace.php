@@ -16,6 +16,7 @@ class Replace implements OperationApplierInterface
         $value = null,
         array $parameters = []
     ) {
+
         $pathValue->modify($value);
     }
 }

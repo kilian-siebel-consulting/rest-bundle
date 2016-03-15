@@ -1,6 +1,8 @@
 <?php
 namespace Ibrows\RestBundle\Patch;
 
+use Ibrows\RestBundle\Exception\InvalidValueException;
+use InvalidArgumentException;
 use JMS\Serializer\SerializerInterface;
 
 class JMSValueConverter implements ValueConverterInterface
@@ -30,6 +32,11 @@ class JMSValueConverter implements ValueConverterInterface
         }
         $jsonValue = json_encode($value);
 
-        return $this->serializer->deserialize($jsonValue, $pathValue->type()['name'], 'json');
+        try {
+            return $this->serializer->deserialize($jsonValue, $pathValue->type()['name'], 'json');
+        }catch(InvalidArgumentException $e){
+            throw new InvalidValueException($value);
+        }
+
     }
 }
