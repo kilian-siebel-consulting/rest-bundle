@@ -9,9 +9,9 @@ use Ibrows\RestBundle\Patch\Exception\OperationInvalidException;
 
 class InvalidValueException extends OperationInvalidException
 {
-    public function __construct($message)
+    public function __construct($message, Exception $previous)
     {
-        parent::__construct($message, 400);
+        parent::__construct($message, 400, $previous);
     }
 
 
