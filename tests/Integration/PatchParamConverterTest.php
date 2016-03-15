@@ -32,6 +32,31 @@ class PatchParamConverterTest extends WebTestCase
         static::assertArraySubset($expectedSubset, $response);
     }
 
+    public function testInvalidValue()
+    {
+        $client = static::createClient([], []);
+        $client->request(
+            'PATCH',
+            '/v1/en_US/comments/1',
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+            ],
+            json_encode(
+                [
+                    [
+                        'op'    => 'replace',
+                        'path'  => '/article',
+                        'value' => 'new subject',
+                    ]
+                ]
+            )
+        );
+
+        static::assertEquals(Response::HTTP_BAD_REQUEST, $client->getResponse()->getStatusCode(), $client->getResponse()->getContent());
+    }
+
     public function getTestData()
     {
         return [

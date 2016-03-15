@@ -36,6 +36,7 @@ class Article
      */
     private $comments;
 
+
     /**
      * @return int
      */
@@ -92,6 +93,4 @@ class Article
     {
         $this->comments = $comments;
     }
-
-
 }

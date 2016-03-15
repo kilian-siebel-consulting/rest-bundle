@@ -1,6 +1,7 @@
 <?php
 namespace Ibrows\RestBundle\Patch\Address;
 
+use Ibrows\RestBundle\Exception\InvalidValueException;
 use Ibrows\RestBundle\Patch\AddressInterface;
 use Ibrows\RestBundle\Patch\Exception\InvalidPathException;
 use Ibrows\RestBundle\Patch\Exception\OverridePathException;
@@ -10,6 +11,7 @@ use Ibrows\RestBundle\Patch\JMSObjectAddressInterface;
 use Ibrows\RestBundle\Patch\PointerInterface;
 use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
+use JMS\Serializer\Exception\InvalidArgumentException;
 use JMS\Serializer\Exclusion\ExclusionStrategyInterface;
 use JMS\Serializer\Metadata\PropertyMetadata as JMSPropertyMetadata;
 use Metadata\ClassMetadata;
@@ -75,7 +77,11 @@ class ObjectAddress extends AbstractAddress implements JMSObjectAddressInterface
             throw new OverridePathException($this, $pointer);
         }
 
-        $property->setValue($this->value(), $value);
+        try {
+            $property->setValue($this->value(), $value);
+        }catch(InvalidArgumentException $e){
+            throw new InvalidValueException($value);
+        }
     }
 
     /**
@@ -91,7 +97,11 @@ class ObjectAddress extends AbstractAddress implements JMSObjectAddressInterface
             throw new PropertyNullPathException($this, $pointer);
         }
 
-        $property->setValue($this->value(), $value);
+        try {
+            $property->setValue($this->value(), $value);
+        }catch(InvalidArgumentException $e){
+            throw new InvalidValueException($value);
+        }
     }
 
     /**
