@@ -34,7 +34,9 @@ class EtagResponseListenerTest extends PHPUnit_Framework_TestCase
 
         $content = 'foobar';
 
-        $response = new Response($content, 200);
+        $response = new Response($content, 200, [
+            'Cache-Control' => 'max-age=3600'
+        ]);
 
         $event = $this->getEvent($request, $response);
 

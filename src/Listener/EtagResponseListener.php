@@ -27,7 +27,8 @@ class EtagResponseListener
     public function onKernelResponse(FilterResponseEvent $event)
     {
         if (in_array($event->getRequest()->getMethod(), [Request::METHOD_GET, Request::METHOD_HEAD]) &&
-            $event->getResponse()->isSuccessful()
+            $event->getResponse()->isSuccessful() &&
+            !$event->getResponse()->headers->hasCacheControlDirective('no-cache')            
         ) {
             $this->setEtag($event);
         }
