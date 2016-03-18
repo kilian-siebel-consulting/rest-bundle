@@ -492,6 +492,23 @@ class PatchConvertTest extends WebTestCase
     }
 
     /**
+     * @expectedException \Ibrows\RestBundle\Patch\Exception\OperationInvalidException
+     */
+    public function testInvalidPatchBody()
+    {
+        $operations = $this->getPatchConverter()->convert(
+            [
+                'message' => "blabla"
+            ]
+        );
+
+        $this->getExecutioner()->execute(
+            $operations,
+            new Comment()
+        );
+    }
+
+    /**
      * @expectedException \Ibrows\RestBundle\Patch\Exception\OverridePathException
      * @expectedExceptionMessage Could not add on path "subject" because it already exists.
      */

@@ -76,6 +76,11 @@ class PatchConverter implements PatchConverterInterface
      */
     private function validateOperation($rawOperation)
     {
+
+        if(!is_array($rawOperation)){
+            throw new OperationInvalidException(OperationInvalidException::INVALID_OPERATION);
+        }
+
         if (!array_key_exists('op', $rawOperation)) {
             throw new OperationInvalidException(
                 sprintf(
