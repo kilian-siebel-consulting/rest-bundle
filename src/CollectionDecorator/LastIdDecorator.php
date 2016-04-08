@@ -70,6 +70,16 @@ class LastIdDecorator implements DecoratorInterface
         $fetcher = $this->paramFetcher;
 
         try {
+            $routeParameters = [];
+            
+            if ($params->has('_view')) {
+                foreach ($params->get('_view')->getRouteParams() as $routeParamName) {
+                    if (null !== ($value = $fetcher->get($routeParamName))) {
+                        $routeParameters[$routeParamName] = $value;                        
+                    }
+                }
+            }
+            
             return new LastIdRepresentation(
                 $collection,
                 $params->get('_route'),
@@ -81,7 +91,9 @@ class LastIdDecorator implements DecoratorInterface
                 $fetcher ->get($this->sortByParameterName),
                 $this->sortByParameterName,
                 $fetcher ->get($this->sortDirectionParameterName),
-                $this->sortDirectionParameterName
+                $this->sortDirectionParameterName,
+                false,
+                $routeParameters
             );
         } catch (InvalidArgumentException $exception) {
             return $collection;

@@ -54,9 +54,14 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     protected $sortDirParamName;
 
     /**
-     * @var
+     * @var array
      */
     protected $parameters;
+
+    /**
+     * @var array
+     */
+    protected $queryParameters;
 
     /**
      * {@inheritdoc}
@@ -73,7 +78,8 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         $sortByParameterName = null,
         $sortDir = null,
         $sortDirParameterName = null,
-        $absolute = false
+        $absolute = false,
+        array $queryParameters = []
     ) {
         parent::__construct(
             $inline,
@@ -93,6 +99,7 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         $this->sortByParamName = $sortByParameterName;
         $this->sortDir = $sortDir;
         $this->sortDirParamName = $sortDirParameterName;
+        $this->queryParameters = $queryParameters;
 
         if ($exclusion === null) {
             $exclusion = new Exclusion(
@@ -138,6 +145,10 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
             if ($param instanceof ApiListableInterface) {
                 $params[$name] = $param->getId();
             }
+        }
+        
+        foreach($this->queryParameters as $name => $param){
+            $params[$name] = $param;
         }
 
         return $params;
