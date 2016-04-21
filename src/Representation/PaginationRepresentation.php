@@ -10,11 +10,11 @@ namespace Ibrows\RestBundle\Representation;
 
 use Hateoas\Configuration\Annotation as Hateoas;
 use Hateoas\Configuration\Exclusion;
+use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Representation\PaginatedRepresentation;
 use JMS\Serializer\Annotation as Serializer;
-use Symfony\Component\Validator\Mapping\ClassMetadataInterface;
 
 /**
  * Class PaginationRepresentation

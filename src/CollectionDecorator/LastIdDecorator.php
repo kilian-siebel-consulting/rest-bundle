@@ -79,7 +79,7 @@ class LastIdDecorator implements DecoratorInterface
                     }
                 }
             }
-            
+
             return new LastIdRepresentation(
                 $collection,
                 $params->get('_route'),
