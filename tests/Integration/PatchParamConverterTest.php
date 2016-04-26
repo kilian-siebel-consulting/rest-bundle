@@ -34,6 +34,7 @@ class PatchParamConverterTest extends WebTestCase
 
     public function testInvalidValue()
     {
+        $this->markTestSkipped('This test has to be imlemented into the serializer library itself.');
         $client = static::createClient([], []);
         $client->request(
             'PATCH',
