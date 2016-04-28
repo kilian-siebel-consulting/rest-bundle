@@ -104,6 +104,11 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('validation_errors_argument')->end()
                             ->end()
                         ->end()
+                        ->arrayNode('resource_url')
+                            ->addDefaultsIfNotSet()
+                            ->canBeDisabled()
+                        ->end()
+            
                     ->end()
                 ->end()
                 ->arrayNode('listener')
