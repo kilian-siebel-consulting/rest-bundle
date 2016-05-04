@@ -3,12 +3,13 @@ namespace Ibrows\RestBundle\CollectionDecorator;
 
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class PaginatedDecorator implements DecoratorInterface
+class PaginatedDecorator extends AbstractDecorator
 {
     /**
      * @var string
@@ -53,10 +54,13 @@ class PaginatedDecorator implements DecoratorInterface
                 return $collection;
             }
 
+            $parameters = $params->all();
+            $this->simplifyData($parameters);
+
             return new PaginationRepresentation(
                 $collection,
                 $params->get('_route'),
-                $params->all(),
+                $parameters,
                 $this->paramFetcher->get($this->pageParameterName),
                 $this->paramFetcher->get($this->limitParameterName),
                 null,
@@ -68,4 +72,6 @@ class PaginatedDecorator implements DecoratorInterface
             return $collection;
         }
     }
+
+   
 }

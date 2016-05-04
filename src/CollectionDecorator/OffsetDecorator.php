@@ -8,7 +8,7 @@ use Ibrows\RestBundle\Representation\OffsetRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class OffsetDecorator implements DecoratorInterface
+class OffsetDecorator extends AbstractDecorator
 {
     /**
      * @var string
@@ -47,10 +47,13 @@ class OffsetDecorator implements DecoratorInterface
 
 
         try {
+            $parameters = $params->all();
+            $this->simplifyData($parameters);
+
             return new OffsetRepresentation(
                 $collection,
                 $params->get('_route'),
-                $params->all(),
+                $parameters,
                 $this->paramFetcher->get($this->offsetParameterName),
                 $this->paramFetcher->get($this->limitParameterName),
                 null,
