@@ -4,6 +4,8 @@
 namespace Ibrows\RestBundle\CollectionDecorator;
 
 
+use Ibrows\RestBundle\Model\ApiListableInterface;
+
 abstract class AbstractDecorator implements DecoratorInterface
 {
     protected function simplifyData(&$data){

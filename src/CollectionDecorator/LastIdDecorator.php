@@ -58,7 +58,6 @@ class LastIdDecorator extends AbstractDecorator
             return $collection;
         }
 
-
         $resources = $collection->getResources();
         $lastElement = end($resources);
         $offsetId = null;
@@ -71,11 +70,15 @@ class LastIdDecorator extends AbstractDecorator
 
         try {
             $routeParameters = [];
-            
+
             if ($params->has('_view')) {
                 foreach ($params->get('_view')->getRouteParams() as $routeParamName) {
-                    if (null !== ($value = $fetcher->get($routeParamName))) {
-                        $routeParameters[$routeParamName] = $value;                        
+                    if($params->has($routeParamName)){
+                        $routeParameters[$routeParamName] = $params->get($routeParamName);
+                    }else {
+                        if (null !== ($value = $fetcher->get($routeParamName))) {
+                            $routeParameters[$routeParamName] = $value;
+                        }
                     }
                 }
             }
