@@ -14,6 +14,7 @@ use Hateoas\Configuration\Metadata\ClassMetadataInterface;
 use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Representation\PaginatedRepresentation;
+use Ibrows\RestBundle\Model\ApiListableInterface;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -68,6 +69,20 @@ class PaginationRepresentation extends PaginatedRepresentation
 
         $this->exclusion = $exclusion;
     }
+
+    public function getParameters($page = null, $limit = null)
+    {
+        $params = parent::getParameters($page, $limit);
+
+        foreach( $params as $name => $param) {
+            if ($param instanceof ApiListableInterface) {
+                $params[$name] = $param->getId();
+            }
+        }
+
+        return $params;
+    }
+
 
     /**
      * @param OffsetRepresentation   $object

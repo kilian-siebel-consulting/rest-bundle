@@ -9,7 +9,7 @@ use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class PaginatedDecorator extends AbstractDecorator
+class PaginatedDecorator implements DecoratorInterface
 {
     /**
      * @var string
@@ -54,13 +54,11 @@ class PaginatedDecorator extends AbstractDecorator
                 return $collection;
             }
 
-            $parameters = $params->all();
-            $this->simplifyData($parameters);
 
             return new PaginationRepresentation(
                 $collection,
                 $params->get('_route'),
-                $parameters,
+                $params->all(),
                 $this->paramFetcher->get($this->pageParameterName),
                 $this->paramFetcher->get($this->limitParameterName),
                 null,

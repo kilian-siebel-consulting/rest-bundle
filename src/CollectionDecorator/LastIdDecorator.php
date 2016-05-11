@@ -9,7 +9,7 @@ use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class LastIdDecorator extends AbstractDecorator
+class LastIdDecorator implements DecoratorInterface
 {
     /**
      * @var string
@@ -83,13 +83,10 @@ class LastIdDecorator extends AbstractDecorator
                 }
             }
 
-            $parameters = $params->all();
-            $this->simplifyData($parameters);
-
             return new LastIdRepresentation(
                 $collection,
                 $params->get('_route'),
-                $parameters,
+                $params->all(),
                 $fetcher ->get($this->limitParameterName),
                 $this->limitParameterName,
                 $offsetId,
