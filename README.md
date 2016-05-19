@@ -1,4 +1,5 @@
 # IbrowsRestBundle
+[![Build Status](https://travis-ci.org/ibrows/rest-bundle.svg?branch=master)](https://travis-ci.org/ibrows/rest-bundle)
 
 The IbrowsRestBundle is an addition to the FOSRestBundle. It provides many small improvements.
 
