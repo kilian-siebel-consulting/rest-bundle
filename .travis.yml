@@ -1,7 +1,12 @@
+addons:
+  code_climate:
+    repo_token: 9b8cfc82129fc6d3003e0609b9721849a0bf7a81c6ba014893881cfe608b4380
 language: php
 php:
 - '5.6'
 - '7.0'
 - nightly
 install: composer install --no-interaction
-script: vendor/bin/phpunit
+script: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+after_script:
+  - vendor/bin/test-reporter
