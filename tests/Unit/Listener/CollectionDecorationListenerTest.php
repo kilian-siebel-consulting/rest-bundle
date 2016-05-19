@@ -3,11 +3,11 @@ namespace Ibrows\RestBundle\Tests\Unit\Listener;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Annotation\View;
 use Ibrows\RestBundle\CollectionDecorator\DecoratorInterface;
 use Ibrows\RestBundle\Listener\CollectionDecorationListener;
 use Ibrows\RestBundle\Model\ApiListableInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Transformer\TransformerInterface;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;

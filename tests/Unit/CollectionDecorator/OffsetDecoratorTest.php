@@ -2,10 +2,10 @@
 namespace Ibrows\RestBundle\Tests\Unit\CollectionDecorator;
 
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Representation\OffsetRepresentation;
 use Ibrows\RestBundle\CollectionDecorator\OffsetDecorator;
 use Ibrows\RestBundle\Model\ApiListableInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
-use Ibrows\RestBundle\Representation\OffsetRepresentation;
 use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;

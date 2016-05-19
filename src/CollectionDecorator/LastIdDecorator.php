@@ -1,15 +1,14 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
-use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Model\ApiListableInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class LastIdDecorator implements DecoratorInterface
+class LastIdDecorator extends AbstractDecorator
 {
     /**
      * @var string
@@ -66,40 +65,36 @@ class LastIdDecorator implements DecoratorInterface
             $offsetId = $lastElement->getId();
         }
 
-        $fetcher = $this->paramFetcher;
-
         try {
-            $routeParameters = [];
-
-            if ($params->has('_view')) {
-                foreach ($params->get('_view')->getRouteParams() as $routeParamName) {
-                    if($params->has($routeParamName)){
-                        $routeParameters[$routeParamName] = $params->get($routeParamName);
-                    }else {
-                        if (null !== ($value = $fetcher->get($routeParamName))) {
-                            $routeParameters[$routeParamName] = $value;
-                        }
-                    }
-                }
-            }
-
             return new LastIdRepresentation(
                 $collection,
                 $params->get('_route'),
-                $params->all(),
-                $fetcher ->get($this->limitParameterName),
+                $this->getRouteParameters($params, $this->paramFetcher),
+                $this->paramFetcher->get($this->limitParameterName),
                 $this->limitParameterName,
                 $offsetId,
                 $this->offsetIdParameterName,
-                $fetcher ->get($this->sortByParameterName),
+                $this->paramFetcher->get($this->sortByParameterName),
                 $this->sortByParameterName,
-                $fetcher ->get($this->sortDirectionParameterName),
+                $this->paramFetcher->get($this->sortDirectionParameterName),
                 $this->sortDirectionParameterName,
-                false,
-                $routeParameters
+                false
             );
         } catch (InvalidArgumentException $exception) {
             return $collection;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getInternalParameters()
+    {
+        return [
+            $this->limitParameterName,
+            $this->offsetIdParameterName,
+            $this->sortByParameterName,
+            $this->sortDirectionParameterName,
+        ];
     }
 }

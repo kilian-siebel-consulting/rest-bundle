@@ -1,15 +1,13 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
-use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use Ibrows\RestBundle\Model\ApiListableInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
-use Ibrows\RestBundle\Representation\PaginationRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Representation\PaginatedRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class PaginatedDecorator implements DecoratorInterface
+class PaginatedDecorator extends AbstractDecorator
 {
     /**
      * @var string
@@ -54,22 +52,29 @@ class PaginatedDecorator implements DecoratorInterface
                 return $collection;
             }
 
-
-            return new PaginationRepresentation(
+            return new PaginatedRepresentation(
                 $collection,
                 $params->get('_route'),
-                $params->all(),
+                $this->getRouteParameters($params, $this->paramFetcher),
                 $this->paramFetcher->get($this->pageParameterName),
                 $this->paramFetcher->get($this->limitParameterName),
                 null,
                 $this->pageParameterName,
-                $this->limitParameterName,
-                false
+                $this->limitParameterName
             );
         } catch (InvalidArgumentException $exception) {
             return $collection;
         }
     }
 
-   
+    /**
+     * {@inheritDoc}
+     */
+    protected function getInternalParameters()
+    {
+        return [
+            $this->limitParameterName,
+            $this->pageParameterName,
+        ];
+    }
 }

@@ -1,14 +1,13 @@
 <?php
 namespace Ibrows\RestBundle\CollectionDecorator;
 
-use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
-use Ibrows\RestBundle\Representation\OffsetRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Representation\OffsetRepresentation;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class OffsetDecorator implements DecoratorInterface
+class OffsetDecorator extends AbstractDecorator
 {
     /**
      * @var string
@@ -45,13 +44,11 @@ class OffsetDecorator implements DecoratorInterface
             return $collection;
         }
 
-
         try {
-
             return new OffsetRepresentation(
                 $collection,
                 $params->get('_route'),
-                $params->all(),
+                $this->getRouteParameters($params, $this->paramFetcher),
                 $this->paramFetcher->get($this->offsetParameterName),
                 $this->paramFetcher->get($this->limitParameterName),
                 null,
@@ -61,5 +58,16 @@ class OffsetDecorator implements DecoratorInterface
         } catch (InvalidArgumentException $exception) {
             return $collection;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getInternalParameters()
+    {
+        return [
+            $this->limitParameterName,
+            $this->offsetParameterName,
+        ];
     }
 }

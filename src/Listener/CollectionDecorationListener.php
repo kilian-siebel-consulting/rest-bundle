@@ -2,12 +2,10 @@
 namespace Ibrows\RestBundle\Listener;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\PersistentCollection;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\CollectionDecorator\DecoratorInterface;
 use Ibrows\RestBundle\Model\ApiListableInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Transformer\TransformerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
@@ -41,8 +39,6 @@ class CollectionDecorationListener
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-
-
         if ($this->validateCollection($event->getControllerResult())) {
             $this->wrapCollection($event);
             $this->decorateView($event);

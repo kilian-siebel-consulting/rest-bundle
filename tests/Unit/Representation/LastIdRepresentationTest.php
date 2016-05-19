@@ -1,7 +1,7 @@
 <?php
 namespace Ibrows\RestBundle\Tests\Unit\Representation;
 
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
+use Hateoas\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use PHPUnit_Framework_TestCase;
 

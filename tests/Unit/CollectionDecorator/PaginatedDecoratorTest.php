@@ -2,10 +2,10 @@
 namespace Ibrows\RestBundle\Tests\Unit\CollectionDecorator;
 
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\CollectionRepresentation;
+use Hateoas\Representation\PaginatedRepresentation;
 use Ibrows\RestBundle\CollectionDecorator\PaginatedDecorator;
 use Ibrows\RestBundle\Model\ApiListableInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
-use Ibrows\RestBundle\Representation\PaginationRepresentation;
 use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
@@ -141,7 +141,7 @@ class PaginatedDecoratorTest extends PHPUnit_Framework_TestCase
             $data
         );
 
-        $this->assertInstanceOf(PaginationRepresentation::class, $result);
+        $this->assertInstanceOf(PaginatedRepresentation::class, $result);
         $this->assertEquals($data, $result->getInline());
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="ibrows_rest.hateoas_configuration_extension.group">hateoas_link</parameter>
+        <parameter key="ibrows_rest.hateoas_configuration_extension.representation.class">Ibrows\RestBundle\HateoasConfigurationExtension\RepresentationConfigurationExtension</parameter>
+    </parameters>
+    <services>
+        <service id="ibrows_rest.hateoas_configuration_extension.representation" class="%ibrows_rest.hateoas_configuration_extension.representation.class%">
+            <argument>%ibrows_rest.hateoas_configuration_extension.group%</argument>
+            <tag name="hateoas.configuration_extension"/>
+        </service>
+    </services>
+</container>

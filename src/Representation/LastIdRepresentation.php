@@ -9,20 +9,31 @@ use Hateoas\Configuration\Relation;
 use Hateoas\Configuration\Route;
 use Hateoas\Representation\AbstractSegmentedRepresentation;
 use Ibrows\RestBundle\Model\ApiListableInterface;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Class LastIdRepresentation
  * @package Ibrows\RestBundle\Representation
- * @Hateoas\RelationProvider("getRelations")
+ *
+ * @Serializer\ExclusionPolicy("ALL")
+ *
+ * @Hateoas\Relation(
+ *     "next",
+ *     href = @Hateoas\Route(
+ *         "expr(object.getRoute())",
+ *         parameters = "expr(object.getParameters())",
+ *     ),
+ * )
+ * @Hateoas\Relation(
+ *     "first",
+ *     href = @Hateoas\Route(
+ *         "expr(object.getRoute())",
+ *         parameters = "expr(object.getParameters(null, false))",
+ *     ),
+ * )
  */
 class LastIdRepresentation extends AbstractSegmentedRepresentation
 {
-
-    /**
-     * @var Exclusion
-     */
-    private $exclusion;
-
     /**
      * @var $lastId
      */
@@ -54,16 +65,6 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
     protected $sortDirParamName;
 
     /**
-     * @var array
-     */
-    protected $parameters;
-
-    /**
-     * @var array
-     */
-    protected $queryParameters;
-
-    /**
      * {@inheritdoc}
      */
     public function __construct(
@@ -78,8 +79,7 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
         $sortByParameterName = null,
         $sortDir = null,
         $sortDirParameterName = null,
-        $absolute = false,
-        array $queryParameters = []
+        $absolute = false
     ) {
         parent::__construct(
             $inline,
@@ -91,25 +91,12 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
             $absolute
         );
 
-        $this->parameters = $parameters;
-        $exclusion = null;
         $this->lastId = $lastId;
         $this->lastIdParamName = $lastIdParamName;
         $this->sortBy = $sortBy;
         $this->sortByParamName = $sortByParameterName;
         $this->sortDir = $sortDir;
         $this->sortDirParamName = $sortDirParameterName;
-        $this->queryParameters = $queryParameters;
-
-        if ($exclusion === null) {
-            $exclusion = new Exclusion(
-                [
-                    'hateoas_list'
-                ]
-            );
-        }
-
-        $this->exclusion = $exclusion;
     }
 
     /**
@@ -119,6 +106,8 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
      */
     public function getParameters($limit = null, $offsetId = null)
     {
+        $parameters = parent::getParameters($limit);
+
         $params = [];
 
         if ($this->sortByParamName) {
@@ -141,49 +130,10 @@ class LastIdRepresentation extends AbstractSegmentedRepresentation
             $params[$this->lastIdParamName] = $offsetId;
         }
 
-        foreach ($this->parameters as $name => $param) {
-            if ($param instanceof ApiListableInterface) {
-                $params[$name] = $param->getId();
-            }
-        }
-        
-        foreach($this->queryParameters as $name => $param){
+        foreach ($parameters as $name => $param) {
             $params[$name] = $param;
         }
 
         return $params;
-    }
-
-
-    /**
-     * @param LastIdRepresentation   $object
-     * @param ClassMetadataInterface $classMetadata
-     * @return Relation[]
-     * @codeCoverageIgnore
-     */
-    public function getRelations($object, ClassMetadataInterface $classMetadata)
-    {
-        return [
-            new Relation(
-                'next',
-                new Route(
-                    'expr(object.getRoute())',
-                    'expr(object.getParameters())'
-                ),
-                null,
-                [],
-                $this->exclusion
-            ),
-            new Relation(
-                'first',
-                new Route(
-                    'expr(object.getRoute())',
-                    'expr(object.getParameters(null, false))'
-                ),
-                null,
-                [],
-                $this->exclusion
-            ),
-        ];
     }
 }

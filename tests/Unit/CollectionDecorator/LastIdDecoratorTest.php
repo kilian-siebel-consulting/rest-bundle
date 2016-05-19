@@ -2,9 +2,9 @@
 namespace Ibrows\RestBundle\Tests\Unit\CollectionDecorator;
 
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Hateoas\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\CollectionDecorator\LastIdDecorator;
 use Ibrows\RestBundle\Model\ApiListableInterface;
-use Ibrows\RestBundle\Representation\CollectionRepresentation;
 use Ibrows\RestBundle\Representation\LastIdRepresentation;
 use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
