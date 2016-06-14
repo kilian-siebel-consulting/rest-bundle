@@ -6,6 +6,7 @@ use Ibrows\RestBundle\Transformer\TransformerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ResourceUrlParamConverter implements ParamConverterInterface
 {
@@ -30,13 +31,17 @@ class ResourceUrlParamConverter implements ParamConverterInterface
             $request->query->get($name)
         ;
         
-        if (!is_string($resourceUrl)) {
+        if (!is_string($resourceUrl) || $resourceUrl === '') {
             return false;
         }
         
         try 
         {
             $resourceObject = $this->resourceTransformer->getResource($resourceUrl);
+
+            if(!is_a($resourceObject, $configuration->getClass())) {
+                throw new BadRequestHttpException('Link to wrong resource type provided.');
+            }
                 
             if ($resourceObject) {
                 $request->attributes->set($name, $resourceObject);
