@@ -2,10 +2,12 @@
 
 namespace Ibrows\RestBundle\Tests\Integration\Transformer;
 
+use FOS\RestBundle\Inflector\DoctrineInflector;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Tests\app\AppKernel;
 use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use Ibrows\RestBundle\Transformer\ResourceTransformer;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -33,8 +35,7 @@ class ResourceTransformerTest extends WebTestCase
         self::bootKernel();
         /** @var RouterInterface $router */
         $router = static::$kernel->getContainer()->get('router');
-        $inflector = static::$kernel->getContainer()->get('fos_rest.inflector.doctrine');
-        return new ResourceTransformer($router, $inflector, [
+        return new ResourceTransformer($router, new DoctrineInflector(), [
             '/api/app_dev.php',
             '/api',
         ], 'test');
