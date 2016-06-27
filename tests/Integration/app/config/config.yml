@@ -89,9 +89,6 @@ ibrows_rest:
             validation_errors_argument: "validationErrors"
         patch:
             enabled: true
-    exception_controller:
-        enabled: true
-        force_default: true
     listener:
         cache:
             enabled: true

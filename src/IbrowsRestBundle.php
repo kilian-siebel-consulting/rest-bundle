@@ -4,6 +4,7 @@ namespace Ibrows\RestBundle;
 
 use Ibrows\RestBundle\DependencyInjection\Compiler\CollectionDecorationListenerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\DebugResponseListenerCompilerPass;
+use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideExceptionHandlerCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\OverrideRequestConverterCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\ParamConvertersCompilerPass;
 use Ibrows\RestBundle\DependencyInjection\Compiler\PatchAddressResolverCompilerPass;
@@ -26,5 +27,6 @@ class IbrowsRestBundle extends Bundle
         $container->addCompilerPass(new CollectionDecorationListenerCompilerPass());
         $container->addCompilerPass(new PatchAddressResolverCompilerPass());
         $container->addCompilerPass(new PatchOperationAppliersCompilerPass());
+        $container->addCompilerPass(new OverrideExceptionHandlerCompilerPass());
     }
 }

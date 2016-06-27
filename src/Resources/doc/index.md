@@ -59,9 +59,6 @@ file of your project:
 - `RequestBodyParamConverter` - [Read Documentation](param_converter/request_body_param_converter.md)
 - `UnlinkParamConverter` - [Read Documentation](param_converter/unlink_param_converter.md)
  
-## Controllers
-- `ExceptionController`  - [Read Documentation](controller/exception_controller.md)
- 
 ## Transformer
 [Read Documentation](transformer.md)
 
@@ -116,11 +113,7 @@ file of your project:
                 enabled: false  
             vary_header:
                 enabled: false
-                header: []
-        exception_controller:
-            enabled: true
-            force_default: false
-            controller: 'ibrows_rest.controller.exception:showAction'                
+                header: []              
 ```
 
 

@@ -1,9 +1,6 @@
 <?php
-
 namespace Ibrows\RestBundle\DependencyInjection;
 
-use Ibrows\RestBundle\Controller\ExceptionController;
-use Ibrows\RestBundle\Listener\ExceptionListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -66,21 +63,6 @@ class IbrowsRestExtension extends Extension
 
         foreach ($configuration['decorator'] as $name => $decorator) {
             $container->setParameter('ibrows_rest.config.decorator.' . $name, $decorator);
-        }
-
-        if ($configuration['exception_controller']['enabled']) {
-            if ($configuration['exception_controller']['force_default'] ||
-                !$container->hasParameter('twig.exception_listener.controller')
-            ) {
-                $container->setParameter(
-                    'twig.exception_listener.controller',
-                    $container->getParameter('fos_rest.exception_listener.controller')
-                );
-                $container->setParameter('fos_rest.controller.exception.class', ExceptionController::class);
-                $container->setParameter('fos_rest.exception_listener.class', ExceptionListener::class);
-
-                $loader->load('exception_controller.xml');
-            }
         }
     }
 }
