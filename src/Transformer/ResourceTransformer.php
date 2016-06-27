@@ -1,7 +1,7 @@
 <?php
 namespace Ibrows\RestBundle\Transformer;
 
-use FOS\RestBundle\Util\Inflector\InflectorInterface;
+use FOS\RestBundle\Inflector\InflectorInterface;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use InvalidArgumentException;

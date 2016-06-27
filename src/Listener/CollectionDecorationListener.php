@@ -120,7 +120,7 @@ class CollectionDecorationListener
     private function addListGroup(GetResponseForControllerResultEvent $event)
     {
         /** @var View $view */
-        $view = $event->getRequest()->attributes->get('_view');
+        $view = $event->getRequest()->attributes->get('_template');
 
         if ($view &&
             count($view->getSerializerGroups()) > 0

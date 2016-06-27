@@ -63,7 +63,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
             [],
             [],
             [
-            '_view'        => $this->getView(
+            '_template'        => $this->getView(
                 false,
                 []
             ),
@@ -89,7 +89,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
             [],
             [],
             [
-            '_view' => $this->getView(
+            '_template' => $this->getView(
                 false,
                 []
             ),
@@ -165,7 +165,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
             $query,
             [],
             [
-            '_view'        => $view,
+            '_template'        => $view,
             'paramFetcher' => $paramFetcher
             ]
         );

@@ -53,7 +53,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
         $listener = $this->getListener();
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => 0,
+            '_template' => 0,
         ]), null);
         
         $listener->onKernelResponse($event);
@@ -74,7 +74,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
             ->willReturn('');
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view,
+            '_template' => $view,
         ]), null);
 
         $listener->onKernelResponse($event);
@@ -114,7 +114,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
         
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view
+            '_template' => $view
         ]), $response);
 
         $this->evaluator

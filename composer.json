@@ -35,7 +35,7 @@
     },
     "require": {
         "php": ">=5.6",
-        "friendsofsymfony/rest-bundle": "^1.7",
+        "friendsofsymfony/rest-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^3.0",
         "willdurand/hateoas-bundle": "dev-master as 1.1.2",
         "willdurand/hateoas": "^2.10.0",

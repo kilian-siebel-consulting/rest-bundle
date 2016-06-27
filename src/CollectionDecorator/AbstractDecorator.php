@@ -21,8 +21,8 @@ abstract class AbstractDecorator implements DecoratorInterface
     {
         $routeParameters = [];
         $requiredParameters = $this->getInternalParameters();
-        if ($params->has('_view')) {
-            $requiredParameters = array_merge($params->get('_view')->getRouteParams());
+        if ($params->has('_template')) {
+            $requiredParameters = array_merge($params->get('_template')->getRouteParams());
         }
         foreach ($requiredParameters as $routeParamName) {
             if($params->has($routeParamName) &&

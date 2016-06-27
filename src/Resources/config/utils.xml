@@ -13,5 +13,7 @@
         </service>
 
         <service id="ibrows_rest.utils.expression_language" class="%ibrows_rest.utils.expression_language.class%" public="false" />
+
+        <service id="ibrows_rest.inflector.doctrine" class="FOS\RestBundle\Inflector\DoctrineInflector" public="false" />
     </services>
 </container>

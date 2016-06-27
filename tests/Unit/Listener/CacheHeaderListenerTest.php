@@ -51,7 +51,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view
+            '_template' => $view
         ]), $response);
 
         $listener = new CacheHeaderListener(
@@ -74,7 +74,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view
+            '_template' => $view
         ]), $response);
 
         $listener = new CacheHeaderListener(
@@ -97,7 +97,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view
+            '_template' => $view
         ]), $response);
 
         $listener = new CacheHeaderListener(
@@ -119,7 +119,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view
+            '_template' => $view
         ]), $response);
 
         $listener = new CacheHeaderListener(array());
@@ -141,7 +141,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view
+            '_template' => $view
         ]), $response);
 
         $listener = new CacheHeaderListener(
@@ -160,7 +160,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
 
         $event = $this->getEvent(new Request([], [], [
-            '_view' => $view
+            '_template' => $view
         ]), $response);
 
         $listener = new CacheHeaderListener(

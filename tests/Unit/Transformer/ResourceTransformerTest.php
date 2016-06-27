@@ -1,11 +1,10 @@
 <?php
 namespace Ibrows\RestBundle\Tests\Unit\Transformer;
 
-use FOS\RestBundle\Util\Inflector\DoctrineInflector;
+use FOS\RestBundle\Inflector\DoctrineInflector;
 use Ibrows\RestBundle\Model\ApiListableInterface;
 use Ibrows\RestBundle\Transformer\Converter\ConverterInterface;
 use Ibrows\RestBundle\Transformer\ResourceTransformer;
-use InvalidArgumentException;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;

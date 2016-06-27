@@ -34,7 +34,7 @@ class ExclusionPolicyResponseListener
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         if (!$event->getRequest()->attributes->has('paramFetcher') ||
-            !$event->getRequest()->attributes->has('_view')
+            !$event->getRequest()->attributes->has('_template')
         ) {
             return;
         }
@@ -43,7 +43,7 @@ class ExclusionPolicyResponseListener
         $paramFetcher = $event->getRequest()->attributes->get('paramFetcher');
 
         /** @var View $view */
-        $view = $event->getRequest()->attributes->get('_view');
+        $view = $event->getRequest()->attributes->get('_template');
 
         try {
             $e = $paramFetcher->get($this->paramName);

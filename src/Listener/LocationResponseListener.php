@@ -40,7 +40,7 @@ class LocationResponseListener
         $request = $event->getRequest();
 
         /** @var View $configuration */
-        $view = $request->attributes->get('_view');
+        $view = $request->attributes->get('_template');
 
         if (!$view instanceof View || !$view->getLocation()) {
             return;
