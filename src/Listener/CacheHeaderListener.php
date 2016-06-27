@@ -37,7 +37,7 @@ class CacheHeaderListener
         $request = $event->getRequest();
 
         /** @var View $view */
-        $view = $request->attributes->get('_view');
+        $view = $request->attributes->get('_template');
 
         if (!$view instanceof View || $view->getCachePolicyName() === null) {
             return;

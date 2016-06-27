@@ -183,7 +183,7 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
         $view = new View([]);
         $view->setSerializerGroups(['foo']);
 
-        $event->getRequest()->attributes->set('_view', $view);
+        $event->getRequest()->attributes->set('_template', $view);
 
         $this->getListener()->onKernelView($event);
 
