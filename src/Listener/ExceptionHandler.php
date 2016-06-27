@@ -33,6 +33,7 @@ class ExceptionHandler extends BaseExceptionHandler
             $result = array_merge($exception->toArray(), $result);
         }
         if($this->debug) {
+            $result['exception'] = get_class($exception);
             $result['file'] = $exception->getFile();
             $result['line'] = $exception->getLine();
             $result['stacktrace'] = $exception->getTraceAsString();
