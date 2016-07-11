@@ -66,6 +66,9 @@ class LastIdDecorator extends AbstractDecorator
         }
 
         try {
+            // Fail if offsetIdParameterName does not exist
+            $this->paramFetcher->get($this->offsetIdParameterName);
+
             return new LastIdRepresentation(
                 $collection,
                 $params->get('_route'),
