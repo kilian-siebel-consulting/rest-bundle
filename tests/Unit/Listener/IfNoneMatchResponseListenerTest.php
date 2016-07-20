@@ -33,13 +33,9 @@ class IfNoneMatchResponseListenerTest extends PHPUnit_Framework_TestCase
         $request = new Request();
 
         $response
-            ->method('isNotModified')
-            ->with($request)
-            ->willReturn(true);
-
-        $response
             ->expects($this->once())
-            ->method('setNotModified');
+            ->method('isNotModified')
+            ->with($request);
 
         $event = $this->getEvent($request, $response);
 

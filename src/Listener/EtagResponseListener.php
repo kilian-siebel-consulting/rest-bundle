@@ -1,6 +1,7 @@
 <?php
 namespace Ibrows\RestBundle\Listener;
 
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -41,5 +42,6 @@ class EtagResponseListener
     {
         $hash = hash($this->hashingAlgorithm, $event->getResponse()->getContent());
         $event->getResponse()->setEtag($hash);
+        $event->getResponse()->setDate(new DateTime());
     }
 }
