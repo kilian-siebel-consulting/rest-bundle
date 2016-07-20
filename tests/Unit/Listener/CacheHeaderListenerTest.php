@@ -86,7 +86,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelResponse($event);
 
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('max-age=3600, public', $response->headers->get('Cache-Control'));
+        $this->assertEquals('public, s-maxage=3600', $response->headers->get('Cache-Control'));
     }
 
     public function testNoCache()

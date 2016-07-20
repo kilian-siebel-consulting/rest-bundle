@@ -1,11 +1,8 @@
 <?php
-
-
 namespace Ibrows\RestBundle\Listener;
 
 use Ibrows\RestBundle\Annotation\View;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class CacheHeaderListener
@@ -30,6 +27,7 @@ class CacheHeaderListener
 
     /**
      * {@inheritdoc}
+     * @throws InvalidArgumentException
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
@@ -50,24 +48,20 @@ class CacheHeaderListener
             return;
         }
 
-        $config = array();
+        switch ($policy['type']) {
+            case self::TYPE_NO_CACHE:
+                break;
+            case self::TYPE_PUBLIC:
+                $response->setSharedMaxAge($policy['max_age']);
 
-        if (isset($policy['max_age'])) {
-            $config['max_age'] = $policy['max_age'];
+                break;
+            case self::TYPE_PRIVATE:
+                $response->setMaxAge($policy['max_age']);
+
+                break;
+            default:
+                throw new InvalidArgumentException('Type ' . $policy['type'] . ' not allowed');
         }
-
-        if ($policy['type'] == self::TYPE_NO_CACHE) {
-
-        } elseif ($policy['type'] == self::TYPE_PUBLIC) {
-            $config['public'] = true;
-        } elseif ($policy['type'] == self::TYPE_PRIVATE) {
-            $config['private'] = true;
-        } else {
-            throw new \InvalidArgumentException('Type '.$policy['type'].' not allowed');
-        }
-
-        $response->setCache($config);
-        $event->setResponse($response);
     }
 
     /**
@@ -76,7 +70,7 @@ class CacheHeaderListener
      */
     private function getPolicyByName($name)
     {
-        if (isset($this->caches[$name])) {
+        if (array_key_exists($name, $this->caches)) {
             return $this->caches[$name];
         }
         return null;
