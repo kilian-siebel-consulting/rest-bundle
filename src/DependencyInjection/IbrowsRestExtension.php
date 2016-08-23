@@ -63,5 +63,11 @@ class IbrowsRestExtension extends Extension
         foreach ($configuration['decorator'] as $name => $decorator) {
             $container->setParameter('ibrows_rest.config.decorator.' . $name, $decorator);
         }
+
+        $serviceId = $configuration['security_patch']['operation_authorization_checker'];
+        if($serviceId == 'custom'){
+            $serviceId = $configuration['security_patch']['operation_authorization_checker_custom_service_id'];
+        }
+        $container->setAlias('ibrows_rest.patch.operation_authorization_checker',$serviceId);
     }
 }

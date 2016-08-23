@@ -217,6 +217,13 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('security_patch')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->enumNode('operation_authorization_checker')->defaultValue('ibrows_rest.patch.operation_authorization_checker.grant_all')->values(array('ibrows_rest.patch.operation_authorization_checker.grant_all', 'ibrows_rest.patch.operation_authorization_checker.security', 'custom'))->end()
+                        ->scalarNode('operation_authorization_checker_custom_service_id')->end()
+                     ->end()
+                ->end()
             ->end()
         ;
 

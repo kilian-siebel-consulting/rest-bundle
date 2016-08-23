@@ -6,10 +6,12 @@ use Ibrows\JsonPatch\Exception\OperationInvalidException;
 use Ibrows\JsonPatch\ExecutionerInterface;
 use Ibrows\JsonPatch\OperationInterface;
 use Ibrows\JsonPatch\PatchConverterInterface;
+use Ibrows\RestBundle\Patch\OperationAuthorizationCheckerInterface;
 use JMS\Serializer\DeserializationContext;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class PatchParamConverter extends ManipulationParamConverter
 {
@@ -24,24 +26,33 @@ class PatchParamConverter extends ManipulationParamConverter
     private $patchExecutioner;
 
     /**
+     * @var OperationAuthorizationCheckerInterface
+     */
+    private $operationAuthorizationChecker;
+
+    /**
      * PatchParamConverter constructor.
-     * @param array                   $configuration
+     * @param array $configuration
      * @param PatchConverterInterface $patchConverter
-     * @param ExecutionerInterface    $patchExecutioner
+     * @param ExecutionerInterface $patchExecutioner
+     * @param OperationAuthorizationCheckerInterface $operationAuthorizationChecker
      */
     public function __construct(
         array $configuration,
         PatchConverterInterface $patchConverter,
-        ExecutionerInterface $patchExecutioner
+        ExecutionerInterface $patchExecutioner,
+        OperationAuthorizationCheckerInterface $operationAuthorizationChecker
     ) {
         parent::__construct($configuration);
         $this->patchConverter = $patchConverter;
         $this->patchExecutioner = $patchExecutioner;
+        $this->operationAuthorizationChecker = $operationAuthorizationChecker;
     }
 
     /**
      * {@inheritdoc}
      * @throws BadRequestHttpException
+     * @throws AccessDeniedHttpException
      */
     public function apply(Request $request, ParamConverter $configuration)
     {
@@ -50,6 +61,8 @@ class PatchParamConverter extends ManipulationParamConverter
         $operations = $this->loadOperations($request);
         $context = $this->loadDeserializationContext($configuration);
         $subject = $this->getObject($request, $configuration);
+
+        $this->checkPermissions($operations, $subject);
 
         $subject = $this->applyPatch(
             $subject,
@@ -62,6 +75,18 @@ class PatchParamConverter extends ManipulationParamConverter
         $this->validate($subject, $configuration, $request);
 
         return false;
+    }
+
+    /**
+     * @param OperationInterface[] $operations
+     * @param       $subject
+     */
+    private function checkPermissions(array $operations, $subject)
+    {
+
+        if (!$this->operationAuthorizationChecker->isGranted($operations, $subject)) {
+            throw new AccessDeniedHttpException('Access Denied for a single patch Operation');
+        }
     }
 
     /**
@@ -117,9 +142,9 @@ class PatchParamConverter extends ManipulationParamConverter
     }
 
     /**
-     * @param mixed                $subject
+     * @param mixed $subject
      * @param OperationInterface[] $operations
-     * @param mixed[]              $options
+     * @param mixed[] $options
      * @return mixed
      * @throws BadRequestHttpException
      */

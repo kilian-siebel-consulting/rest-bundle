@@ -4,12 +4,25 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
         <parameter key="ibrows_rest.param_converter.patch.class">Ibrows\RestBundle\ParamConverter\PatchParamConverter</parameter>
+
+        <parameter key="ibrows_rest.patch.operation_authorization_checker.security.class">Ibrows\RestBundle\Patch\OperationAuthorizationChecker\OperationSecurityAuthorizationChecker</parameter>
+        <parameter key="ibrows_rest.patch.operation_authorization_checker.grant_all.class">Ibrows\RestBundle\Patch\OperationAuthorizationChecker\OperationGrantAllAuthorizationChecker</parameter>
     </parameters>
     <services>
+
+
+
+        <service id="ibrows_rest.patch.operation_authorization_checker.grant_all" class="%ibrows_rest.patch.operation_authorization_checker.grant_all.class%" />
+
+        <service id="ibrows_rest.patch.operation_authorization_checker.security" class="%ibrows_rest.patch.operation_authorization_checker.security.class%">
+            <argument type="service" id="security.authorization_checker" on-invalid="null" />
+        </service>
+
         <service id="ibrows_rest.param_converter.patch" class="%ibrows_rest.param_converter.patch.class%">
             <argument>%ibrows_rest.config.param_converter.patch%</argument>
             <argument type="service" id="ibrows_json_patch.patch_converter" />
             <argument type="service" id="ibrows_json_patch.executioner.jms" />
+            <argument type="service" id="ibrows_rest.patch.operation_authorization_checker" />
             <call method="setValidator">
                 <argument type="service" id="validator"/>
             </call>
