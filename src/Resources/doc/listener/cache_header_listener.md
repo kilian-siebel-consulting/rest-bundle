@@ -1,6 +1,8 @@
 #Cache Header Listener
 This listener sets the cachemeta in the response header.
 
+**This listener is deprecated. Use http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/cache.html instead.**
+
 ## Configuration
 ```yaml
     # app/config/config*.yml

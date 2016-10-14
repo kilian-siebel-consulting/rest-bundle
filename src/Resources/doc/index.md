@@ -91,7 +91,7 @@ file of your project:
                 validation_errors_argument: null
         listener:
             cache:
-                enabled: false
+                enabled: false #deprecated
             collection_decorator:
                 enabled: false
             debug:

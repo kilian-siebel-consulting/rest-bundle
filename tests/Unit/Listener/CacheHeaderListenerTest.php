@@ -15,6 +15,11 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
 
+/**
+ * Class CacheHeaderListenerTest
+ * @package Ibrows\RestBundle\Tests\Unit\Listener
+ * @group legacy
+ */
 class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
 {
     private $kernel;
