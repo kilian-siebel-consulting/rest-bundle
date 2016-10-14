@@ -9,6 +9,7 @@
         <service id="ibrows_rest.listener.cache" class="%ibrows_rest.listener.view.cache.class%">
             <argument>%ibrows_rest.config.caches%</argument>
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="199"/>
+            <deprecated>The "%service_id%" service is deprecated and will be removed in ibrows/rest-bundle v4.</deprecated>
         </service>
     </services>
 </container>
