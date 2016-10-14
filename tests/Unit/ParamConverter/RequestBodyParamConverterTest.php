@@ -59,7 +59,7 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @return ParamConverter|PHPUnit_Framework_MockObject_MockObject
      */
-    private function getConfiguration()
+    private function getConfiguration($failOnValidationError = true)
     {
         $configuration = $this->getMockBuilder(ParamConverter::class)
             ->disableOriginalConstructor()
@@ -69,7 +69,7 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
             ->method('getOptions')
             ->willReturn(
                 [
-                    'fail_on_validation_error' => true,
+                    'fail_on_validation_error' => $failOnValidationError,
                 ]
             );
 
@@ -117,6 +117,49 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
         $request = $this->getRequest();
 
         $configuration = $this->getConfiguration();
+
+        $converter->apply($request, $configuration);
+    }
+
+    /**
+     * @expectedException \Ibrows\RestBundle\Exception\BadRequestConstraintException
+     */
+    public function testWithGlobalDisableFailOnValidationShouldThrowExceptionWhenEnabledLocally()
+    {
+        $converter = $this->getConverter(
+            [
+                'fail_on_validation_error'   => false,
+                'validation_errors_argument' => 'testValidationErrors',
+            ]
+        );
+
+        $this->constraintViolations
+            ->method('count')
+            ->willReturn(7);
+
+        $request = $this->getRequest();
+
+        $configuration = $this->getConfiguration();
+
+        $converter->apply($request, $configuration);
+    }
+
+    public function testWithGlobalEnabledFAilOnValidationShouldIgnoreErrorsWhenDisabledLocallly()
+    {
+        $converter = $this->getConverter(
+            [
+                'fail_on_validation_error'   => true,
+                'validation_errors_argument' => 'testValidationErrors',
+            ]
+        );
+
+        $this->constraintViolations
+            ->method('count')
+            ->willReturn(7);
+
+        $request = $this->getRequest();
+
+        $configuration = $this->getConfiguration(false);
 
         $converter->apply($request, $configuration);
     }
