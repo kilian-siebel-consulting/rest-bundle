@@ -5,6 +5,11 @@ use Ibrows\RestBundle\Annotation\View;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
+/**
+ * Class CacheHeaderListener
+ * @package Ibrows\RestBundle\Listener
+ * @deprecated
+ */
 class CacheHeaderListener
 {
     const TYPE_PRIVATE = 'private';
@@ -40,6 +45,10 @@ class CacheHeaderListener
         if (!$view instanceof View || $view->getCachePolicyName() === null) {
             return;
         }
+
+        @trigger_error('The Cache Header Listener is deprecated. Please use this instead:' .
+            'http://symfony.com/doc/current/bundles/SensioFrameworkExtraBundle/annotations/cache.html'
+            , E_USER_DEPRECATED);
 
         $name = $view->getCachePolicyName();
         $policy = $this->getPolicyByName($name);

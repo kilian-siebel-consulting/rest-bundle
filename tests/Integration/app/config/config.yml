@@ -90,8 +90,6 @@ ibrows_rest:
         patch:
             enabled: true
     listener:
-        cache:
-            enabled: true
         collection_decorator:
             enabled: true
         constraint_violation:

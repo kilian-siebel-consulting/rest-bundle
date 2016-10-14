@@ -80,6 +80,7 @@ class View extends BaseView
 
     /**
      * @param string $cachePolicyName
+     * @deprecated
      */
     public function setCachePolicyName($cachePolicyName)
     {
