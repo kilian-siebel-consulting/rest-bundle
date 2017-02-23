@@ -137,12 +137,10 @@ class LinkHeaderListenerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->urlMatcher = $this->getMockForAbstractClass(UrlMatcherInterface::class);
-        $this->resourceTransformer = $this->getMockForAbstractClass(TransformerInterface::class);
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
-        $this->context = $this->getMockBuilder(RequestContext::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->urlMatcher = self::createMock(UrlMatcherInterface::class);
+        $this->resourceTransformer = self::createMock(TransformerInterface::class);
+        $this->kernel = self::createMock(HttpKernelInterface::class);
+        $this->context = self::createMock(RequestContext::class);
 
         $this->urlMatcher->method('getContext')->willReturn($this->context);
     }

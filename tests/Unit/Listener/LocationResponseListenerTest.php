@@ -34,18 +34,12 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->router = $this->getMockBuilder(Router::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->router = self::createMock(Router::class);
         
-        $this->evaluator = $this->getMockBuilder(ExpressionEvaluator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->evaluator = self::createMock(ExpressionEvaluator::class);
         
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
-        $this->context = $this->getMockBuilder(RequestContext::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->kernel = self::createMock(HttpKernelInterface::class);
+        $this->context = self::createMock(RequestContext::class);
     }
     
     public function testInvalidViewAttribute()
@@ -65,9 +59,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
     {
         $listener = $this->getListener();
         
-        $view = $this->getMockBuilder(View::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $view = self::createMock(View::class);
 
         $view
             ->method('getLocation')
@@ -84,9 +76,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
     
     public function testWithRoute()
     {
-        $view = $this->getMockBuilder(View::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $view = self::createMock(View::class);
 
         $route = new Route();
         $route->setRoute('test_show');
@@ -99,9 +89,7 @@ class LocationResponseListenerTest extends \PHPUnit_Framework_TestCase
             ->method('getLocation')
             ->willReturn($route);
 
-        $this->router = $this->getMockBuilder(Router::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->router = self::createMock(Router::class);
 
         $this->router
             ->expects($this->once())

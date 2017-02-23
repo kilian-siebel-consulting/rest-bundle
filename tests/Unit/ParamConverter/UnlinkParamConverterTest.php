@@ -40,10 +40,7 @@ class UnlinkParamConverterTest extends \PHPUnit_Framework_TestCase
     private function getConfiguration(array $relations = ['wheels', 'doors'], $emptyRelation = false)
     {
 
-        $configuration = $this
-            ->getMockBuilder(ParamConverter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $configuration = self::createMock(ParamConverter::class);
 
         $configArray = [
             'fail_on_validation_error' => true,
@@ -141,14 +138,13 @@ class UnlinkParamConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function getConverter($car)
     {
-        $validator = $this->getMockForAbstractClass(ValidatorInterface::class);
+        $validator = self::createMock(ValidatorInterface::class);
         $converter =  new UnlinkParamConverter([
             'fail_on_validation_error' => true,
             'validation_errors_argument' => 'validationErrors',
         ], $validator);
 
-        $carConverter = $this->getMockBuilder(ParamConverterInterface::class)
-            ->getMock();
+        $carConverter = self::createMock(ParamConverterInterface::class);
 
         $carConverter
             ->expects($this->any())

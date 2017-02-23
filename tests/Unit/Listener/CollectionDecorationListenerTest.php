@@ -42,10 +42,10 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->resourceTransformer = $this->getMockForAbstractClass(TransformerInterface::class);
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
-        $this->decorator = $this->getMockForAbstractClass(DecoratorInterface::class);
-        $this->paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $this->resourceTransformer = self::createMock(TransformerInterface::class);
+        $this->kernel = self::createMock(HttpKernelInterface::class);
+        $this->decorator = self::createMock(DecoratorInterface::class);
+        $this->paramFetcher = self::createMock(ParamFetcherInterface::class);
     }
 
     /**
@@ -73,8 +73,7 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
                 [],
                 [
                     'paramFetcher' => $this->paramFetcher,
-                    '_template' => $this->getMockBuilder(View::class)
-                        ->disableOriginalConstructor()->getMock()
+                    '_template' => self::createMock(View::class)
                 ]
             ),
             HttpKernelInterface::MASTER_REQUEST,
@@ -213,7 +212,7 @@ class CollectionDecorationListenerTest extends PHPUnit_Framework_TestCase
                 )
             );
 
-        $element = $this->getMockForAbstractClass(ApiListableInterface::class);
+        $element = self::createMock(ApiListableInterface::class);
         $element->method('getId')->willReturn(42);
 
         $collection = new ArrayCollection();

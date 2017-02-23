@@ -47,7 +47,7 @@ class ResourceTransformerTest extends WebTestCase
         $transformer = $this->createResourceTransformer();
 
         /** @var ConverterInterface|PHPUnit_Framework_MockObject_MockObject $converter */
-        $converter = $this->getMockForAbstractClass(ConverterInterface::class);
+        $converter = self::createMock(ConverterInterface::class);
         $converter
             ->expects($this->atLeastOnce())
             ->method('getResourceProxy')

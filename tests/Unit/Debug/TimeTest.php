@@ -13,7 +13,7 @@ class TimeTest extends PHPUnit_Framework_TestCase
     public function testConvert()
     {
         /** @var TimeDataCollector|PHPUnit_Framework_MockObject_MockObject $collector */
-        $collector = $this->getMock(TimeDataCollector::class);
+        $collector = self::createMock(TimeDataCollector::class);
 
         $collector->method('getStartTime')
             ->willReturn(microtime(true) * 1000);

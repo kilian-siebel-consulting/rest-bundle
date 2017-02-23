@@ -18,7 +18,7 @@ class EtagResponseListenerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
+        $this->kernel = self::createMock(HttpKernelInterface::class);
     }
 
     /**

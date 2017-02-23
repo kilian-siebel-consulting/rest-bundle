@@ -14,7 +14,7 @@ class SecurityTest extends PHPUnit_Framework_TestCase
     public function testConvert()
     {
         /** @var SecurityDataCollector|PHPUnit_Framework_MockObject_MockObject $collector */
-        $collector = $this->getMock(SecurityDataCollector::class);
+        $collector = self::createMock(SecurityDataCollector::class);
 
         $collector->method('isEnabled')
             ->willReturn(true);

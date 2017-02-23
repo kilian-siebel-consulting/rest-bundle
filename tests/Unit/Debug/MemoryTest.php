@@ -13,7 +13,7 @@ class MemoryTest extends PHPUnit_Framework_TestCase
     public function testConvert()
     {
         /** @var MemoryDataCollector|PHPUnit_Framework_MockObject_MockObject $collector */
-        $collector = $this->getMock(MemoryDataCollector::class);
+        $collector = self::createMock(MemoryDataCollector::class);
 
         $collector->method('getMemory')
             ->willReturn(345135413547);

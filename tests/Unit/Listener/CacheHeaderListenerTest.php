@@ -34,18 +34,12 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->router = $this->getMockBuilder(Router::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->router = self::createMock(Router::class);
 
-        $this->evaluator = $this->getMockBuilder(ExpressionEvaluator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->evaluator = self::createMock(ExpressionEvaluator::class);
 
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
-        $this->context = $this->getMockBuilder(RequestContext::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->kernel = self::createMock(HttpKernelInterface::class);
+        $this->context = self::createMock(RequestContext::class);
     }
 
     public function testPrivateCacheHeader()

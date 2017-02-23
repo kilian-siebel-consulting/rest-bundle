@@ -25,10 +25,8 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
-        $this->context = $this->getMockBuilder(RequestContext::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->kernel = self::createMock(HttpKernelInterface::class);
+        $this->context = self::createMock(RequestContext::class);
     }
 
 
@@ -52,7 +50,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
     {
         $listener = $this->getListener('_expolicy');
 
-        $paramFetcher = $this->getMock(ParamFetcher::class, [], [], '', false);
+        $paramFetcher = self::createMock(ParamFetcher::class, [], [], '', false);
 
         $paramFetcher->expects($this->once())
             ->method('get')
@@ -110,7 +108,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
     {
         $listener = $this->getListener('_expolicy');
 
-        $paramFetcher = $this->getMock(ParamFetcher::class, [], [], '', false);
+        $paramFetcher = self::createMock(ParamFetcher::class, [], [], '', false);
 
         $paramFetcher->expects($this->never())
             ->method('get');
@@ -185,7 +183,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     private function getView($enabled, array $result)
     {
-        $view = $this->getMock(View::class, [], [], '', false);
+        $view = self::createMock(View::class, [], [], '', false);
 
         if (!$enabled) {
             $view->expects($this->never())->method('getSerializerGroups');
@@ -207,7 +205,7 @@ class ExclusionPolicyResponseListenerTest extends PHPUnit_Framework_TestCase
      */
     private function getParamFetcher($enabled, $paramName, $paramValue, $defaultValue)
     {
-        $paramFetcher = $this->getMock(ParamFetcher::class, [], [], '', false);
+        $paramFetcher = self::createMock(ParamFetcher::class, [], [], '', false);
 
         if (!$enabled) {
             $paramFetcher->expects($this->never())

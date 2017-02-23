@@ -14,9 +14,7 @@ class DbTest extends PHPUnit_Framework_TestCase
     public function testConvert()
     {
         /** @var DoctrineDataCollector|PHPUnit_Framework_MockObject_MockObject $collector */
-        $collector = $this->getMockBuilder(DoctrineDataCollector::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $collector = self::createMock(DoctrineDataCollector::class);
 
         $collector->method('getMappingErrors')
             ->willReturn([
@@ -61,7 +59,7 @@ class DbTest extends PHPUnit_Framework_TestCase
     public function getSupportDataProvider()
     {
         /** @var ManagerRegistry $managerRegistry */
-        $managerRegistry = $this->getMockForAbstractClass(ManagerRegistry::class);
+        $managerRegistry = self::createMock(ManagerRegistry::class);
 
         return [
             [true, new DoctrineDataCollector($managerRegistry)],

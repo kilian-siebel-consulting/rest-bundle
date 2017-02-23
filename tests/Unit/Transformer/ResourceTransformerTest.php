@@ -21,7 +21,7 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
      */
     private function createResourceTransformer($routeConfig = []) 
     {
-        $routerFaker = $this->getMockForAbstractClass(RouterInterface::class);
+        $routerFaker = self::createMock(RouterInterface::class);
 
         if (count($routeConfig) > 0) {
 
@@ -125,7 +125,7 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
         ]);
 
         /** @var ConverterInterface|PHPUnit_Framework_MockObject_MockObject $converter */
-        $converter = $this->getMockForAbstractClass(ConverterInterface::class);
+        $converter = self::createMock(ConverterInterface::class);
         $converter
             ->expects($this->once())
             ->method('getResourceProxy')
@@ -184,7 +184,7 @@ class ResourceTransformerTest extends PHPUnit_Framework_TestCase
         ]);
 
         /** @var ConverterInterface|PHPUnit_Framework_MockObject_MockObject $converter */
-        $converter = $this->getMockForAbstractClass(ConverterInterface::class);
+        $converter = self::createMock(ConverterInterface::class);
         $converter
             ->expects($this->once())
             ->method('getResource')

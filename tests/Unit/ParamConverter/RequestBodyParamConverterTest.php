@@ -24,8 +24,8 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->requestBodyConverter = $this->getMockForAbstractClass(ParamConverterInterface::class);
-        $this->constraintViolations = $this->getMockForAbstractClass(ConstraintViolationListInterface::class);
+        $this->requestBodyConverter = self::createMock(ParamConverterInterface::class);
+        $this->constraintViolations = self::createMock(ConstraintViolationListInterface::class);
     }
 
     /**
@@ -61,9 +61,7 @@ class RequestBodyParamConverterTest extends \PHPUnit_Framework_TestCase
      */
     private function getConfiguration($failOnValidationError = true)
     {
-        $configuration = $this->getMockBuilder(ParamConverter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $configuration = self::createMock(ParamConverter::class);
 
         $configuration
             ->method('getOptions')

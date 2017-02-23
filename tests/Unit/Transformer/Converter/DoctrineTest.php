@@ -12,7 +12,7 @@ class DoctrineTest extends PHPUnit_Framework_TestCase
     public function testGetResource()
     {
         /** @var ObjectManager|PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMockForAbstractClass(ObjectManager::class);
+        $objectManager = self::createMock(ObjectManager::class);
 
         $objectManager
             ->expects($this->once())
@@ -28,7 +28,7 @@ class DoctrineTest extends PHPUnit_Framework_TestCase
     public function testGetResourceProxyObject()
     {
         /** @var ObjectManager|PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMockForAbstractClass(ObjectManager::class);
+        $objectManager = self::createMock(ObjectManager::class);
 
         $objectManager
             ->expects($this->once())
@@ -44,7 +44,7 @@ class DoctrineTest extends PHPUnit_Framework_TestCase
     public function testGetResourceProxyEntity()
     {
         /** @var EntityManagerInterface|PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMockForAbstractClass(EntityManagerInterface::class);
+        $objectManager = self::createMock(EntityManagerInterface::class);
 
         $objectManager
             ->expects($this->once())
