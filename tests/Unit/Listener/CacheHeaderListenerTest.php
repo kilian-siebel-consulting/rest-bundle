@@ -113,7 +113,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelResponse($event);
 
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache, private', $response->headers->get('Cache-Control'));
     }
 
     public function testNonExistentCache()
@@ -131,7 +131,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelResponse($event);
 
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache, private', $response->headers->get('Cache-Control'));
     }
 
 
@@ -176,7 +176,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         );
         $listener->onKernelResponse($event);
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache, private', $response->headers->get('Cache-Control'));
     }
 
     private function getEvent(Request $request, Response $response = null)
