@@ -35,9 +35,7 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->profileListener = $this->getMockBuilder(ProfilerListener::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->profileListener = self::createMock(ProfilerListener::class);
 
         $this->profiles = new SplObjectStorage();
 
@@ -47,7 +45,7 @@ class DebugResponseListenerTest extends PHPUnit_Framework_TestCase
         $profilesProperty->setAccessible(false);
 
 
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
+        $this->kernel = self::createMock(HttpKernelInterface::class);
     }
 
     /**

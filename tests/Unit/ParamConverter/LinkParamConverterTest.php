@@ -33,10 +33,7 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
     private function getConfiguration(array $relations = ['wheels', 'doors'], $emptyRelation = false)
     {
 
-        $configuration = $this
-            ->getMockBuilder(ParamConverter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $configuration = self::createMock(ParamConverter::class);
 
         $configArray = [
             'fail_on_validation_error' => true,
@@ -178,10 +175,7 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
     {
         $converter = $this->getConverter(null);
 
-        $configuration = $this
-            ->getMockBuilder(ParamConverter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $configuration = self::createMock(ParamConverter::class);
 
         $configuration->method('getOptions')->willReturn(['source' => 'car']);
 
@@ -192,10 +186,7 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
     {
         $converter = $this->getConverter(null);
 
-        $configuration = $this
-            ->getMockBuilder(ParamConverter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $configuration = self::createMock(ParamConverter::class);
 
         $configuration->method('getOptions')->willReturn([]);
         
@@ -206,10 +197,7 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
     {
         $converter = $this->getConverter(null);
 
-        $configuration = $this
-            ->getMockBuilder(ParamConverter::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $configuration = self::createMock(ParamConverter::class);
 
         $configuration->method('getOptions')->willReturn(['source' => 'bla']);
 
@@ -223,9 +211,9 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function getConverter($car, $failingValidator = false)
     {
-        $validator = $this->getMockForAbstractClass(ValidatorInterface::class);
+        $validator = self::createMock(ValidatorInterface::class);
         
-        $constraintViolationsListInterface = $this->getMockForAbstractClass(ConstraintViolationListInterface::class);
+        $constraintViolationsListInterface = self::createMock(ConstraintViolationListInterface::class);
 
         $constraintViolationsListInterface
             ->method('count')
@@ -245,8 +233,7 @@ class LinkParamConverterTest extends \PHPUnit_Framework_TestCase
         $converter->setValidator($validator);
         
         
-        $carConverter = $this->getMockBuilder(ParamConverterInterface::class)
-            ->getMock();
+        $carConverter = self::createMock(ParamConverterInterface::class);
 
 
         $carConverter

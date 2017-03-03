@@ -18,7 +18,7 @@ class IfNoneMatchResponseListenerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
+        $this->kernel = self::createMock(HttpKernelInterface::class);
     }
 
     public function testMatching()
@@ -26,9 +26,7 @@ class IfNoneMatchResponseListenerTest extends PHPUnit_Framework_TestCase
         $listener = $this->getListener();
 
         /** @var Response|PHPUnit_Framework_MockObject_MockObject $response */
-        $response = $this->getMockBuilder(Response::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $response = self::createMock(Response::class);
 
         $request = new Request();
 
@@ -47,9 +45,7 @@ class IfNoneMatchResponseListenerTest extends PHPUnit_Framework_TestCase
         $listener = $this->getListener();
 
         /** @var Response|PHPUnit_Framework_MockObject_MockObject $response */
-        $response = $this->getMockBuilder(Response::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $response = self::createMock(Response::class);
 
         $request = new Request();
 

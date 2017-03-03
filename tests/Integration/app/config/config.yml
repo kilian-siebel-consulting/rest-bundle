@@ -43,7 +43,6 @@ fos_rest:
         default_format: json
         include_format: false
     body_listener: true
-    param_fetcher_listener: true
     format_listener:
         enabled: true
         rules:

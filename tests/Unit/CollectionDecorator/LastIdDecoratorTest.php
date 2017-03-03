@@ -20,7 +20,7 @@ class LastIdDecoratorTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->paramFetcher = $this->getMockForAbstractClass(ParamFetcherInterface::class);
+        $this->paramFetcher = self::createMock(ParamFetcherInterface::class);
     }
 
     /**

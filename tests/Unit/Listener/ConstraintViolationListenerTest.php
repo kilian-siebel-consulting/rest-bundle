@@ -87,10 +87,10 @@ class ConstraintViolationListenerTest extends PHPUnit_Framework_TestCase
         $listener = $this->getListener();
 
         /** @var JsonSerializationVisitor|PHPUnit_Framework_MockObject_MockObject $visitor */
-        $visitor = $this->getMock(JsonSerializationVisitor::class, array(), array(), '', false);
+        $visitor = self::createMock(JsonSerializationVisitor::class, array(), array(), '', false);
 
         /** @var ConstraintViolationInterface|PHPUnit_Framework_MockObject_MockObject $constraintViolation */
-        $constraintViolation = $this->getMockForAbstractClass(ConstraintViolationInterface::class);
+        $constraintViolation = self::createMock(ConstraintViolationInterface::class);
         $constraintViolation->method('getPropertyPath')->willReturn($data['propertyPath']);
         $constraintViolation->method('getMessage')->willReturn($data['message']);
         $constraintViolation->method('getCode')->willReturn($data['code']);

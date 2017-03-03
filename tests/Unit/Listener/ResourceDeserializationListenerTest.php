@@ -23,8 +23,8 @@ class ResourceDeserializationListenerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->transformer = $this->getMockForAbstractClass(TransformerInterface::class);
-        $this->visitor = $this->getMockForAbstractClass(VisitorInterface::class);
+        $this->transformer = self::createMock(TransformerInterface::class);
+        $this->visitor = self::createMock(VisitorInterface::class);
     }
 
     public function testWithResource()

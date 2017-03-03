@@ -12,7 +12,7 @@ class ResourceUrlConverterTest extends \PHPUnit_Framework_TestCase
 {
     public function testSupportUsesResourceTransformer()
     {
-        $transformer = $this->getMock(TransformerInterface::class);
+        $transformer = self::createMock(TransformerInterface::class);
 
         $transformer
             ->expects($this->once())
@@ -32,7 +32,7 @@ class ResourceUrlConverterTest extends \PHPUnit_Framework_TestCase
     
     public function testReturnValidResource()
     {
-        $transformer = $this->getMock(TransformerInterface::class);
+        $transformer = self::createMock(TransformerInterface::class);
 
         $userObject = new Car('23');
         
@@ -62,7 +62,7 @@ class ResourceUrlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testWithMissingParameter()
     {
-        $transformer = $this->getMock(TransformerInterface::class);
+        $transformer = self::createMock(TransformerInterface::class);
 
         $transformer
             ->expects($this->never())
@@ -86,7 +86,7 @@ class ResourceUrlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testWithInvalidUrlCausingException()
     {
-        $transformer = $this->getMock(TransformerInterface::class);
+        $transformer = self::createMock(TransformerInterface::class);
 
         $transformer
             ->expects($this->once())

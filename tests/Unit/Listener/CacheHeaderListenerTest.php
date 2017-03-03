@@ -34,18 +34,12 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->router = $this->getMockBuilder(Router::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->router = self::createMock(Router::class);
 
-        $this->evaluator = $this->getMockBuilder(ExpressionEvaluator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->evaluator = self::createMock(ExpressionEvaluator::class);
 
-        $this->kernel = $this->getMockForAbstractClass(HttpKernelInterface::class);
-        $this->context = $this->getMockBuilder(RequestContext::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->kernel = self::createMock(HttpKernelInterface::class);
+        $this->context = self::createMock(RequestContext::class);
     }
 
     public function testPrivateCacheHeader()
@@ -113,7 +107,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelResponse($event);
 
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache, private', $response->headers->get('Cache-Control'));
     }
 
     public function testNonExistentCache()
@@ -131,7 +125,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelResponse($event);
 
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache, private', $response->headers->get('Cache-Control'));
     }
 
 
@@ -176,7 +170,7 @@ class CacheHeaderListenerTest extends \PHPUnit_Framework_TestCase
         );
         $listener->onKernelResponse($event);
         $this->assertEquals($response, $event->getResponse());
-        $this->assertEquals('no-cache', $response->headers->get('Cache-Control'));
+        $this->assertEquals('no-cache, private', $response->headers->get('Cache-Control'));
     }
 
     private function getEvent(Request $request, Response $response = null)
